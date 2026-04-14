@@ -38,7 +38,7 @@ function NewsItem({ item }) {
           <div className="text-xs text-primary leading-snug line-clamp-2 font-medium">
             {item.title}
           </div>
-          {item.summary && !isTweet && (
+          {item.summary && !isReddit && (
             <div className="text-xs text-muted mt-0.5 line-clamp-2 leading-snug">
               {item.summary}
             </div>
