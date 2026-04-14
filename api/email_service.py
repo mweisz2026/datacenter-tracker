@@ -1,0 +1,171 @@
+"""
+Email alert service for DC Sentinel.
+Sends emails via Resend when HIGH or CRITICAL news is newly detected.
+
+Required env vars:
+  RESEND_API_KEY    — get from resend.com (free tier: 3k emails/month)
+  ALERT_EMAIL_TO    — recipient address (default: mweisz@diametercap.com)
+  ALERT_EMAIL_FROM  — sender address  (default: onboarding@resend.dev)
+                      For production: verify your domain at resend.com and set
+                      e.g. "DC Sentinel <alerts@diametercap.com>"
+"""
+import os
+import httpx
+from datetime import datetime, timezone
+
+RESEND_API_KEY   = os.getenv("RESEND_API_KEY", "")
+ALERT_EMAIL_TO   = os.getenv("ALERT_EMAIL_TO", "mweisz@diametercap.com")
+ALERT_EMAIL_FROM = os.getenv("ALERT_EMAIL_FROM", "DC Sentinel <onboarding@resend.dev>")
+DASHBOARD_URL    = "https://datacenter-tracker-kappa.vercel.app"
+
+
+def _fmt_date(pub: str) -> str:
+    try:
+        dt = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        return dt.strftime("%b %d, %Y %H:%M UTC")
+    except Exception:
+        return pub[:10] if pub else ""
+
+
+def _build_email(bond_name: str, alerts: list) -> tuple[str, str]:
+    """Returns (subject, html_body)."""
+    cats     = [a.get("importance_category", "HIGH") for a in alerts]
+    top_cat  = "CRITICAL" if "CRITICAL" in cats else "HIGH"
+    count    = len(alerts)
+    plural   = "s" if count > 1 else ""
+
+    subject = f"[DC SENTINEL] {top_cat}: {count} new alert{plural} — {bond_name}"
+
+    rows = ""
+    for a in alerts:
+        cat      = a.get("importance_category", "HIGH")
+        c_main   = "#ef4444" if cat == "CRITICAL" else "#f59e0b"
+        c_bg     = "#2d1010" if cat == "CRITICAL" else "#2d1f00"
+        reason   = a.get("importance_reason", "")
+        pub      = _fmt_date(a.get("published", ""))
+        source   = a.get("source", "")
+        title    = a.get("title", "")
+        url      = a.get("url", "#")
+
+        reason_row = (
+            f'<div style="color:#8b949e;font-size:12px;font-style:italic;margin-top:4px;">'
+            f'{reason}</div>'
+        ) if reason else ""
+
+        rows += f"""
+        <tr>
+          <td style="padding:16px 20px;border-bottom:1px solid #21262d;">
+            <div style="margin-bottom:8px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="background:{c_bg};color:{c_main};font-family:monospace;font-size:11px;
+                           font-weight:700;padding:2px 8px;border-radius:4px;
+                           border:1px solid {c_main}60;">{cat}</span>
+              <span style="color:#8b949e;font-size:11px;">{source}</span>
+              <span style="color:#484f58;font-size:11px;">{pub}</span>
+            </div>
+            <a href="{url}" style="color:#58a6ff;font-size:14px;font-weight:600;
+                                   text-decoration:none;line-height:1.5;display:block;">
+              {title}
+            </a>
+            {reason_row}
+          </td>
+        </tr>"""
+
+    html = f"""<!DOCTYPE html>
+<html>
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+<body style="margin:0;padding:0;background:#0d1117;
+             font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;">
+  <div style="max-width:600px;margin:0 auto;padding:24px 12px;">
+
+    <!-- Header -->
+    <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;
+                padding:18px 24px;margin-bottom:16px;">
+      <div style="margin-bottom:6px;">
+        <span style="font-size:20px;font-weight:700;color:#f0b429;
+                     letter-spacing:-0.5px;font-family:monospace;">DC SENTINEL</span>
+        <span style="margin-left:10px;background:#1f2937;color:#8b949e;font-size:10px;
+                     font-family:monospace;padding:2px 8px;border-radius:4px;
+                     border:1px solid #30363d;vertical-align:middle;">
+          BOND INTELLIGENCE
+        </span>
+      </div>
+      <div style="color:#8b949e;font-size:13px;">
+        Material alert detected on <strong style="color:#e6edf3;">{bond_name}</strong>
+      </div>
+    </div>
+
+    <!-- Alert count badge -->
+    <div style="color:#8b949e;font-size:11px;font-family:monospace;
+                text-transform:uppercase;letter-spacing:1px;
+                margin-bottom:10px;padding-left:4px;">
+      {count} new alert{plural} · scored HIGH or CRITICAL by Claude
+    </div>
+
+    <!-- Alert rows -->
+    <div style="background:#161b22;border:1px solid #30363d;
+                border-radius:8px;overflow:hidden;">
+      <table style="width:100%;border-collapse:collapse;">
+        <tbody>{rows}</tbody>
+      </table>
+    </div>
+
+    <!-- CTA -->
+    <div style="text-align:center;margin-top:20px;">
+      <a href="{DASHBOARD_URL}"
+         style="background:#1f6feb;color:#ffffff;font-size:13px;font-weight:600;
+                text-decoration:none;padding:10px 24px;border-radius:6px;
+                display:inline-block;">
+        Open DC Sentinel Dashboard
+      </a>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;margin-top:20px;color:#484f58;font-size:11px;
+                font-family:monospace;">
+      DC Sentinel · Datacenter Bond Monitor · Alerts are AI-scored, verify before acting
+    </div>
+
+  </div>
+</body>
+</html>"""
+
+    return subject, html
+
+
+async def send_alert_email(bond_name: str, alerts: list) -> bool:
+    """
+    Send an email for newly detected HIGH/CRITICAL alerts.
+    Returns True if the email was sent successfully.
+    No-ops silently if RESEND_API_KEY is not set.
+    """
+    if not RESEND_API_KEY or not alerts:
+        return False
+
+    subject, html = _build_email(bond_name, alerts)
+
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            r = await client.post(
+                "https://api.resend.com/emails",
+                headers={
+                    "Authorization": f"Bearer {RESEND_API_KEY}",
+                    "Content-Type":  "application/json",
+                },
+                json={
+                    "from":    ALERT_EMAIL_FROM,
+                    "to":      [ALERT_EMAIL_TO],
+                    "subject": subject,
+                    "html":    html,
+                },
+            )
+        if r.status_code in (200, 201):
+            print(f"[email] Sent {len(alerts)} alert(s) for {bond_name} → {ALERT_EMAIL_TO}")
+            return True
+        else:
+            print(f"[email] Resend {r.status_code}: {r.text[:300]}")
+            return False
+    except Exception as e:
+        print(f"[email] Failed to send alert email: {e}")
+        return False

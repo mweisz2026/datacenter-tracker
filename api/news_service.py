@@ -16,6 +16,7 @@ import urllib.parse
 from datetime import datetime, timezone
 
 from relevance_service import score_and_filter
+from email_service import send_alert_email
 import time
 
 NEWSAPI_KEY      = os.getenv("NEWSAPI_KEY", "")
@@ -24,6 +25,9 @@ TWITTER_BEARER   = urllib.parse.unquote(os.getenv("TWITTER_BEARER_TOKEN", ""))
 # Per-bond news cache so the landing page /api/alerts reuses already-fetched data
 _news_cache: dict = {}   # bond_id -> {"data": {...}, "ts": float}
 _NEWS_CACHE_TTL  = 20 * 60  # 20 minutes
+
+# URLs we've already emailed this session — prevents duplicate alerts on cache refresh
+_emailed_urls: set = set()
 
 DC_DYNAMICS_RSS  = "https://www.datacenterdynamics.com/en/rss/"
 DC_KNOWLEDGE_RSS = "https://www.datacenterknowledge.com/rss.xml"
@@ -596,5 +600,18 @@ async def get_news(
         "social":   regular_social[:15],
         "industry": industry_items[:8],
     }
+
+    # Email new HIGH/CRITICAL alerts (skip ones we've already emailed this session)
+    new_alerts = [
+        a for a in result["alerts"]
+        if a.get("url") and a["url"] not in _emailed_urls
+    ]
+    if new_alerts:
+        try:
+            await send_alert_email(bond_name, new_alerts)
+        except Exception as e:
+            print(f"[email] Alert dispatch error: {e}")
+        _emailed_urls.update(a["url"] for a in new_alerts if a.get("url"))
+
     _news_cache[bond_id] = {"data": result, "ts": now_ts}
     return result
