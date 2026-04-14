@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "buildCommand": "cp backend/*.py api/ && cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
   "functions": {
     "api/index.py": {

@@ -1,0 +1,6 @@
+{
+  "name": "datacenter-tracker",
+  "scripts": {
+    "vercel-build": "cp backend/*.py api/ && cd frontend && npm install && npm run build"
+  }
+}
