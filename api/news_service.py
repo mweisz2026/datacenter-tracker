@@ -466,38 +466,40 @@ async def _fetch_newsapi(query: str, limit: int = 6) -> list:
 
 async def _fetch_reddit_sub(subreddit: str, query: str, limit: int = 6) -> list:
     """
-    Search within a specific subreddit via its RSS search endpoint.
-    restrict_sr=on confines results to that subreddit — much higher signal
-    than global Reddit search which ignores site: operators.
+    Search within a specific subreddit via Reddit's JSON API.
+    JSON endpoint + proper Reddit User-Agent is far more reliable than RSS.
+    No API key required — uses public unauthenticated endpoint.
     """
     url = (
-        f"https://www.reddit.com/r/{subreddit}/search.rss"
+        f"https://www.reddit.com/r/{subreddit}/search.json"
         f"?q={urllib.parse.quote(query)}&sort=new&restrict_sr=on&limit={limit}&t=year"
     )
     try:
-        async with httpx.AsyncClient(timeout=12) as client:
+        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
             resp = await client.get(url, headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                "User-Agent": "web:datacenter-bond-monitor:1.0 (by /u/datacenter_monitor_bot)"
             })
         if resp.status_code != 200:
+            print(f"[reddit] r/{subreddit}: HTTP {resp.status_code}")
             return []
-        feed = feedparser.parse(resp.text)
+        posts = resp.json().get("data", {}).get("children", [])
         items = []
-        for entry in feed.entries[:limit]:
-            title = entry.get("title", "").strip()
+        for post in posts[:limit]:
+            p = post.get("data", {})
+            title = p.get("title", "").strip()
             if not title:
                 continue
-            pub = ""
-            if getattr(entry, "published_parsed", None):
-                dt = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
-                pub = dt.isoformat()
-            link = entry.get("link", "")
+            created = p.get("created_utc")
+            pub = datetime.fromtimestamp(created, tz=timezone.utc).isoformat() if created else ""
+            permalink = p.get("permalink", "")
+            post_url = f"https://www.reddit.com{permalink}" if permalink else p.get("url", "")
+            selftext = (p.get("selftext") or "")[:300]
             items.append({
                 "title":     title,
-                "url":       link,
+                "url":       post_url,
                 "source":    f"r/{subreddit}",
                 "published": pub,
-                "summary":   _strip_html(entry.get("summary", ""))[:300],
+                "summary":   selftext,
                 "type":      "reddit",
             })
         return items
