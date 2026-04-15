@@ -18,6 +18,25 @@ from datetime import datetime, timezone
 from relevance_service import score_and_filter
 from email_service import send_alert_email
 import time
+from datetime import datetime, timezone, timedelta
+
+# Only email alerts published within this window — prevents old articles firing on cold start
+_EMAIL_MAX_AGE_DAYS = 7
+
+
+def _is_email_eligible(item: dict) -> bool:
+    """True only if the item has a parseable published date within the last 7 days."""
+    pub = item.get("published", "")
+    if not pub:
+        return False  # pinned articles with no date are never emailed
+    try:
+        dt = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        cutoff = datetime.now(timezone.utc) - timedelta(days=_EMAIL_MAX_AGE_DAYS)
+        return dt >= cutoff
+    except Exception:
+        return False  # unparseable date → don't email
 
 NEWSAPI_KEY      = os.getenv("NEWSAPI_KEY", "")
 TWITTER_BEARER   = urllib.parse.unquote(os.getenv("TWITTER_BEARER_TOKEN", ""))
@@ -601,10 +620,12 @@ async def get_news(
         "industry": industry_items[:8],
     }
 
-    # Email new HIGH/CRITICAL alerts (skip ones we've already emailed this session)
+    # Email new HIGH/CRITICAL alerts — must be recent (< 7 days) and not yet emailed
     new_alerts = [
         a for a in result["alerts"]
-        if a.get("url") and a["url"] not in _emailed_urls
+        if a.get("url")
+        and a["url"] not in _emailed_urls
+        and _is_email_eligible(a)
     ]
     if new_alerts:
         try:
