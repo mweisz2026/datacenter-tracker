@@ -40,6 +40,11 @@ def _is_email_eligible(item: dict) -> bool:
 
 NEWSAPI_KEY      = os.getenv("NEWSAPI_KEY", "")
 TWITTER_BEARER   = urllib.parse.unquote(os.getenv("TWITTER_BEARER_TOKEN", ""))
+REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID", "")
+REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET", "")
+
+# Cached Reddit OAuth token (client_credentials — free, no user login needed)
+_reddit_token: dict = {"token": "", "expires_at": 0.0}
 
 # Per-bond news cache so the landing page /api/alerts reuses already-fetched data
 _news_cache: dict = {}   # bond_id -> {"data": {...}, "ts": float}
@@ -464,20 +469,54 @@ async def _fetch_newsapi(query: str, limit: int = 6) -> list:
         return []
 
 
+async def _get_reddit_token() -> str:
+    """Fetch or return cached Reddit OAuth token (client_credentials flow)."""
+    global _reddit_token
+    if time.time() < _reddit_token["expires_at"] - 60:
+        return _reddit_token["token"]
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.post(
+                "https://www.reddit.com/api/v1/access_token",
+                auth=(REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET),
+                data={"grant_type": "client_credentials"},
+                headers={"User-Agent": "DatacenterBondMonitor/1.0"},
+            )
+        if resp.status_code == 200:
+            data = resp.json()
+            _reddit_token = {
+                "token":      data["access_token"],
+                "expires_at": time.time() + data.get("expires_in", 3600),
+            }
+            return _reddit_token["token"]
+        print(f"[reddit-auth] Token request failed: HTTP {resp.status_code}")
+    except Exception as e:
+        print(f"[reddit-auth] {e}")
+    return ""
+
+
 async def _fetch_reddit_sub(subreddit: str, query: str, limit: int = 6) -> list:
     """
-    Search within a specific subreddit via Reddit's JSON API.
-    JSON endpoint + proper Reddit User-Agent is far more reliable than RSS.
-    No API key required — uses public unauthenticated endpoint.
+    Search a subreddit via Reddit OAuth API (free, 60 req/min).
+    Requires REDDIT_CLIENT_ID + REDDIT_CLIENT_SECRET env vars.
+    No-ops silently if credentials are not set.
     """
+    if not REDDIT_CLIENT_ID:
+        return []
+
+    token = await _get_reddit_token()
+    if not token:
+        return []
+
     url = (
-        f"https://www.reddit.com/r/{subreddit}/search.json"
+        f"https://oauth.reddit.com/r/{subreddit}/search.json"
         f"?q={urllib.parse.quote(query)}&sort=new&restrict_sr=on&limit={limit}&t=year"
     )
     try:
-        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
+        async with httpx.AsyncClient(timeout=10) as client:
             resp = await client.get(url, headers={
-                "User-Agent": "web:datacenter-bond-monitor:1.0 (by /u/datacenter_monitor_bot)"
+                "Authorization": f"bearer {token}",
+                "User-Agent":    "DatacenterBondMonitor/1.0",
             })
         if resp.status_code != 200:
             print(f"[reddit] r/{subreddit}: HTTP {resp.status_code}")
