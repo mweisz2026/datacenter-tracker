@@ -300,65 +300,93 @@ DC_INDUSTRY_KEYWORDS = {
     "qts":              ["qts", "microsoft", "fayetteville", "georgia", "fayette", "excalibur"],
 }
 
-# ── Reddit search queries ─────────────────────────────────────────────────────
-# Two queries per bond: (1) project-specific, (2) local/regional subreddit search
-REDDIT_QUERIES = {
+# ── Reddit subreddit-targeted queries ─────────────────────────────────────────
+# Each entry is a list of (subreddit, query) tuples.
+# Searches are restricted to the named subreddit (restrict_sr=on), which gives
+# far better signal than global Reddit search.
+# Pattern per bond: local/regional sub + industry sub + finance sub (for public cos)
+REDDIT_SUBREDDIT_QUERIES: dict[str, list[tuple[str, str]]] = {
     "beignet": [
-        '"Meta datacenter" Louisiana OR "Richland Parish"',
-        'site:reddit.com/r/Louisiana "Meta" OR "data center" Richland',
+        ("Louisiana",   "Meta datacenter Richland Parish"),
+        ("datacenter",  "Meta Louisiana Richland"),
     ],
     "related_bx": [
-        '"Oracle datacenter" Michigan OR Washtenaw OR "Ann Arbor"',
-        'site:reddit.com/r/AnnArbor OR site:reddit.com/r/Michigan "data center" Oracle',
+        ("AnnArbor",    "Oracle data center"),
+        ("Michigan",    "Oracle datacenter Washtenaw"),
+        ("datacenter",  "Oracle Michigan Ann Arbor"),
     ],
     "vantage": [
-        '"Vantage Data Centers" OR Stargate Texas Shackelford Albany datacenter',
-        'site:reddit.com/r/Texas "Vantage" OR "Stargate" OR "data center" Shackelford',
+        ("Texas",       "Vantage datacenter Shackelford Albany"),
+        ("datacenter",  "Vantage Stargate Texas Oracle Shackelford"),
     ],
     "stack_nm": [
-        '"Stack Infrastructure" OR "Oracle datacenter" "New Mexico" OR "Santa Teresa" OR "Dona Ana"',
-        'site:reddit.com/r/newmexico "data center" OR "Stack" OR Oracle',
+        ("newmexico",   "data center Stack Oracle Santa Teresa"),
+        ("LasCruces",   "data center Oracle Stack"),
+        ("datacenter",  "Stack Infrastructure New Mexico Oracle"),
     ],
     "tract": [
-        'NVIDIA OR Tract OR Fleet datacenter Nevada "Storey County" OR "Tahoe Reno"',
-        'site:reddit.com/r/Reno OR site:reddit.com/r/Nevada "data center" NVIDIA "Storey County"',
+        ("Reno",        "NVIDIA datacenter Storey County"),
+        ("Nevada",      "NVIDIA data center Storey Tahoe Reno"),
+        ("datacenter",  "NVIDIA Nevada Tahoe Reno TRIC Fleet"),
     ],
     "cifr_black_pearl": [
-        '"Cipher Mining" OR CIFR "Black Pearl" OR Wink Texas datacenter',
-        'site:reddit.com/r/Texas "Cipher Mining" OR "Black Pearl" datacenter Wink',
+        ("Bitcoin",         "Cipher Mining Black Pearl Texas"),
+        ("CryptoCurrency",  "Cipher Mining datacenter Texas"),
+        ("Texas",           "Cipher Mining Wink datacenter"),
     ],
     "wulf": [
-        '"TeraWulf" OR "Lake Mariner" OR WULF datacenter "New York" Somerset Niagara',
-        'site:reddit.com/r/upstatenewyork OR site:reddit.com/r/Buffalo "TeraWulf" OR "Lake Mariner" datacenter',
+        ("upstatenewyork",  "TeraWulf Lake Mariner Somerset"),
+        ("Bitcoin",         "TeraWulf Lake Mariner datacenter"),
+        ("datacenter",      "TeraWulf New York Lake Mariner"),
     ],
     "flashc": [
-        'Fluidstack OR FLASHC OR "Aligned" OR datacenter Abernathy OR Lubbock Texas',
-        'site:reddit.com/r/Lubbock OR site:reddit.com/r/Texas "data center" Abernathy OR Fluidstack',
+        ("Lubbock",     "datacenter Abernathy Fluidstack Aligned"),
+        ("Texas",       "Fluidstack datacenter Abernathy Hale County"),
+        ("datacenter",  "Fluidstack Google Texas Abernathy"),
     ],
     "cifr_barber_lake": [
-        '"Cipher Mining" OR CIFR "Barber Lake" OR "Colorado City" Texas datacenter',
-        'site:reddit.com/r/Texas "Cipher Mining" OR "Barber Lake" OR "Colorado City" datacenter',
+        ("Texas",           "Cipher Mining Colorado City datacenter"),
+        ("CryptoCurrency",  "Cipher Mining Barber Lake AWS"),
+        ("Bitcoin",         "Cipher Mining Texas datacenter"),
     ],
     "apld_pf2": [
-        '"Applied Digital" OR APLD Harwood "North Dakota" datacenter',
-        'site:reddit.com/r/NorthDakota OR site:reddit.com/r/fargo "Applied Digital" OR "data center" Harwood',
+        ("northdakota", "Applied Digital datacenter Harwood"),
+        ("fargo",       "data center Applied Digital APLD"),
+        ("datacenter",  "Applied Digital North Dakota Oracle Harwood"),
     ],
     "apld": [
-        '"Applied Digital" OR APLD Ellendale "North Dakota" datacenter CoreWeave',
-        'site:reddit.com/r/NorthDakota "Applied Digital" OR "Ellendale" OR APLD datacenter',
-    ],
-    "qts": [
-        'QTS OR "QTS Realty" Microsoft Fayetteville Georgia datacenter',
-        'site:reddit.com/r/Georgia OR site:reddit.com/r/Atlanta QTS OR "Fayette County" datacenter Microsoft',
+        ("northdakota", "Applied Digital Ellendale datacenter CoreWeave"),
+        ("datacenter",  "Applied Digital Ellendale CoreWeave"),
     ],
     "voltag": [
-        'Vantage OR VoltaGrid Oracle Shackelford Texas "data center" Stargate',
-        'site:reddit.com/r/Texas "Vantage" OR "Stargate" OR "Oracle" Shackelford OR Albany datacenter',
+        ("Texas",       "Vantage datacenter Shackelford Oracle"),
+        ("datacenter",  "VoltaGrid Vantage Texas Oracle Stargate"),
+    ],
+    "qts": [
+        ("Georgia",     "QTS datacenter Fayetteville Microsoft"),
+        ("Atlanta",     "QTS data center Microsoft Fayette"),
+        ("datacenter",  "QTS Microsoft Fayetteville Georgia Excalibur"),
     ],
 }
 
-# Keep Twitter queries for reference (not used — no paid API tier)
-TWITTER_QUERIES = {}
+# ── X / Twitter search queries (requires Basic plan bearer token) ─────────────
+# Used when TWITTER_BEARER_TOKEN env var is set.
+# One query per bond — focused on company/project mentions from credible accounts.
+TWITTER_QUERIES = {
+    "beignet":          '"Meta" "Richland Parish" OR "Richland data center" -is:retweet lang:en',
+    "related_bx":       '"Oracle" "Ann Arbor" OR "Washtenaw" datacenter -is:retweet lang:en',
+    "vantage":          '"Vantage Data Centers" OR "Stargate" "Shackelford" -is:retweet lang:en',
+    "stack_nm":         '"Stack Infrastructure" "New Mexico" OR "Santa Teresa" datacenter -is:retweet lang:en',
+    "tract":            '("NVIDIA" OR "Tract") "Storey County" OR "Tahoe Reno" datacenter -is:retweet lang:en',
+    "cifr_black_pearl": '($CIFR OR "Cipher Mining") "Black Pearl" OR "Wink" datacenter -is:retweet lang:en',
+    "wulf":             '($WULF OR "TeraWulf") "Lake Mariner" OR "Somerset" datacenter -is:retweet lang:en',
+    "flashc":           '("Fluidstack" OR "Aligned") "Abernathy" OR "Hale County" datacenter -is:retweet lang:en',
+    "cifr_barber_lake": '($CIFR OR "Cipher Mining") "Barber Lake" OR "Colorado City" -is:retweet lang:en',
+    "apld_pf2":         '($APLD OR "Applied Digital") "Harwood" OR "Cass County" datacenter -is:retweet lang:en',
+    "apld":             '($APLD OR "Applied Digital") "Ellendale" OR "CoreWeave" datacenter -is:retweet lang:en',
+    "voltag":           '("VoltaGrid" OR "Vantage") "Shackelford" OR "Albany" Texas datacenter -is:retweet lang:en',
+    "qts":              '("QTS" OR "Project Excalibur") "Fayetteville" OR "Fayette County" Microsoft -is:retweet lang:en',
+}
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -436,16 +464,20 @@ async def _fetch_newsapi(query: str, limit: int = 6) -> list:
         return []
 
 
-async def _fetch_reddit(query: str, limit: int = 8) -> list:
-    """Fetch Reddit posts via public search RSS (no API key required)."""
+async def _fetch_reddit_sub(subreddit: str, query: str, limit: int = 6) -> list:
+    """
+    Search within a specific subreddit via its RSS search endpoint.
+    restrict_sr=on confines results to that subreddit — much higher signal
+    than global Reddit search which ignores site: operators.
+    """
     url = (
-        "https://www.reddit.com/search.rss"
-        f"?q={urllib.parse.quote(query)}&sort=new&limit={limit}&t=month"
+        f"https://www.reddit.com/r/{subreddit}/search.rss"
+        f"?q={urllib.parse.quote(query)}&sort=new&restrict_sr=on&limit={limit}&t=year"
     )
     try:
         async with httpx.AsyncClient(timeout=12) as client:
             resp = await client.get(url, headers={
-                "User-Agent": "Mozilla/5.0 (compatible; DatacenterBondMonitor/1.0)"
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
             })
         if resp.status_code != 200:
             return []
@@ -460,8 +492,6 @@ async def _fetch_reddit(query: str, limit: int = 8) -> list:
                 dt = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
                 pub = dt.isoformat()
             link = entry.get("link", "")
-            sub_match = re.search(r'/r/([^/]+)/', link)
-            subreddit = sub_match.group(1) if sub_match else "reddit"
             items.append({
                 "title":     title,
                 "url":       link,
@@ -472,7 +502,7 @@ async def _fetch_reddit(query: str, limit: int = 8) -> list:
             })
         return items
     except Exception as e:
-        print(f"[reddit] {query[:50]}: {e}")
+        print(f"[reddit] r/{subreddit} '{query[:40]}': {e}")
         return []
 
 
@@ -536,10 +566,11 @@ async def get_news(
     if cached and (now_ts - cached["ts"]) < _NEWS_CACHE_TTL:
         return cached["data"]
 
-    local_rss_urls = LOCAL_OUTLET_RSS.get(bond_id, [])
-    na_queries     = NEWSAPI_QUERIES.get(bond_id, news_queries[:3])
-    reddit_queries = REDDIT_QUERIES.get(bond_id, [])
-    dc_keywords    = DC_INDUSTRY_KEYWORDS.get(bond_id, [])
+    local_rss_urls  = LOCAL_OUTLET_RSS.get(bond_id, [])
+    na_queries      = NEWSAPI_QUERIES.get(bond_id, news_queries[:3])
+    sub_queries     = REDDIT_SUBREDDIT_QUERIES.get(bond_id, [])
+    dc_keywords     = DC_INDUSTRY_KEYWORDS.get(bond_id, [])
+    x_query         = TWITTER_QUERIES.get(bond_id, "")
 
     # Build task list
     tasks = [
@@ -552,8 +583,10 @@ async def get_news(
         # Industry RSS
         _fetch_industry_rss(DC_DYNAMICS_RSS,  dc_keywords, "DataCenter Dynamics", limit=4),
         _fetch_industry_rss(DC_KNOWLEDGE_RSS, dc_keywords, "DataCenter Knowledge", limit=4),
-        # Reddit (free, no API key)
-        *[_fetch_reddit(q, limit=8) for q in reddit_queries[:2]],
+        # Reddit — subreddit-specific searches (restrict_sr=on)
+        *[_fetch_reddit_sub(sub, q, limit=6) for sub, q in sub_queries],
+        # X / Twitter (only runs if TWITTER_BEARER_TOKEN is set)
+        _fetch_twitter(x_query, limit=15) if x_query else asyncio.sleep(0),
     ]
 
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -574,8 +607,10 @@ async def get_news(
     industry_items += safe(results[idx]); idx += 1
 
     reddit_items = []
-    for _ in reddit_queries[:2]:
+    for _ in sub_queries:
         reddit_items += safe(results[idx]); idx += 1
+
+    x_items = safe(results[idx]); idx += 1
 
     # Deduplicate by URL
     seen = set()
@@ -587,7 +622,7 @@ async def get_news(
             all_news.append(item)
 
     all_social = []
-    for item in reddit_items:
+    for item in reddit_items + x_items:
         url = item.get("url", "")
         if url and url not in seen and item.get("title"):
             seen.add(url)
