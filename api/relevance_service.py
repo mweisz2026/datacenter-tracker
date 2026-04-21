@@ -347,6 +347,11 @@ async def score_and_filter(
         category = meta.get("category", "MEDIUM")
         reason   = meta.get("reason", "")
 
+        # Hard override on read: keyword IRRELEVANT always wins over any cached score
+        kw = _keyword_score(item.get("title", ""), item.get("summary", ""))
+        if kw["category"] == "IRRELEVANT":
+            continue
+
         if category == "IRRELEVANT" or score == 0:
             continue
 
