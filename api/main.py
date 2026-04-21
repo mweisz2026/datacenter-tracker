@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 import asyncio
 import time
@@ -156,15 +156,20 @@ async def debug_email():
 
 
 @app.get("/api/cron")
-async def run_cron(secret: str = ""):
+async def run_cron(request: Request, secret: str = ""):
     """
     Hourly cron endpoint — forces a fresh news fetch for every bond
     and sends emails for any new HIGH/CRITICAL alerts found.
-    Secure with CRON_SECRET env var; pass as ?secret=xxx in the URL.
+    Vercel cron sends Authorization: Bearer <CRON_SECRET>.
+    Manual trigger: pass ?secret=xxx or omit if CRON_SECRET is not set.
     """
     cron_secret = os.getenv("CRON_SECRET", "")
-    if cron_secret and secret != cron_secret:
-        raise HTTPException(status_code=401, detail="Unauthorized")
+    if cron_secret:
+        auth_header = request.headers.get("authorization", "")
+        bearer_ok = auth_header == f"Bearer {cron_secret}"
+        query_ok  = secret == cron_secret
+        if not bearer_ok and not query_ok:
+            raise HTTPException(status_code=401, detail="Unauthorized")
 
     # Clear all caches so every bond gets a fresh fetch
     _alerts_cache["data"] = None
