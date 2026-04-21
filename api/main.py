@@ -6,7 +6,7 @@ import time
 
 from bonds_data import BONDS, BOND_MAP
 from weather_service import get_weather
-from news_service import get_news, _news_cache
+from news_service import get_news, _news_cache, _emailed_urls, _is_email_eligible, _EMAIL_MAX_AGE_DAYS
 from excel_service import get_live_prices
 
 _alerts_cache: dict = {"data": None, "ts": 0}
@@ -107,6 +107,47 @@ async def all_alerts():
     _alerts_cache["data"]  = result
     _alerts_cache["ts"]    = now
     return result
+
+
+@app.get("/api/debug_email")
+async def debug_email():
+    """
+    Shows exactly why emails are or aren't being sent.
+    Busts the cache, re-fetches all bonds, and reports on each alert.
+    """
+    import os as _os
+    from email_service import RESEND_API_KEY, ALERT_EMAIL_TO
+
+    _alerts_cache["data"] = None
+    _alerts_cache["ts"]   = 0
+    _news_cache.clear()
+
+    result = await all_alerts()
+    all_alert_items = result.get("alerts", [])
+
+    report = []
+    for a in all_alert_items:
+        eligible = _is_email_eligible(a)
+        already_sent = a.get("url", "") in _emailed_urls
+        report.append({
+            "bond":       a.get("bond_name", ""),
+            "title":      a.get("title", "")[:80],
+            "category":   a.get("importance_category", ""),
+            "score":      a.get("importance_score", 0),
+            "published":  a.get("published", "")[:10],
+            "email_eligible": eligible,
+            "already_emailed": already_sent,
+            "would_send": eligible and not already_sent,
+        })
+
+    return {
+        "resend_configured": bool(RESEND_API_KEY),
+        "email_to":          ALERT_EMAIL_TO,
+        "email_window_days": _EMAIL_MAX_AGE_DAYS,
+        "total_alerts":      len(all_alert_items),
+        "would_send_count":  sum(1 for r in report if r["would_send"]),
+        "alerts":            report,
+    }
 
 
 @app.get("/api/cron")
