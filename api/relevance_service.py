@@ -112,6 +112,24 @@ _IRRELEVANT_KW = [
 ]
 
 
+def _parse_pub_date(pub: str):
+    """Parse ISO 8601 or RFC 2822 date string. Returns datetime or None."""
+    if not pub:
+        return None
+    try:
+        dt = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except Exception:
+        pass
+    try:
+        from email.utils import parsedate_to_datetime
+        dt = parsedate_to_datetime(pub)
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except Exception:
+        pass
+    return None
+
+
 def _keyword_score(title: str, summary: str) -> dict:
     text = (title + " " + summary).lower()
     for kw in _CRITICAL_KW:
@@ -325,13 +343,10 @@ async def score_and_filter(
             pub = item.get("published", "")
             too_old = False
             if pub:
-                try:
-                    dt = datetime.fromisoformat(pub.replace("Z", "+00:00"))
-                    if dt.tzinfo is None:
-                        dt = dt.replace(tzinfo=timezone.utc)
+                dt = _parse_pub_date(pub)
+                if dt is not None:
                     too_old = dt < cutoff
-                except Exception:
-                    pass  # unparseable date → allow through
+                # if date is truly unparseable, allow through
             if too_old:
                 enriched["is_highlighted"] = False
                 regular.append(enriched)

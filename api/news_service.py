@@ -24,19 +24,33 @@ from datetime import datetime, timezone, timedelta
 _EMAIL_MAX_AGE_DAYS = 7
 
 
-def _is_email_eligible(item: dict) -> bool:
-    """True only if the item has a parseable published date within the last 7 days."""
-    pub = item.get("published", "")
+def _parse_date(pub: str) -> datetime | None:
+    """Parse a date string in either ISO 8601 or RFC 2822 format. Returns None if unparseable."""
     if not pub:
-        return False  # pinned articles with no date are never emailed
+        return None
+    # Try ISO 8601 first (NewsAPI: "2026-04-17T10:00:00Z")
     try:
         dt = datetime.fromisoformat(pub.replace("Z", "+00:00"))
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        cutoff = datetime.now(timezone.utc) - timedelta(days=_EMAIL_MAX_AGE_DAYS)
-        return dt >= cutoff
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
     except Exception:
-        return False  # unparseable date → don't email
+        pass
+    # Try RFC 2822 (RSS/feedparser: "Fri, 17 Apr 2026 10:00:00 +0000")
+    try:
+        from email.utils import parsedate_to_datetime
+        dt = parsedate_to_datetime(pub)
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except Exception:
+        pass
+    return None
+
+
+def _is_email_eligible(item: dict) -> bool:
+    """True only if the item has a parseable published date within the last 7 days."""
+    dt = _parse_date(item.get("published", ""))
+    if dt is None:
+        return False  # no date or unparseable → never email
+    cutoff = datetime.now(timezone.utc) - timedelta(days=_EMAIL_MAX_AGE_DAYS)
+    return dt >= cutoff
 
 NEWSAPI_KEY      = os.getenv("NEWSAPI_KEY", "")
 TWITTER_BEARER   = urllib.parse.unquote(os.getenv("TWITTER_BEARER_TOKEN", ""))
