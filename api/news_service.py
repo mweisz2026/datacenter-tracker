@@ -17,11 +17,16 @@ from datetime import datetime, timezone
 
 from relevance_service import score_and_filter
 from email_service import send_alert_email
+import hashlib
 import time
 from datetime import datetime, timezone, timedelta
 
 # Only email alerts published within this window — prevents old articles firing on cold start
 _EMAIL_MAX_AGE_DAYS = 7
+
+# Upstash Redis REST — persistent dedup across cold starts (falls back to in-memory if not set)
+UPSTASH_URL   = os.getenv("UPSTASH_REDIS_REST_URL", "")
+UPSTASH_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN", "")
 
 
 def _parse_date(pub: str) -> datetime | None:
@@ -64,8 +69,45 @@ _reddit_token: dict = {"token": "", "expires_at": 0.0}
 _news_cache: dict = {}   # bond_id -> {"data": {...}, "ts": float}
 _NEWS_CACHE_TTL  = 20 * 60  # 20 minutes
 
-# URLs we've already emailed this session — prevents duplicate alerts on cache refresh
+# In-memory dedup fallback (used when Upstash is not configured)
 _emailed_urls: set = set()
+
+
+def _email_key(url: str) -> str:
+    return f"dcs:emailed:{hashlib.md5(url.encode()).hexdigest()}"
+
+
+async def _is_already_emailed(url: str) -> bool:
+    """Check if this URL has been emailed. Uses Upstash Redis if configured, else in-memory."""
+    if url in _emailed_urls:
+        return True
+    if not UPSTASH_URL:
+        return False
+    try:
+        async with httpx.AsyncClient(timeout=4) as client:
+            r = await client.get(
+                f"{UPSTASH_URL}/get/{_email_key(url)}",
+                headers={"Authorization": f"Bearer {UPSTASH_TOKEN}"},
+            )
+        return r.json().get("result") is not None
+    except Exception:
+        return False
+
+
+async def _mark_emailed(url: str) -> None:
+    """Record URL as emailed with a 7-day TTL. Writes to both in-memory and Upstash."""
+    _emailed_urls.add(url)
+    if not UPSTASH_URL:
+        return
+    try:
+        ttl = _EMAIL_MAX_AGE_DAYS * 24 * 3600
+        async with httpx.AsyncClient(timeout=4) as client:
+            await client.get(
+                f"{UPSTASH_URL}/set/{_email_key(url)}/1/ex/{ttl}",
+                headers={"Authorization": f"Bearer {UPSTASH_TOKEN}"},
+            )
+    except Exception:
+        pass
 
 DC_DYNAMICS_RSS  = "https://www.datacenterdynamics.com/en/rss/"
 DC_KNOWLEDGE_RSS = "https://www.datacenterknowledge.com/rss.xml"
@@ -710,19 +752,17 @@ async def get_news(
         "industry": industry_items[:8],
     }
 
-    # Email new HIGH/CRITICAL alerts — must be recent (< 7 days) and not yet emailed
-    new_alerts = [
-        a for a in result["alerts"]
-        if a.get("url")
-        and a["url"] not in _emailed_urls
-        and _is_email_eligible(a)
-    ]
-    if new_alerts:
-        try:
-            await send_alert_email(bond_name, new_alerts)
-        except Exception as e:
-            print(f"[email] Alert dispatch error: {e}")
-        _emailed_urls.update(a["url"] for a in new_alerts if a.get("url"))
+    # Email new HIGH/CRITICAL alerts — must be recent and not yet emailed (persistent dedup)
+    eligible = [a for a in result["alerts"] if a.get("url") and _is_email_eligible(a)]
+    if eligible:
+        already_sent = await asyncio.gather(*[_is_already_emailed(a["url"]) for a in eligible])
+        new_alerts = [a for a, sent in zip(eligible, already_sent) if not sent]
+        if new_alerts:
+            try:
+                await send_alert_email(bond_name, new_alerts)
+            except Exception as e:
+                print(f"[email] Alert dispatch error: {e}")
+            await asyncio.gather(*[_mark_emailed(a["url"]) for a in new_alerts])
 
     _news_cache[bond_id] = {"data": result, "ts": now_ts}
     return result
