@@ -327,6 +327,10 @@ async def score_and_filter(
                 result = claude_scores[i + 1]
             else:
                 result = _keyword_score(item.get("title", ""), item.get("summary", ""))
+            # Hard override: if IRRELEVANT keywords match, always score 0 regardless of Claude
+            kw_check = _keyword_score(item.get("title", ""), item.get("summary", ""))
+            if kw_check["category"] == "IRRELEVANT":
+                result = kw_check
             _cache[key] = {**result, "ts": now}
 
     # Enrich all items
@@ -372,3 +376,8 @@ async def score_and_filter(
     alerts.sort(key=lambda x: x["importance_score"], reverse=True)
 
     return alerts, regular
+
+
+def clear_score_cache():
+    """Wipe the in-memory scoring cache so stale Claude scores don't persist."""
+    _cache.clear()

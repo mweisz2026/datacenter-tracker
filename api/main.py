@@ -13,6 +13,7 @@ from news_service import (
 )
 from email_service import send_digest_email
 from excel_service import get_live_prices
+from relevance_service import clear_score_cache
 
 _alerts_cache: dict = {"data": None, "ts": 0}
 _ALERTS_TTL = 25 * 60  # 25 minutes
@@ -126,6 +127,7 @@ async def debug_email():
     _alerts_cache["data"] = None
     _alerts_cache["ts"]   = 0
     _news_cache.clear()
+    clear_score_cache()
 
     result = await all_alerts()
     all_alert_items = result.get("alerts", [])
@@ -175,6 +177,7 @@ async def run_cron(request: Request, secret: str = ""):
     _alerts_cache["data"] = None
     _alerts_cache["ts"]   = 0
     _news_cache.clear()
+    clear_score_cache()
 
     # Fetch all bonds fresh
     result = await all_alerts()
