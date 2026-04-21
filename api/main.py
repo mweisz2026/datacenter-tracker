@@ -6,7 +6,12 @@ import time
 
 from bonds_data import BONDS, BOND_MAP
 from weather_service import get_weather
-from news_service import get_news, _news_cache, _emailed_urls, _is_email_eligible, _EMAIL_MAX_AGE_DAYS
+from news_service import (
+    get_news, _news_cache, _emailed_urls,
+    _is_email_eligible, _is_already_emailed, _mark_emailed,
+    _EMAIL_MAX_AGE_DAYS,
+)
+from email_service import send_digest_email
 from excel_service import get_live_prices
 
 _alerts_cache: dict = {"data": None, "ts": 0}
@@ -166,11 +171,31 @@ async def run_cron(secret: str = ""):
     _alerts_cache["ts"]   = 0
     _news_cache.clear()
 
-    # Fetch all bonds — email sending is triggered inside get_news()
+    # Fetch all bonds fresh
     result = await all_alerts()
-    n = len(result.get("alerts", []))
+    all_alert_items = result.get("alerts", [])
+    n = len(all_alert_items)
+
+    # Find alerts that are recent enough and haven't been emailed yet
+    eligible   = [a for a in all_alert_items if a.get("url") and _is_email_eligible(a)]
+    new_alerts = []
+    if eligible:
+        already_sent = await asyncio.gather(*[_is_already_emailed(a["url"]) for a in eligible])
+        new_alerts   = [a for a, sent in zip(eligible, already_sent) if not sent]
+        if new_alerts:
+            sent = await send_digest_email(new_alerts)
+            if sent:
+                await asyncio.gather(*[_mark_emailed(a["url"]) for a in new_alerts])
+                print(f"[cron] Digest email sent — {len(new_alerts)} new alert(s)")
+            else:
+                print(f"[cron] Digest email failed to send")
+        else:
+            print(f"[cron] No new alerts to email")
+    else:
+        print(f"[cron] No eligible alerts to email")
+
     print(f"[cron] Ran successfully — {n} total alerts across all bonds")
-    return {"ok": True, "alerts_found": n}
+    return {"ok": True, "alerts_found": n, "emailed": len(new_alerts)}
 
 
 @app.get("/api/weather_all")

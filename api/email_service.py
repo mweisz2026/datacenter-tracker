@@ -29,30 +29,43 @@ def _fmt_date(pub: str) -> str:
         return pub[:10] if pub else ""
 
 
-def _build_email(bond_name: str, alerts: list) -> tuple[str, str]:
-    """Returns (subject, html_body)."""
+def _build_digest(alerts: list) -> tuple[str, str]:
+    """
+    Build a single digest email covering alerts across all bonds.
+    Each alert must have a bond_name field (added by all_alerts endpoint).
+    Returns (subject, html_body).
+    """
     cats     = [a.get("importance_category", "HIGH") for a in alerts]
     top_cat  = "CRITICAL" if "CRITICAL" in cats else "HIGH"
     count    = len(alerts)
     plural   = "s" if count > 1 else ""
 
-    subject = f"[DC SENTINEL] {top_cat}: {count} new alert{plural} — {bond_name}"
+    # Bond names for subject line (deduplicated, max 3)
+    bond_names = list(dict.fromkeys(a.get("bond_name", "") for a in alerts if a.get("bond_name")))
+    bond_str   = ", ".join(bond_names[:3]) + ("..." if len(bond_names) > 3 else "")
+    subject    = f"[DC SENTINEL] {top_cat}: {count} new alert{plural} — {bond_str}"
 
     rows = ""
     for a in alerts:
-        cat      = a.get("importance_category", "HIGH")
-        c_main   = "#ef4444" if cat == "CRITICAL" else "#f59e0b"
-        c_bg     = "#2d1010" if cat == "CRITICAL" else "#2d1f00"
-        reason   = a.get("importance_reason", "")
-        pub      = _fmt_date(a.get("published", ""))
-        source   = a.get("source", "")
-        title    = a.get("title", "")
-        url      = a.get("url", "#")
+        cat       = a.get("importance_category", "HIGH")
+        c_main    = "#ef4444" if cat == "CRITICAL" else "#f59e0b"
+        c_bg      = "#2d1010" if cat == "CRITICAL" else "#2d1f00"
+        reason    = a.get("importance_reason", "")
+        pub       = _fmt_date(a.get("published", ""))
+        source    = a.get("source", "")
+        title     = a.get("title", "")
+        url       = a.get("url", "#")
+        bond_name = a.get("bond_name", "")
 
         reason_row = (
             f'<div style="color:#8b949e;font-size:12px;font-style:italic;margin-top:4px;">'
             f'{reason}</div>'
         ) if reason else ""
+
+        bond_badge = (
+            f'<span style="background:#1f2937;color:#8b949e;font-size:10px;font-family:monospace;'
+            f'padding:1px 6px;border-radius:3px;border:1px solid #30363d;">{bond_name}</span>'
+        ) if bond_name else ""
 
         rows += f"""
         <tr>
@@ -61,6 +74,7 @@ def _build_email(bond_name: str, alerts: list) -> tuple[str, str]:
               <span style="background:{c_bg};color:{c_main};font-family:monospace;font-size:11px;
                            font-weight:700;padding:2px 8px;border-radius:4px;
                            border:1px solid {c_main}60;">{cat}</span>
+              {bond_badge}
               <span style="color:#8b949e;font-size:11px;">{source}</span>
               <span style="color:#484f58;font-size:11px;">{pub}</span>
             </div>
@@ -92,15 +106,8 @@ def _build_email(bond_name: str, alerts: list) -> tuple[str, str]:
         </span>
       </div>
       <div style="color:#8b949e;font-size:13px;">
-        Material alert detected on <strong style="color:#e6edf3;">{bond_name}</strong>
+        {count} new alert{plural} across {len(bond_names)} bond{"s" if len(bond_names) != 1 else ""}
       </div>
-    </div>
-
-    <!-- Alert count badge -->
-    <div style="color:#8b949e;font-size:11px;font-family:monospace;
-                text-transform:uppercase;letter-spacing:1px;
-                margin-bottom:10px;padding-left:4px;">
-      {count} new alert{plural} · scored HIGH or CRITICAL by Claude
     </div>
 
     <!-- Alert rows -->
@@ -124,7 +131,7 @@ def _build_email(bond_name: str, alerts: list) -> tuple[str, str]:
     <!-- Footer -->
     <div style="text-align:center;margin-top:20px;color:#484f58;font-size:11px;
                 font-family:monospace;">
-      DC Sentinel · Datacenter Bond Monitor · Alerts are AI-scored, verify before acting
+      DC Sentinel · Alerts are AI-scored, verify before acting
     </div>
 
   </div>
@@ -134,16 +141,16 @@ def _build_email(bond_name: str, alerts: list) -> tuple[str, str]:
     return subject, html
 
 
-async def send_alert_email(bond_name: str, alerts: list) -> bool:
+async def send_digest_email(alerts: list) -> bool:
     """
-    Send an email for newly detected HIGH/CRITICAL alerts.
-    Returns True if the email was sent successfully.
+    Send one digest email covering all new HIGH/CRITICAL alerts across all bonds.
+    alerts must include bond_name on each item.
     No-ops silently if RESEND_API_KEY is not set.
     """
     if not RESEND_API_KEY or not alerts:
         return False
 
-    subject, html = _build_email(bond_name, alerts)
+    subject, html = _build_digest(alerts)
 
     try:
         async with httpx.AsyncClient(timeout=10) as client:
@@ -161,7 +168,7 @@ async def send_alert_email(bond_name: str, alerts: list) -> bool:
                 },
             )
         if r.status_code in (200, 201):
-            print(f"[email] Sent {len(alerts)} alert(s) for {bond_name} → {ALERT_EMAIL_TO}")
+            print(f"[email] Digest sent: {len(alerts)} alert(s) → {ALERT_EMAIL_TO}")
             return True
         else:
             print(f"[email] Resend {r.status_code}: {r.text[:300]}")
