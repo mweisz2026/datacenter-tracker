@@ -6,7 +6,7 @@ import time
 
 from bonds_data import BONDS, BOND_MAP
 from weather_service import get_weather
-from news_service import get_news
+from news_service import get_news, _news_cache
 from excel_service import get_live_prices
 
 _alerts_cache: dict = {"data": None, "ts": 0}
@@ -107,6 +107,29 @@ async def all_alerts():
     _alerts_cache["data"]  = result
     _alerts_cache["ts"]    = now
     return result
+
+
+@app.get("/api/cron")
+async def run_cron(secret: str = ""):
+    """
+    Hourly cron endpoint — forces a fresh news fetch for every bond
+    and sends emails for any new HIGH/CRITICAL alerts found.
+    Secure with CRON_SECRET env var; pass as ?secret=xxx in the URL.
+    """
+    cron_secret = os.getenv("CRON_SECRET", "")
+    if cron_secret and secret != cron_secret:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    # Clear all caches so every bond gets a fresh fetch
+    _alerts_cache["data"] = None
+    _alerts_cache["ts"]   = 0
+    _news_cache.clear()
+
+    # Fetch all bonds — email sending is triggered inside get_news()
+    result = await all_alerts()
+    n = len(result.get("alerts", []))
+    print(f"[cron] Ran successfully — {n} total alerts across all bonds")
+    return {"ok": True, "alerts_found": n}
 
 
 @app.get("/api/weather_all")
