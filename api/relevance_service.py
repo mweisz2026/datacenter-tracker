@@ -204,7 +204,7 @@ If NO → score 0-3 regardless of location. Geographic proximity is NOT relevanc
   • Infrastructure disruptions (water outages, boil notices, power blips) affecting the general
     area but NOT the specific project site
   • Sports, school events, entertainment, obituaries, lifestyle content
-  • Natural disasters, tornadoes, earthquakes in the SAME CITY but not at/adjacent to the site
+  • Natural disasters, tornadoes, earthquakes in the SAME CITY but not at/adjacent to the site — these are MEDIUM (3-5), not IRRELEVANT
   • Any datacenter news about a completely different company with no tie to {issuer} or {tenant}
   • Weather forecasts (non-emergency)
 
@@ -212,7 +212,7 @@ If NO → score 0-3 regardless of location. Geographic proximity is NOT relevanc
 
 HARD RULES:
 - A crime, accident, or local incident in the project city = score 0. Always. No exceptions.
-- A natural disaster in the same city but NOT at the project site = score 2-3, never CRITICAL
+- A natural disaster in the same city but NOT at the project site = score 3-5, never CRITICAL
 - A datacenter moratorium or opposition story about a DIFFERENT project in the same state = score 3-5
 - Community/govt opposition MUST name this project or {issuer}/{tenant} to score >= 7
 - Financial distress of {issuer} OR {tenant} = score 9 minimum
