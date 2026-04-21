@@ -6,12 +6,12 @@ Results are cached by URL hash so each headline is only scored once.
 Falls back to keyword heuristics if ANTHROPIC_API_KEY is not set.
 
 Scoring scale:
-  9-10  CRITICAL  — natural disaster, confirmed major delay, strike, issuer distress, force majeure
-  7-8   HIGH      — community/regulatory opposition, cost overruns, permitting issues,
-                    power supply problems, construction setbacks, environmental concerns
-  4-6   MEDIUM    — general project updates, hiring news, local govt activity re: project
-  1-3   LOW       — tangentially relevant regional news
-  0     IRRELEVANT — local crime, sports, entertainment, unrelated community events
+  9-10  CRITICAL  -- natural disaster, confirmed major delay, strike, issuer distress, force majeure
+  7-8   HIGH      -- community/regulatory opposition, cost overruns, permitting issues,
+                     power supply problems, construction setbacks, environmental concerns
+  4-6   MEDIUM    -- general project updates, hiring news, local govt activity re: project
+  1-3   LOW       -- tangentially relevant regional news
+  0     IRRELEVANT -- local crime, sports, entertainment, unrelated community events
 
 Items scoring >= 7 are surfaced as "alerts" at the top of the news feed.
 Items scoring 0 (IRRELEVANT) are silently dropped.
@@ -27,35 +27,70 @@ import time
 from datetime import datetime, timezone, timedelta
 
 ANTHROPIC_API_KEY    = os.getenv("ANTHROPIC_API_KEY", "")
-HIGHLIGHT_THRESHOLD  = 7          # score >= 7 → surfaced as alert
+HIGHLIGHT_THRESHOLD  = 7          # score >= 7 -> surfaced as alert
 CACHE_TTL_SECONDS    = 2 * 3600   # re-score headlines after 2 hours
 ALERT_MAX_AGE_DAYS   = 30         # don't surface alerts older than this
 
 # url_hash -> {score, reason, category, ts}
 _cache: dict = {}
 
-# ── Keyword fallback (used when no API key) ────────────────────────────────
+# ── Keyword fallback (used when Claude API is unavailable) ─────────────────
+# IMPORTANT: IRRELEVANT is checked FIRST so crime/accidents can never
+# escalate to CRITICAL due to broad substring matches like "fire" in "gunfire".
+#
+# Single-word keywords use word-boundary matching (\b) to prevent substring
+# false positives. Multi-word phrases are matched as exact substrings.
+
+_IRRELEVANT_KW = [
+    # Crime -- always score 0 regardless of location
+    "arrested", "murder", "robbery", "theft", "burglary", "assault",
+    "dui", "drug bust", "shooting", "gunfire", "homicide", "prison", "jail",
+    "convicted", "sentenced", "indicted", "charged with",
+    "shot and killed", "found dead", "body found",
+    # Local accidents / medical (not construction-site related)
+    "house fire", "car accident", "car crash", "traffic accident",
+    "boil water notice", "boil water advisory", "water main break",
+    "medical emergency", "overdose",
+    # Sports
+    "football", "baseball", "basketball", "soccer", "tennis", "golf",
+    "nfl", "nba", "mlb", "nhl", "ncaa", "high school sports",
+    "game preview", "box score", "standings", "playoffs",
+    # Lifestyle / fluff
+    "restaurant review", "recipe", "food festival", "obituary", "wedding",
+    "lottery", "bingo", "county fair", "festival", "parade", "carnival",
+    "prom", "graduation ceremony", "spelling bee",
+    # Unrelated local politics
+    "school board", "superintendent", "teacher contract",
+    "library budget", "parks department",
+]
+
 _CRITICAL_KW = [
-    # Natural disasters / weather
-    "hurricane", "tornado", "flood", "flooding", "wildfire", "earthquake",
-    "blizzard", "ice storm", "hail", "drought", "heat emergency",
+    # Natural disasters
+    "hurricane", "tornado", "wildfire", "earthquake",
+    "blizzard", "ice storm", "heat emergency",
+    "flooding", "flash flood", "major flood",
     # Labor / construction stoppage
-    "strike", "walkout", "work stoppage", "labor stoppage", "union vote",
-    "picket", "lockout",
+    "work stoppage", "labor stoppage", "union vote", "picket", "lockout",
     # Financial distress
-    "bankrupt", "bankruptcy", "insolvency", "default", "missed payment",
+    "bankrupt", "bankruptcy", "insolvency", "missed payment",
     "debt restructuring", "chapter 11", "chapter 7", "receivership",
-    "credit downgrade", "rating cut", "covenant breach", "waiver",
-    # Physical / operational failure
-    "force majeure", "collapse", "explosion", "fire", "major fire",
-    "power outage", "blackout", "infrastructure failure", "cooling failure",
-    "evacuate", "evacuation", "emergency shutdown", "stop work order",
-    "halt construction", "construction halted", "project canceled",
-    "project cancelled", "project terminated", "project abandoned",
+    "credit downgrade", "rating cut", "covenant breach",
+    # Physical failure -- specific phrases only, NOT bare "fire" or "collapse"
+    "structural collapse", "building collapse", "structure collapsed",
+    "caught fire", "building fire", "on-site fire", "datacenter fire",
+    "major fire", "explosion at",
+    "cooling failure", "infrastructure failure",
+    "emergency shutdown", "stop work order",
+    "halt construction", "construction halted",
+    "project canceled", "project cancelled", "project terminated", "project abandoned",
     # Regulatory / legal emergency
     "injunction granted", "court order halts", "cease and desist",
     "permit revoked", "license revoked",
+    # Operational
+    "force majeure", "power outage", "blackout",
+    "evacuate", "evacuation",
 ]
+
 _HIGH_KW = [
     # Community / political opposition
     "opposition", "pushback", "protest", "protesters", "objection",
@@ -69,47 +104,46 @@ _HIGH_KW = [
     "injunction", "restraining order", "permit denied", "permit rejected",
     "permit delayed", "zoning denied", "zoning rejected", "variance denied",
     "environmental review", "environmental impact", "impact assessment",
-    "eia", "regulatory hold", "faa objection", "utility objection",
+    "regulatory hold", "faa objection", "utility objection",
     # Construction / schedule risk
-    "construction delay", "delayed", "behind schedule", "setback",
+    "construction delay", "behind schedule", "setback",
     "cost overrun", "over budget", "cost increase", "budget increase",
-    "contractor dispute", "subcontractor", "supply chain delay",
+    "contractor dispute", "supply chain delay",
     "transformer delay", "equipment delay", "materials shortage",
     # Power / utilities risk
     "power shortage", "power constraint", "grid concern", "grid capacity",
     "interconnection delay", "interconnection queue", "utility dispute",
-    "ppa dispute", "power purchase", "grid upgrade required",
+    "ppa dispute", "grid upgrade required",
     "transmission constraint", "curtailment", "load shedding",
     # Water risk
-    "water dispute", "water rights", "water shortage", "drought impact",
-    "water permit denied", "water moratorium",
+    "water dispute", "water rights", "water moratorium", "water permit denied",
     # Safety
-    "worker safety", "osha", "osha citation", "safety violation",
-    "accident at site", "injury at site", "fatality",
+    "osha citation", "safety violation", "accident at site", "injury at site", "fatality",
     # Financial / lease risk
-    "lease concern", "tenant risk", "anchor tenant", "credit concern",
-    "occupancy risk", "off-take risk",
-    # Noise / environment
-    "noise complaint", "noise ordinance", "light pollution", "traffic concern",
-    "traffic impact", "air quality",
+    "lease concern", "tenant risk", "credit concern",
 ]
-_IRRELEVANT_KW = [
-    # Crime
-    "arrested", "murder", "robbery", "theft", "burglary", "assault",
-    "dui", "drug bust", "shooting", "homicide", "prison", "jail",
-    "convicted", "sentenced", "indicted", "charged with",
-    # Sports
-    "football", "baseball", "basketball", "soccer", "tennis", "golf",
-    "nfl", "nba", "mlb", "nhl", "ncaa", "high school sports",
-    "game preview", "box score", "standings", "playoffs",
-    # Lifestyle / fluff
-    "restaurant review", "recipe", "food festival", "obituary", "wedding",
-    "lottery", "bingo", "county fair", "festival", "parade", "carnival",
-    "prom", "graduation ceremony", "spelling bee",
-    # Unrelated local politics
-    "school board", "superintendent", "teacher contract",
-    "library budget", "parks department",
-]
+
+
+def _kw_match(kw: str, text: str) -> bool:
+    """Match keyword. Single words use word boundaries; phrases use substring."""
+    if " " in kw:
+        return kw in text
+    return bool(re.search(r"\b" + re.escape(kw) + r"\b", text))
+
+
+def _keyword_score(title: str, summary: str) -> dict:
+    text = (title + " " + summary).lower()
+    # IRRELEVANT first -- crime/accidents must never escalate to CRITICAL
+    for kw in _IRRELEVANT_KW:
+        if _kw_match(kw, text):
+            return {"score": 0, "reason": f"Irrelevant: {kw}", "category": "IRRELEVANT"}
+    for kw in _CRITICAL_KW:
+        if _kw_match(kw, text):
+            return {"score": 9, "reason": f"Keyword match: {kw}", "category": "CRITICAL"}
+    for kw in _HIGH_KW:
+        if _kw_match(kw, text):
+            return {"score": 7, "reason": f"Keyword match: {kw}", "category": "HIGH"}
+    return {"score": 4, "reason": "General relevance", "category": "MEDIUM"}
 
 
 def _parse_pub_date(pub: str):
@@ -130,20 +164,6 @@ def _parse_pub_date(pub: str):
     return None
 
 
-def _keyword_score(title: str, summary: str) -> dict:
-    text = (title + " " + summary).lower()
-    for kw in _CRITICAL_KW:
-        if kw in text:
-            return {"score": 9, "reason": f"Keyword match: {kw}", "category": "CRITICAL"}
-    for kw in _HIGH_KW:
-        if kw in text:
-            return {"score": 7, "reason": f"Keyword match: {kw}", "category": "HIGH"}
-    for kw in _IRRELEVANT_KW:
-        if kw in text:
-            return {"score": 0, "reason": f"Irrelevant: {kw}", "category": "IRRELEVANT"}
-    return {"score": 4, "reason": "General relevance", "category": "MEDIUM"}
-
-
 _SCORE_PROMPT = """\
 You are a senior credit analyst at a distressed/high-yield debt fund. You monitor datacenter \
 construction bonds for material risks that could impair bond repayment or increase default risk.
@@ -156,67 +176,65 @@ Bond context:
 
 Score each headline 0-10 for credit relevance to THIS specific bond.
 
-━━ THRESHOLD TEST — APPLY BEFORE SCORING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Before scoring above 3, ask: does this article explicitly name or clearly implicate
-  (a) this specific project ({bond_name}),
-  (b) its operator/issuer ({issuer}), OR
-  (c) its anchor tenant ({tenant})?
-If NO → score 0-3 regardless of location. Geographic proximity is NOT relevance.
+== MANDATORY PRE-FILTER — RUN BEFORE SCORING ==
+Step 1: Does this article explicitly name one of:
+  (a) this project: {bond_name}
+  (b) this issuer: {issuer}
+  (c) this location: {location}
+  (d) this tenant: {tenant} -- AND is the news about a RISK (distress, cancellation, default)?
+If NONE of (a)-(d) apply -> score 1-2 MAX. Do not score higher.
 
-━━ SCORING GUIDE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Step 2: Is this a crime, accident, or local human-interest story (fire at a house, shooting,
+car crash, injury, boil water notice, etc.)? -> score 0 always, no exceptions.
 
-9-10  CRITICAL — Immediate material risk to bond repayment:
-  • Natural disaster (hurricane, tornado, wildfire, flood, earthquake) PHYSICALLY AT the project site
-  • Confirmed major construction stoppage or project cancellation
-  • Worker strike or work stoppage at the site
-  • Issuer ({issuer}) or anchor tenant ({tenant}) financial distress, bankruptcy, default, or rating cut
-  • Fire, structural collapse, or major safety incident at the datacenter site itself
-  • Permit revocation, court order halting THIS project's construction
-  • Confirmed cost overrun >20% or schedule delay >6 months on THIS project
+== SCORING GUIDE ==
 
-7-8   HIGH — Significant risk signal for THIS specific project:
-  • Community opposition directly against THIS project (named): protests, petitions, town halls
-  • Local government opposing THIS project by name: city council, county commissioners, mayor
-  • Permit denial/delay, zoning rejection, variance denied specifically for THIS project
-  • Lawsuit or injunction filed against THIS project or its operator
-  • Power/grid risk specific to THIS site: interconnection delay, utility objection, capacity constraint
-  • Water rights dispute or moratorium that would block THIS project's water supply
-  • Construction setback on THIS project: contractor dispute, equipment delay, supply chain issue
-  • OSHA citation or worker fatality at THIS project's site
-  • {tenant} reducing AI/cloud capex, canceling leases, or showing credit deterioration
-  • Regulatory agency (FAA, EPA, state PUC) raising concerns specifically about THIS project
+9-10  CRITICAL -- Immediate material risk to bond repayment:
+  - Natural disaster physically AT {location}: hurricane, tornado, wildfire, earthquake, flood
+  - Confirmed construction stoppage or project cancellation for {bond_name}
+  - Worker strike at {bond_name} site
+  - {issuer} or {tenant} bankruptcy, default, missed payment, or major credit downgrade
+  - Fire or structural collapse at the {bond_name} datacenter site itself
+  - Court order or permit revocation halting {bond_name} construction
+  - Confirmed cost overrun >20% or delay >6 months on {bond_name}
 
-4-6   MEDIUM — Noteworthy context for this bond:
-  • General construction progress, milestones, or hiring for THIS project
-  • Local government approvals or tax deals specifically for THIS project
-  • Broader datacenter opposition or legislation in the same state that could affect THIS project
-  • Industry news about {issuer} or {tenant} that is not distress-related
-  • A different datacenter project facing opposition in the same region (indirect precedent)
+7-8   HIGH -- Significant risk signal for {bond_name} specifically:
+  - Community opposition NAMING {bond_name}, {issuer}, or {location}: protests, petitions, town halls
+  - Local government opposing {bond_name} by name: city/county/mayor
+  - Permit denial/delay or zoning rejection for {bond_name}
+  - Lawsuit against {bond_name} or {issuer}
+  - Power/grid or water risk specific to {location} that would block {bond_name}
+  - Construction setback on {bond_name}: contractor dispute, equipment delay
+  - {tenant} reducing AI/cloud capex, canceling leases, or showing credit deterioration
 
-1-3   LOW — Weak or indirect connection:
-  • Regional economic or political news with no direct project tie
-  • General AI/cloud industry news with no specific connection to this bond
-  • Other datacenter projects (different company) in the same state — informational only
+4-6   MEDIUM -- Noteworthy context for this bond:
+  - Construction progress or milestones for {bond_name}
+  - Broader datacenter opposition/legislation in the same STATE that could affect {bond_name}
+  - News about {issuer} or {tenant} that is not a risk signal
+  - A different datacenter project facing opposition in the same region (precedent only)
 
-0     IRRELEVANT — Drop entirely, score 0:
-  • Local crime: shootings, assaults, robberies, arrests — even if in the project's city
-  • House fires, car accidents, medical emergencies in the area — even if near the site
-  • Infrastructure disruptions (water outages, boil notices, power blips) affecting the general
-    area but NOT the specific project site
-  • Sports, school events, entertainment, obituaries, lifestyle content
-  • Natural disasters, tornadoes, earthquakes in the SAME CITY but not at/adjacent to the site — these are MEDIUM (3-5), not IRRELEVANT
-  • Any datacenter news about a completely different company with no tie to {issuer} or {tenant}
-  • Weather forecasts (non-emergency)
+1-2   LOW -- Indirect or geographic-only connection:
+  - Regional economic/political news with no direct project tie
+  - {tenant} announcing expansion ELSEWHERE (e.g. Google building in a different city/state)
+  - General AI/cloud industry news with no specific connection to {bond_name}
+  - Another company's datacenter news in the same state
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+0     IRRELEVANT -- Drop entirely:
+  - Local crime: shootings, assaults, arrests -- even if in {location}
+  - House fires, car accidents, medical emergencies -- even if near the site
+  - Boil water notices, water main breaks, local infrastructure for general public
+  - Sports, school events, entertainment, obituaries, lifestyle
+  - Any datacenter news about a company with NO tie to {issuer} or {tenant}
 
-HARD RULES:
-- A crime, accident, or local incident in the project city = score 0. Always. No exceptions.
-- A natural disaster in the same city but NOT at the project site = score 3-5, never CRITICAL
-- A datacenter moratorium or opposition story about a DIFFERENT project in the same state = score 3-5
-- Community/govt opposition MUST name this project or {issuer}/{tenant} to score >= 7
+== HARD RULES (non-negotiable) ==
+- Crime/accident/local incident = score 0. Always. No exceptions.
+- {tenant} announcing a datacenter in a DIFFERENT city or state = score 1-2, NOT high or critical.
+  Example: Google announcing LaGrange GA site is score 1-2 for any bond NOT in LaGrange GA.
+- Natural disaster in same city but NOT at the project site = score 3-4, never CRITICAL
+- A moratorium or opposition story about a DIFFERENT project = score 3-4
+- Opposition MUST name {bond_name}, {issuer}, or {location} to score >= 7
 - Financial distress of {issuer} OR {tenant} = score 9 minimum
-- When relevance to THIS project is ambiguous, prefer the lower score
+- When in doubt, score lower
 
 Headlines to evaluate:
 {headlines}
@@ -263,7 +281,6 @@ async def _claude_score(items: list, bond_name: str, location: str, tenant: str,
         raw = re.sub(r"\s*```$", "", raw)
 
         scores = json.loads(raw)
-        # Map by index (1-based) back to item position
         return {s["index"]: s for s in scores if isinstance(s, dict) and "index" in s}
 
     except Exception as e:
@@ -277,7 +294,7 @@ async def score_and_filter(
     location: str,
     tenant: str,
     issuer: str = "",
-) -> tuple[list, list]:
+) -> tuple:
     """
     Score all news items and return (alerts, regular_feed).
     - alerts: items with score >= HIGHLIGHT_THRESHOLD, sorted by score desc
@@ -306,11 +323,9 @@ async def score_and_filter(
         for i, item in enumerate(uncached):
             url = item.get("url") or item.get("title", "")
             key = hashlib.md5(url.encode()).hexdigest()
-            # Claude returns 1-based index
             if (i + 1) in claude_scores:
                 result = claude_scores[i + 1]
             else:
-                # Fallback to keyword heuristic
                 result = _keyword_score(item.get("title", ""), item.get("summary", ""))
             _cache[key] = {**result, "ts": now}
 
@@ -329,7 +344,7 @@ async def score_and_filter(
         reason   = meta.get("reason", "")
 
         if category == "IRRELEVANT" or score == 0:
-            continue   # silently drop
+            continue
 
         enriched = {
             **item,
@@ -339,7 +354,6 @@ async def score_and_filter(
             "is_highlighted":      score >= HIGHLIGHT_THRESHOLD,
         }
 
-        # Only surface as alert if recent enough
         if score >= HIGHLIGHT_THRESHOLD:
             pub = item.get("published", "")
             too_old = False
@@ -347,7 +361,6 @@ async def score_and_filter(
                 dt = _parse_pub_date(pub)
                 if dt is not None:
                     too_old = dt < cutoff
-                # if date is truly unparseable, allow through
             if too_old:
                 enriched["is_highlighted"] = False
                 regular.append(enriched)
@@ -356,7 +369,6 @@ async def score_and_filter(
         else:
             regular.append(enriched)
 
-    # Sort alerts by score desc, regular by published date desc
     alerts.sort(key=lambda x: x["importance_score"], reverse=True)
 
     return alerts, regular
