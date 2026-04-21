@@ -3,10 +3,11 @@ Reads live pricing from U:\Copy of Financings_DATACENTERS.xlsx.
 Bloomberg pushes prices into this file automatically.
 Cached for 30 seconds to avoid hammering the file on every request.
 """
+import os
 import openpyxl
 import time
 
-EXCEL_PATH = r"U:\Copy of Financings_DATACENTERS.xlsx"
+EXCEL_PATH = os.environ.get("EXCEL_PATH", r"U:\Copy of Financings_DATACENTERS.xlsx")
 SHEET_NAME = "Large Financings"
 
 # Openpyxl column numbers (1-based) for each bond ID

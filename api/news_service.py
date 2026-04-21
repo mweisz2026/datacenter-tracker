@@ -16,7 +16,6 @@ import urllib.parse
 from datetime import datetime, timezone
 
 from relevance_service import score_and_filter
-from email_service import send_alert_email
 import hashlib
 import time
 from datetime import datetime, timezone, timedelta
@@ -751,18 +750,6 @@ async def get_news(
         "social":   regular_social[:15],
         "industry": industry_items[:8],
     }
-
-    # Email new HIGH/CRITICAL alerts — must be recent and not yet emailed (persistent dedup)
-    eligible = [a for a in result["alerts"] if a.get("url") and _is_email_eligible(a)]
-    if eligible:
-        already_sent = await asyncio.gather(*[_is_already_emailed(a["url"]) for a in eligible])
-        new_alerts = [a for a, sent in zip(eligible, already_sent) if not sent]
-        if new_alerts:
-            try:
-                await send_alert_email(bond_name, new_alerts)
-            except Exception as e:
-                print(f"[email] Alert dispatch error: {e}")
-            await asyncio.gather(*[_mark_emailed(a["url"]) for a in new_alerts])
 
     _news_cache[bond_id] = {"data": result, "ts": now_ts}
     return result

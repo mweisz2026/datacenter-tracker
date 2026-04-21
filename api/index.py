@@ -5,3 +5,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from main import app
+from mangum import Mangum
+
+# Vercel invokes this as the ASGI handler
+handler = Mangum(app, lifespan="off")
