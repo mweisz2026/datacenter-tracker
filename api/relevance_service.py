@@ -28,7 +28,7 @@ from datetime import datetime, timezone, timedelta
 
 ANTHROPIC_API_KEY    = os.getenv("ANTHROPIC_API_KEY", "")
 HIGHLIGHT_THRESHOLD  = 7          # score >= 7 → surfaced as alert
-CACHE_TTL_SECONDS    = 4 * 3600   # re-score headlines after 4 hours
+CACHE_TTL_SECONDS    = 2 * 3600   # re-score headlines after 2 hours
 ALERT_MAX_AGE_DAYS   = 30         # don't surface alerts older than this
 
 # url_hash -> {score, reason, category, ts}
@@ -146,8 +146,7 @@ def _keyword_score(title: str, summary: str) -> dict:
 
 _SCORE_PROMPT = """\
 You are a senior credit analyst at a distressed/high-yield debt fund. You monitor datacenter \
-construction bonds for material risks that could impair bond repayment or increase default risk. \
-You are hyper-alert to any signal — even early-stage — that could become a problem.
+construction bonds for material risks that could impair bond repayment or increase default risk.
 
 Bond context:
   Project: {bond_name}
@@ -157,65 +156,67 @@ Bond context:
 
 Score each headline 0-10 for credit relevance to THIS specific bond.
 
+━━ THRESHOLD TEST — APPLY BEFORE SCORING ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Before scoring above 3, ask: does this article explicitly name or clearly implicate
+  (a) this specific project ({bond_name}),
+  (b) its operator/issuer ({issuer}), OR
+  (c) its anchor tenant ({tenant})?
+If NO → score 0-3 regardless of location. Geographic proximity is NOT relevance.
+
 ━━ SCORING GUIDE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 9-10  CRITICAL — Immediate material risk to bond repayment:
-  • Natural disaster (hurricane, tornado, wildfire, flood, earthquake) at or near site
+  • Natural disaster (hurricane, tornado, wildfire, flood, earthquake) PHYSICALLY AT the project site
   • Confirmed major construction stoppage or project cancellation
   • Worker strike or work stoppage at the site
-  • Issuer, operator, or anchor tenant financial distress, bankruptcy, default, or rating cut
-  • Force majeure event, facility fire, structural collapse, or major safety incident
-  • Permit revocation, court order halting construction, or regulatory shutdown
-  • Confirmed cost overrun >20% or schedule delay >6 months
+  • Issuer ({issuer}) or anchor tenant ({tenant}) financial distress, bankruptcy, default, or rating cut
+  • Fire, structural collapse, or major safety incident at the datacenter site itself
+  • Permit revocation, court order halting THIS project's construction
+  • Confirmed cost overrun >20% or schedule delay >6 months on THIS project
 
-7-8   HIGH — Significant risk signal requiring close monitoring:
-  • Community opposition: residents/homeowners protesting, petitions, town halls against project
-  • Local government opposition: city council, county commissioners, mayor opposing the project
-  • Permit denial or delay, zoning rejection, variance denied, environmental review triggered
-  • Legal challenge: lawsuit filed, injunction sought, restraining order against project
-  • Power/grid risk: interconnection delay, utility objection, grid capacity constraint,
-    transmission issues, power purchase agreement dispute
-  • Water rights dispute, water permit denial, water moratorium affecting site
-  • Construction setback: contractor dispute, key equipment delay (transformers, switchgear),
-    supply chain disruption affecting timeline
-  • OSHA citation, safety violation, or serious injury/fatality at site
-  • Anchor tenant (e.g. {tenant}) reducing AI/cloud capex, canceling leases, or credit concerns
-  • Noise/light/traffic ordinance challenge that could restrict operations
-  • Any regulatory agency (FAA, EPA, state PUC, county) raising concerns about the project
-  • Political opposition: local politicians, state legislators opposing datacenter development
+7-8   HIGH — Significant risk signal for THIS specific project:
+  • Community opposition directly against THIS project (named): protests, petitions, town halls
+  • Local government opposing THIS project by name: city council, county commissioners, mayor
+  • Permit denial/delay, zoning rejection, variance denied specifically for THIS project
+  • Lawsuit or injunction filed against THIS project or its operator
+  • Power/grid risk specific to THIS site: interconnection delay, utility objection, capacity constraint
+  • Water rights dispute or moratorium that would block THIS project's water supply
+  • Construction setback on THIS project: contractor dispute, equipment delay, supply chain issue
+  • OSHA citation or worker fatality at THIS project's site
+  • {tenant} reducing AI/cloud capex, canceling leases, or showing credit deterioration
+  • Regulatory agency (FAA, EPA, state PUC) raising concerns specifically about THIS project
 
-4-6   MEDIUM — Noteworthy but not immediately alarming:
-  • General construction progress updates (on schedule, milestone reached)
-  • Hiring announcements, job fair, workforce development related to the project
-  • Local government approvals, tax incentive agreements, economic development deals
-  • Industry news about the operator or tenant that is not distress-related
-  • Nearby infrastructure upgrades (road, grid, fiber) related to datacenter campus
-  • General datacenter industry trends affecting the region
-  • Community engagement events (informational meetings, open houses) without opposition
+4-6   MEDIUM — Noteworthy context for this bond:
+  • General construction progress, milestones, or hiring for THIS project
+  • Local government approvals or tax deals specifically for THIS project
+  • Broader datacenter opposition or legislation in the same state that could affect THIS project
+  • Industry news about {issuer} or {tenant} that is not distress-related
+  • A different datacenter project facing opposition in the same region (indirect precedent)
 
-1-3   LOW — Tangential or background information:
-  • Regional economic news not directly tied to the project
-  • Unrelated projects in the same county or city
+1-3   LOW — Weak or indirect connection:
+  • Regional economic or political news with no direct project tie
   • General AI/cloud industry news with no specific connection to this bond
-  • Opinion pieces or editorials about datacenter industry broadly
+  • Other datacenter projects (different company) in the same state — informational only
 
-0     IRRELEVANT — Drop entirely:
-  • Local crime, arrests, accidents unrelated to the project
-  • Sports, high school events, entertainment
-  • Obituaries, weddings, lifestyle content
-  • Unrelated school board, library, or municipal budget news
-  • Weather forecasts (non-disaster, non-emergency)
+0     IRRELEVANT — Drop entirely, score 0:
+  • Local crime: shootings, assaults, robberies, arrests — even if in the project's city
+  • House fires, car accidents, medical emergencies in the area — even if near the site
+  • Infrastructure disruptions (water outages, boil notices, power blips) affecting the general
+    area but NOT the specific project site
+  • Sports, school events, entertainment, obituaries, lifestyle content
+  • Natural disasters, tornadoes, earthquakes in the SAME CITY but not at/adjacent to the site
+  • Any datacenter news about a completely different company with no tie to {issuer} or {tenant}
+  • Weather forecasts (non-emergency)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-IMPORTANT RULES:
-- Any community pushback, protest, or opposition to the datacenter = score 7 minimum
-- Any government body (city, county, state) opposing or challenging the project = score 7 minimum
-- Any legal filing against the project = score 7 minimum
-- Any power/grid/water constraint = score 7 minimum
-- Financial distress of issuer OR anchor tenant = score 9 minimum
-- When in doubt between two scores, pick the higher one — missing a risk is worse than a false positive
-- Local crime/sports/fluff with no datacenter connection = score 0 always
+HARD RULES:
+- A crime, accident, or local incident in the project city = score 0. Always. No exceptions.
+- A natural disaster in the same city but NOT at the project site = score 2-3, never CRITICAL
+- A datacenter moratorium or opposition story about a DIFFERENT project in the same state = score 3-5
+- Community/govt opposition MUST name this project or {issuer}/{tenant} to score >= 7
+- Financial distress of {issuer} OR {tenant} = score 9 minimum
+- When relevance to THIS project is ambiguous, prefer the lower score
 
 Headlines to evaluate:
 {headlines}
