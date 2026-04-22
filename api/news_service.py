@@ -174,6 +174,18 @@ PINNED_ARTICLES = {
         {"title": "City of Fayetteville — Official Data Center Discussion Page", "url": "https://www.fayetteville-ga.gov/746/Data-Center-Discussion", "source": "City of Fayetteville", "type": "pinned"},
         {"title": "Fayette News — Construction Safety at Georgia Data Center (Suit)", "url": "https://www.fayette-news.net/news/shoddy-construction-at-georgia-data-center-killed-worker-suit-says/article_0f93529a-a41e-4458-b973-18817c8164ce.html", "source": "Fayette County News", "type": "pinned"},
     ],
+    "meridian": [
+        {"title": "Indiana Economic Development Corporation — Data Center Projects", "url": "https://iedc.in.gov/", "source": "IEDC", "type": "pinned"},
+        {"title": "Sullivan County Government — Official Portal", "url": "https://www.sullivancounty.in.gov/", "source": "Sullivan County", "type": "pinned"},
+    ],
+    "edged_compute": [
+        {"title": "Edged Energy — Official Company Site", "url": "https://www.edgedenergy.com/", "source": "Edged Energy", "type": "pinned"},
+        {"title": "Koch Industries — Infrastructure Investment Portfolio", "url": "https://www.kochind.com/businesses/infrastructure", "source": "Koch Industries", "type": "pinned"},
+    ],
+    "core_scientific": [
+        {"title": "Core Scientific Investor Relations — Press Releases", "url": "https://investors.corescientific.com/news-releases", "source": "Core Scientific IR", "type": "pinned"},
+        {"title": "Core Scientific — HPC Hosting Services", "url": "https://www.corescientific.com/hpc-hosting", "source": "Core Scientific", "type": "pinned"},
+    ],
 }
 
 # ── Local outlet Google News RSS (site-targeted, reliable) ───────────────────
@@ -272,6 +284,51 @@ LOCAL_OUTLET_RSS = {
         # Broader regional search — Shackelford + Vantage/Oracle/OpenAI/Stargate
         "https://news.google.com/rss/search?q=%22Shackelford+County%22+Texas+%22Vantage%22+OR+%22Oracle%22+OR+%22OpenAI%22+OR+%22Stargate%22+data+center&hl=en-US&gl=US&ceid=US:en",
     ],
+    # MERIDIAN — New Lebanon, Sullivan County, IN
+    "meridian": [
+        # Sullivan Times + Sun-Commercial (Vincennes) + WBIW — closest local outlets
+        "https://news.google.com/rss/search?q=(site:sullivan-times.com+OR+site:suncommercial.com+OR+site:wbiw.com)+%22Sullivan+County%22+OR+%22data+center%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
+        # Terre Haute Tribune-Star + WTHI-TV + MyWabashValley — Terre Haute regional
+        "https://news.google.com/rss/search?q=(site:tribstar.com+OR+site:wthitv.com+OR+site:mywabashvalley.com)+%22Sullivan+County%22+OR+%22data+center%22+OR+%22Fluidstack%22+OR+%22New+Lebanon%22&hl=en-US&gl=US&ceid=US:en",
+        # Inside Indiana Business + Indiana Public Media + InkFreeNews — statewide business/public
+        "https://news.google.com/rss/search?q=(site:insideindianabusiness.com+OR+site:ipm.org+OR+site:inkfreenews.com)+%22Sullivan%22+OR+%22data+center%22+Indiana+%22Google%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
+        # WIBC Indianapolis
+        "https://news.google.com/rss/search?q=site:wibc.com+%22Sullivan+County%22+OR+%22data+center%22+Indiana+%22Google%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    # EDGED COMPUTE — Aurora, IL (Chicago) + Atlanta, GA
+    "edged_compute": [
+        # Aurora Beacon-News + Daily Herald + Aurora Patch — local Aurora/suburban IL
+        "https://news.google.com/rss/search?q=(site:suburbantribune.com+OR+site:dailyherald.com+OR+site:patch.com%2Fillinois%2Faurora)+%22Aurora%22+OR+%22data+center%22+OR+%22CoreWeave%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+        # Chicago Construction News + Crain's Chicago Business + Illinois Times — business/trade press
+        "https://news.google.com/rss/search?q=(site:chicagoconstructionnews.com+OR+site:chicagobusiness.com+OR+site:illinoistimes.com)+%22Aurora%22+OR+%22data+center%22+OR+%22CoreWeave%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+        # WGN + CBS Chicago + Fox 32 + NPR Illinois — Chicago broadcast
+        "https://news.google.com/rss/search?q=(site:wgntv.com+OR+site:cbsnews.com+OR+site:fox32chicago.com+OR+site:nprillinois.org)+%22Aurora%22+%22data+center%22+OR+%22CoreWeave%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+        # AJC + Saporta Report + Patch Atlanta — Atlanta local
+        "https://news.google.com/rss/search?q=(site:ajc.com+OR+site:saportareport.com+OR+site:patch.com%2Fgeorgia%2Fatlanta)+%22data+center%22+OR+%22CoreWeave%22+OR+%22Alibaba%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+        # Atlanta Business Chronicle + Atlanta Civic Circle + Rough Draft Atlanta — Atlanta business/civic
+        "https://news.google.com/rss/search?q=(site:bizjournals.com+OR+site:atlantaciviccircle.org+OR+site:roughdraftatlanta.com)+%22Atlanta%22+%22data+center%22+OR+%22CoreWeave%22+OR+%22Alibaba%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    # CORE SCIENTIFIC — Multiple sites: Marble NC / Dalton GA / Denton TX / Muskogee OK / Austin TX
+    "core_scientific": [
+        # Cherokee Scout + Smoky Mountain News + Mountain Xpress + WLOS — Marble/Cherokee County NC
+        "https://news.google.com/rss/search?q=(site:cherokeescout.com+OR+site:smokymountainnews.com+OR+site:mountainx.com+OR+site:wlos.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22Cherokee%22&hl=en-US&gl=US&ceid=US:en",
+        # Asheville Citizen-Times + Blue Ridge Public Radio + WFAE + WUNC + NC Newsroom — regional NC
+        "https://news.google.com/rss/search?q=(site:citizen-times.com+OR+site:bpr.org+OR+site:wfae.org+OR+site:wunc.org+OR+site:ncnewsroom.org)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+OR+%22Cherokee%22&hl=en-US&gl=US&ceid=US:en",
+        # Dalton Daily Citizen + NW Georgia News + NewsChannel 9 + Chattanooga TFP — Dalton GA
+        "https://news.google.com/rss/search?q=(site:daltoncitizen.com+OR+site:northwestgeorgianews.com+OR+site:newschannel9.com+OR+site:timesfreepress.com)+%22Dalton%22+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # Denton Record-Chronicle + Cross Timbers Gazette + Denton Patch — Denton TX local
+        "https://news.google.com/rss/search?q=(site:dentonrc.com+OR+site:crosstimbersgazette.com+OR+site:patch.com%2Ftexas%2Fdenton)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+OR+%22CORZ%22&hl=en-US&gl=US&ceid=US:en",
+        # Dallas Morning News + WFAA + NBC DFW + Fort Worth Star-Telegram — DFW regional
+        "https://news.google.com/rss/search?q=(site:dallasnews.com+OR+site:wfaa.com+OR+site:nbcdfw.com+OR+site:star-telegram.com)+%22Denton%22+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # Muskogee Phoenix + Tulsa World + News on 6 + KJRH — Muskogee OK
+        "https://news.google.com/rss/search?q=(site:muskogeephoenix.com+OR+site:tulsaworld.com+OR+site:newson6.com+OR+site:kjrh.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22Muskogee%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # Fox23 + Journal Record + OKC Fox — broader Oklahoma coverage
+        "https://news.google.com/rss/search?q=(site:fox23.com+OR+site:journalrecord.com+OR+site:okcfox.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+OR+%22Oklahoma%22&hl=en-US&gl=US&ceid=US:en",
+        # Austin Statesman + Austin Monitor + Community Impact — Austin TX local
+        "https://news.google.com/rss/search?q=(site:statesman.com+OR+site:austinmonitor.com+OR+site:communityimpact.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+OR+%22CORZ%22&hl=en-US&gl=US&ceid=US:en",
+        # KUT + KVUE + KXAN + Austin Business Journal — Austin broadcast + business
+        "https://news.google.com/rss/search?q=(site:kut.org+OR+site:kvue.com+OR+site:kxan.com+OR+site:bizjournals.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+%22Austin%22&hl=en-US&gl=US&ceid=US:en",
+    ],
 }
 
 # ── NewsAPI targeted queries ─────────────────────────────────────────────────
@@ -341,6 +398,21 @@ NEWSAPI_QUERIES = {
         '"QTS Realty" Microsoft "Fayette County" Georgia datacenter construction',
         '"QTS" MSFT Microsoft Georgia AI superfactory datacenter 2025 OR 2026',
     ],
+    "meridian": [
+        '"Meridian" "Sullivan County" Indiana datacenter Google Fluidstack',
+        '"New Lebanon" Indiana datacenter construction Fluidstack "Next Frontier"',
+        'Meridian datacenter Indiana Google "Next Frontier" construction 2025 OR 2026',
+    ],
+    "edged_compute": [
+        '"Edged Compute" OR "Edged Energy" CoreWeave Alibaba Aurora Illinois datacenter',
+        '"Edged Compute" CoreWeave OR Alibaba Atlanta Georgia datacenter construction',
+        'Edged Koch datacenter Illinois OR Georgia CoreWeave OR Alibaba 2025 OR 2026',
+    ],
+    "core_scientific": [
+        '"Core Scientific" CoreWeave HPC hosting datacenter 2025 OR 2026',
+        '"CORZ" OR "Core Scientific" datacenter CoreWeave construction lease',
+        '"Core Scientific" datacenter Texas OR "North Carolina" OR Georgia OR Oklahoma CoreWeave',
+    ],
 }
 
 # ── Industry RSS keywords per bond ───────────────────────────────────────────
@@ -358,6 +430,9 @@ DC_INDUSTRY_KEYWORDS = {
     "apld":             ["applied digital", "apld", "coreweave", "ellendale", "north dakota"],
     "voltag":           ["vantage", "oracle", "shackelford", "albany", "openai", "texas"],
     "qts":              ["qts", "microsoft", "fayetteville", "georgia", "fayette", "excalibur"],
+    "meridian":        ["meridian", "sullivan county", "new lebanon", "indiana", "fluidstack", "next frontier"],
+    "edged_compute":   ["edged compute", "edged energy", "aurora", "illinois", "coreweave", "alibaba", "koch"],
+    "core_scientific": ["core scientific", "corz", "coreweave", "denton", "marble", "muskogee", "dalton", "austin"],
 }
 
 # ── Reddit subreddit-targeted queries ─────────────────────────────────────────
@@ -427,6 +502,20 @@ REDDIT_SUBREDDIT_QUERIES: dict[str, list[tuple[str, str]]] = {
         ("Atlanta",     "QTS data center Microsoft Fayette"),
         ("datacenter",  "QTS Microsoft Fayetteville Georgia Excalibur"),
     ],
+    "meridian": [
+        ("Indiana",     "data center Sullivan County Fluidstack Google"),
+        ("datacenter",  "Meridian Indiana Sullivan County Google Fluidstack"),
+    ],
+    "edged_compute": [
+        ("chicago",     "data center Aurora CoreWeave Edged"),
+        ("Atlanta",     "datacenter Edged Alibaba CoreWeave"),
+        ("datacenter",  "Edged Compute CoreWeave Alibaba Illinois Georgia"),
+    ],
+    "core_scientific": [
+        ("datacenter",  "Core Scientific CoreWeave HPC hosting"),
+        ("Bitcoin",     "Core Scientific CoreWeave datacenter Texas"),
+        ("texas",       "Core Scientific datacenter Denton CoreWeave CORZ"),
+    ],
 }
 
 # ── X / Twitter search queries (requires Basic plan bearer token) ─────────────
@@ -446,6 +535,9 @@ TWITTER_QUERIES = {
     "apld":             '($APLD OR "Applied Digital") "Ellendale" OR "CoreWeave" datacenter -is:retweet lang:en',
     "voltag":           '("VoltaGrid" OR "Vantage") "Shackelford" OR "Albany" Texas datacenter -is:retweet lang:en',
     "qts":              '("QTS" OR "Project Excalibur") "Fayetteville" OR "Fayette County" Microsoft -is:retweet lang:en',
+    "meridian":        '"Meridian" "Sullivan County" OR "New Lebanon" Indiana datacenter -is:retweet lang:en',
+    "edged_compute":   '("Edged Compute" OR "Edged Energy") CoreWeave OR Alibaba datacenter -is:retweet lang:en',
+    "core_scientific": '($CORZ OR "Core Scientific") CoreWeave datacenter HPC -is:retweet lang:en',
 }
 
 
