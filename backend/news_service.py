@@ -36,6 +36,10 @@ PINNED_ARTICLES = {
         {"title": "Opportunity Louisiana — Meta Data Center Economic Development Page", "url": "https://www.opportunitylouisiana.gov/metadatacenter", "source": "Louisiana Econ Dev", "type": "pinned"},
         {"title": "Louisiana Illuminator — Meta DC Coverage (Richland Parish)", "url": "https://lailluminator.com/place/richland-parish/", "source": "Louisiana Illuminator", "type": "pinned"},
     ],
+    "hut_google": [
+        {"title": "HUT 8 — Corporate IR Page", "url": "https://hut8.com/investors/", "source": "HUT 8 IR", "type": "pinned"},
+        {"title": "DCD — HUT 8 and Google Partner on Louisiana Datacenter", "url": "https://www.datacenterdynamics.com/en/news/", "source": "DataCenter Dynamics", "type": "pinned"},
+    ],
     "related_bx": [
         {"title": "Washtenaw County Government — Official Portal", "url": "https://www.washtenaw.org/", "source": "Washtenaw County", "type": "pinned"},
         {"title": "Ann Arbor SPARK — Economic Development Portal", "url": "https://jobs.annarborusa.org/jobs", "source": "Ann Arbor SPARK", "type": "pinned"},
@@ -84,6 +88,10 @@ PINNED_ARTICLES = {
         {"title": "KFYR TV — Massive AI Footprint in Ellendale: Is It There to Stay?", "url": "https://www.kfyrtv.com/2025/05/14/massive-ai-footprint-is-ellendale-its-there-stay/", "source": "KFYR TV", "type": "pinned"},
         {"title": "Baxtel — Applied Digital Ellendale ND Facility Profile", "url": "https://baxtel.com/data-center/applied-digital-ellendale-nd", "source": "Baxtel", "type": "pinned"},
     ],
+    "sbe_softbank": [
+        {"title": "Softbank Group — Investor Relations", "url": "https://group.softbank/en/ir", "source": "SoftBank IR", "type": "pinned"},
+        {"title": "Austin Business Journal — Softbank Datacenter in Austin", "url": "https://www.bizjournals.com/austin/", "source": "Austin Business Journal", "type": "pinned"},
+    ],
     "qts": [
         {"title": "AJC — Microsoft's Newest AI Superfactory Opens at Fayetteville Campus", "url": "https://www.ajc.com/business/2025/11/microsofts-newest-ai-superfactory-opens-at-sprawling-fayetteville-campus/", "source": "Atlanta Journal-Constitution", "type": "pinned"},
         {"title": "AJC — Gigantic Data Center Campus Planned for 615-Acre Site South of Atlanta", "url": "https://www.ajc.com/news/gigantic-data-center-campus-planned-for-615-acre-site-south-of-atlanta/XKF77UM4FFBOZDPHFWMTOQ4EGE/", "source": "Atlanta Journal-Constitution", "type": "pinned"},
@@ -103,6 +111,12 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=(site:knoe.com+OR+site:thenewsstar.com)+%22Richland+Parish%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
         # Richland Beacon-News
         "https://news.google.com/rss/search?q=site:richlandtoday.com&hl=en-US&gl=US&ceid=US:en",
+    ],
+    "hut_google": [
+        # The Advocate / Times-Picayune — primary Louisiana statewide source
+        "https://news.google.com/rss/search?q=(site:theadvocate.com+OR+site:nola.com)+%22HUT%22+OR+%22Google%22+OR+%22River+Bend%22+OR+%22data+center%22+Louisiana&hl=en-US&gl=US&ceid=US:en",
+        # Louisiana Illuminator
+        "https://news.google.com/rss/search?q=site:lailluminator.com+%22HUT%22+OR+%22Google%22+OR+%22River+Bend%22+OR+%22datacenter%22&hl=en-US&gl=US&ceid=US:en",
     ],
     "related_bx": [
         # MLive / Ann Arbor News
@@ -180,6 +194,12 @@ LOCAL_OUTLET_RSS = {
         # FOX 5 Atlanta
         "https://news.google.com/rss/search?q=site:fox5atlanta.com+%22Fayette%22+OR+%22QTS%22+OR+%22data+center%22+OR+%22Microsoft%22&hl=en-US&gl=US&ceid=US:en",
     ],
+    "sbe_softbank": [
+        # Austin American-Statesman + Austin Business Journal
+        "https://news.google.com/rss/search?q=(site:statesman.com+OR+site:bizjournals.com/austin)+%22Softbank%22+OR+%22SBE%22+OR+%22data+center%22+Austin&hl=en-US&gl=US&ceid=US:en",
+        # KVUE + KXAN + Austin Monitor
+        "https://news.google.com/rss/search?q=(site:kvue.com+OR+site:kxan.com+OR+site:austinmonitor.com)+%22Softbank%22+OR+%22data+center%22+Austin&hl=en-US&gl=US&ceid=US:en",
+    ],
     # VOLTAG — identical campus to Vantage (Shackelford Co., TX)
     "voltag": [
         # Albany News — primary local paper, covers the campus extensively
@@ -197,6 +217,11 @@ NEWSAPI_QUERIES = {
         '"Project Beignet" Meta datacenter Louisiana',
         'Meta "Richland Parish" datacenter hyperscale construction',
         'Meta datacenter Louisiana 2025 OR 2026 construction',
+    ],
+    "hut_google": [
+        '"HUT 8" Google datacenter Louisiana "River Bend"',
+        '"HUT 8" OR "HUT8" Google datacenter Louisiana construction 2025 OR 2026',
+        'HUT Google "River Bend" OR "St Francisville" Louisiana datacenter hyperscale',
     ],
     "related_bx": [
         '"Related Companies" Oracle datacenter Michigan "Washtenaw"',
@@ -253,6 +278,11 @@ NEWSAPI_QUERIES = {
         '"Vantage Data Centers" Oracle "Albany" OR "Shackelford" Texas construction 2025 OR 2026',
         '"Shackelford County" Texas datacenter Oracle OR OpenAI OR Vantage OR Stargate',
     ],
+    "sbe_softbank": [
+        '"SBE" OR "Softbank" datacenter Austin Texas construction 2025 OR 2026',
+        'Softbank "Austin" Texas AI datacenter hyperscale',
+        'SBE Softbank "Travis County" OR Austin Texas datacenter',
+    ],
     "qts": [
         '"QTS" Microsoft "Fayetteville" Georgia datacenter "Project Excalibur"',
         '"QTS Realty" Microsoft "Fayette County" Georgia datacenter construction',
@@ -263,6 +293,7 @@ NEWSAPI_QUERIES = {
 # ── Industry RSS keywords per bond ───────────────────────────────────────────
 DC_INDUSTRY_KEYWORDS = {
     "beignet":          ["meta", "louisiana", "richland", "beignet"],
+    "hut_google":       ["hut", "hut 8", "google", "louisiana", "river bend", "fluidstack"],
     "related_bx":       ["related", "oracle", "michigan", "washtenaw", "ann arbor"],
     "vantage":          ["vantage", "oracle", "shackelford", "texas", "stargate"],
     "stack_nm":         ["stack", "oracle", "new mexico", "santa teresa"],
@@ -274,6 +305,7 @@ DC_INDUSTRY_KEYWORDS = {
     "apld_pf2":         ["applied digital", "apld", "oracle", "harwood", "north dakota", "cass"],
     "apld":             ["applied digital", "apld", "coreweave", "ellendale", "north dakota"],
     "voltag":           ["vantage", "oracle", "shackelford", "albany", "openai", "texas"],
+    "sbe_softbank":     ["sbe", "softbank", "austin", "texas", "travis"],
     "qts":              ["qts", "microsoft", "fayetteville", "georgia", "fayette", "excalibur"],
 }
 
@@ -283,6 +315,10 @@ REDDIT_QUERIES = {
     "beignet": [
         '"Meta datacenter" Louisiana OR "Richland Parish"',
         'site:reddit.com/r/Louisiana "Meta" OR "data center" Richland',
+    ],
+    "hut_google": [
+        '"HUT 8" OR HUT Google datacenter Louisiana "River Bend"',
+        'site:reddit.com/r/Louisiana "HUT" OR "Google" OR "data center" "River Bend"',
     ],
     "related_bx": [
         '"Oracle datacenter" Michigan OR Washtenaw OR "Ann Arbor"',
@@ -331,6 +367,10 @@ REDDIT_QUERIES = {
     "voltag": [
         'Vantage OR VoltaGrid Oracle Shackelford Texas "data center" Stargate',
         'site:reddit.com/r/Texas "Vantage" OR "Stargate" OR "Oracle" Shackelford OR Albany datacenter',
+    ],
+    "sbe_softbank": [
+        'Softbank OR SBE Austin Texas datacenter construction',
+        'site:reddit.com/r/Austin OR site:reddit.com/r/Texas "Softbank" OR "SBE" datacenter',
     ],
 }
 
