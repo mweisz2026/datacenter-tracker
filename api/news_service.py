@@ -16,14 +16,97 @@ import urllib.parse
 from datetime import datetime, timezone
 
 from relevance_service import score_and_filter
+import hashlib
 import time
+from datetime import datetime, timezone, timedelta
+
+# Only email alerts published within this window — prevents old articles firing on cold start
+_EMAIL_MAX_AGE_DAYS = 7
+
+# Upstash Redis REST — persistent dedup across cold starts (falls back to in-memory if not set)
+UPSTASH_URL   = os.getenv("UPSTASH_REDIS_REST_URL", "")
+UPSTASH_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN", "")
+
+
+def _parse_date(pub: str) -> datetime | None:
+    """Parse a date string in either ISO 8601 or RFC 2822 format. Returns None if unparseable."""
+    if not pub:
+        return None
+    # Try ISO 8601 first (NewsAPI: "2026-04-17T10:00:00Z")
+    try:
+        dt = datetime.fromisoformat(pub.replace("Z", "+00:00"))
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except Exception:
+        pass
+    # Try RFC 2822 (RSS/feedparser: "Fri, 17 Apr 2026 10:00:00 +0000")
+    try:
+        from email.utils import parsedate_to_datetime
+        dt = parsedate_to_datetime(pub)
+        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
+    except Exception:
+        pass
+    return None
+
+
+def _is_email_eligible(item: dict) -> bool:
+    """True only if the item has a parseable published date within the last 7 days."""
+    dt = _parse_date(item.get("published", ""))
+    if dt is None:
+        return False  # no date or unparseable → never email
+    cutoff = datetime.now(timezone.utc) - timedelta(days=_EMAIL_MAX_AGE_DAYS)
+    return dt >= cutoff
 
 NEWSAPI_KEY      = os.getenv("NEWSAPI_KEY", "")
 TWITTER_BEARER   = urllib.parse.unquote(os.getenv("TWITTER_BEARER_TOKEN", ""))
+REDDIT_CLIENT_ID = os.getenv("REDDIT_CLIENT_ID", "")
+REDDIT_CLIENT_SECRET = os.getenv("REDDIT_CLIENT_SECRET", "")
+
+# Cached Reddit OAuth token (client_credentials — free, no user login needed)
+_reddit_token: dict = {"token": "", "expires_at": 0.0}
 
 # Per-bond news cache so the landing page /api/alerts reuses already-fetched data
 _news_cache: dict = {}   # bond_id -> {"data": {...}, "ts": float}
 _NEWS_CACHE_TTL  = 20 * 60  # 20 minutes
+
+# In-memory dedup fallback (used when Upstash is not configured)
+_emailed_urls: set = set()
+
+
+def _email_key(url: str) -> str:
+    return f"dcs:emailed:{hashlib.md5(url.encode()).hexdigest()}"
+
+
+async def _is_already_emailed(url: str) -> bool:
+    """Check if this URL has been emailed. Uses Upstash Redis if configured, else in-memory."""
+    if url in _emailed_urls:
+        return True
+    if not UPSTASH_URL:
+        return False
+    try:
+        async with httpx.AsyncClient(timeout=4) as client:
+            r = await client.get(
+                f"{UPSTASH_URL}/get/{_email_key(url)}",
+                headers={"Authorization": f"Bearer {UPSTASH_TOKEN}"},
+            )
+        return r.json().get("result") is not None
+    except Exception:
+        return False
+
+
+async def _mark_emailed(url: str) -> None:
+    """Record URL as emailed with a 7-day TTL. Writes to both in-memory and Upstash."""
+    _emailed_urls.add(url)
+    if not UPSTASH_URL:
+        return
+    try:
+        ttl = _EMAIL_MAX_AGE_DAYS * 24 * 3600
+        async with httpx.AsyncClient(timeout=4) as client:
+            await client.get(
+                f"{UPSTASH_URL}/set/{_email_key(url)}/1/ex/{ttl}",
+                headers={"Authorization": f"Bearer {UPSTASH_TOKEN}"},
+            )
+    except Exception:
+        pass
 
 DC_DYNAMICS_RSS  = "https://www.datacenterdynamics.com/en/rss/"
 DC_KNOWLEDGE_RSS = "https://www.datacenterknowledge.com/rss.xml"
@@ -88,16 +171,28 @@ PINNED_ARTICLES = {
         {"title": "KFYR TV — Massive AI Footprint in Ellendale: Is It There to Stay?", "url": "https://www.kfyrtv.com/2025/05/14/massive-ai-footprint-is-ellendale-its-there-stay/", "source": "KFYR TV", "type": "pinned"},
         {"title": "Baxtel — Applied Digital Ellendale ND Facility Profile", "url": "https://baxtel.com/data-center/applied-digital-ellendale-nd", "source": "Baxtel", "type": "pinned"},
     ],
-    "sbe_softbank": [
-        {"title": "Softbank Group — Investor Relations", "url": "https://group.softbank/en/ir", "source": "SoftBank IR", "type": "pinned"},
-        {"title": "Austin Business Journal — Softbank Datacenter in Austin", "url": "https://www.bizjournals.com/austin/", "source": "Austin Business Journal", "type": "pinned"},
-    ],
     "qts": [
         {"title": "AJC — Microsoft's Newest AI Superfactory Opens at Fayetteville Campus", "url": "https://www.ajc.com/business/2025/11/microsofts-newest-ai-superfactory-opens-at-sprawling-fayetteville-campus/", "source": "Atlanta Journal-Constitution", "type": "pinned"},
         {"title": "AJC — Gigantic Data Center Campus Planned for 615-Acre Site South of Atlanta", "url": "https://www.ajc.com/news/gigantic-data-center-campus-planned-for-615-acre-site-south-of-atlanta/XKF77UM4FFBOZDPHFWMTOQ4EGE/", "source": "Atlanta Journal-Constitution", "type": "pinned"},
         {"title": "QTS Data Centers — Fayetteville (Project Excalibur)", "url": "https://q.com/data-centers/fayetteville/", "source": "QTS", "type": "pinned"},
         {"title": "City of Fayetteville — Official Data Center Discussion Page", "url": "https://www.fayetteville-ga.gov/746/Data-Center-Discussion", "source": "City of Fayetteville", "type": "pinned"},
         {"title": "Fayette News — Construction Safety at Georgia Data Center (Suit)", "url": "https://www.fayette-news.net/news/shoddy-construction-at-georgia-data-center-killed-worker-suit-says/article_0f93529a-a41e-4458-b973-18817c8164ce.html", "source": "Fayette County News", "type": "pinned"},
+    ],
+    "meridian": [
+        {"title": "Indiana Economic Development Corporation — Data Center Projects", "url": "https://iedc.in.gov/", "source": "IEDC", "type": "pinned"},
+        {"title": "Sullivan County Government — Official Portal", "url": "https://www.sullivancounty.in.gov/", "source": "Sullivan County", "type": "pinned"},
+    ],
+    "edged_compute": [
+        {"title": "Edged Energy — Official Company Site", "url": "https://www.edgedenergy.com/", "source": "Edged Energy", "type": "pinned"},
+        {"title": "Koch Industries — Infrastructure Investment Portfolio", "url": "https://www.kochind.com/businesses/infrastructure", "source": "Koch Industries", "type": "pinned"},
+    ],
+    "core_scientific": [
+        {"title": "Core Scientific Investor Relations — Press Releases", "url": "https://investors.corescientific.com/news-releases", "source": "Core Scientific IR", "type": "pinned"},
+        {"title": "Core Scientific — HPC Hosting Services", "url": "https://www.corescientific.com/hpc-hosting", "source": "Core Scientific", "type": "pinned"},
+    ],
+    "sbe_softbank": [
+        {"title": "Softbank Group — Investor Relations", "url": "https://group.softbank/en/ir", "source": "SoftBank IR", "type": "pinned"},
+        {"title": "Austin Business Journal — Softbank Datacenter in Austin", "url": "https://www.bizjournals.com/austin/", "source": "Austin Business Journal", "type": "pinned"},
     ],
 }
 
@@ -113,7 +208,7 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=site:richlandtoday.com&hl=en-US&gl=US&ceid=US:en",
     ],
     "hut_google": [
-        # The Advocate / Times-Picayune — primary Louisiana statewide source
+        # The Advocate / Times-Picayune
         "https://news.google.com/rss/search?q=(site:theadvocate.com+OR+site:nola.com)+%22HUT%22+OR+%22Google%22+OR+%22River+Bend%22+OR+%22data+center%22+Louisiana&hl=en-US&gl=US&ceid=US:en",
         # Louisiana Illuminator
         "https://news.google.com/rss/search?q=site:lailluminator.com+%22HUT%22+OR+%22Google%22+OR+%22River+Bend%22+OR+%22datacenter%22&hl=en-US&gl=US&ceid=US:en",
@@ -194,12 +289,6 @@ LOCAL_OUTLET_RSS = {
         # FOX 5 Atlanta
         "https://news.google.com/rss/search?q=site:fox5atlanta.com+%22Fayette%22+OR+%22QTS%22+OR+%22data+center%22+OR+%22Microsoft%22&hl=en-US&gl=US&ceid=US:en",
     ],
-    "sbe_softbank": [
-        # Austin American-Statesman + Austin Business Journal
-        "https://news.google.com/rss/search?q=(site:statesman.com+OR+site:bizjournals.com/austin)+%22Softbank%22+OR+%22SBE%22+OR+%22data+center%22+Austin&hl=en-US&gl=US&ceid=US:en",
-        # KVUE + KXAN + Austin Monitor
-        "https://news.google.com/rss/search?q=(site:kvue.com+OR+site:kxan.com+OR+site:austinmonitor.com)+%22Softbank%22+OR+%22data+center%22+Austin&hl=en-US&gl=US&ceid=US:en",
-    ],
     # VOLTAG — identical campus to Vantage (Shackelford Co., TX)
     "voltag": [
         # Albany News — primary local paper, covers the campus extensively
@@ -208,6 +297,57 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=site:bigcountryhomepage.com+%22Shackelford%22+OR+%22Albany%22+OR+%22Vantage%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
         # Broader regional search — Shackelford + Vantage/Oracle/OpenAI/Stargate
         "https://news.google.com/rss/search?q=%22Shackelford+County%22+Texas+%22Vantage%22+OR+%22Oracle%22+OR+%22OpenAI%22+OR+%22Stargate%22+data+center&hl=en-US&gl=US&ceid=US:en",
+    ],
+    # MERIDIAN — New Lebanon, Sullivan County, IN
+    "meridian": [
+        # Sullivan Times + Sun-Commercial (Vincennes) + WBIW — closest local outlets
+        "https://news.google.com/rss/search?q=(site:sullivan-times.com+OR+site:suncommercial.com+OR+site:wbiw.com)+%22Sullivan+County%22+OR+%22data+center%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
+        # Terre Haute Tribune-Star + WTHI-TV + MyWabashValley — Terre Haute regional
+        "https://news.google.com/rss/search?q=(site:tribstar.com+OR+site:wthitv.com+OR+site:mywabashvalley.com)+%22Sullivan+County%22+OR+%22data+center%22+OR+%22Fluidstack%22+OR+%22New+Lebanon%22&hl=en-US&gl=US&ceid=US:en",
+        # Inside Indiana Business + Indiana Public Media + InkFreeNews — statewide business/public
+        "https://news.google.com/rss/search?q=(site:insideindianabusiness.com+OR+site:ipm.org+OR+site:inkfreenews.com)+%22Sullivan%22+OR+%22data+center%22+Indiana+%22Google%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
+        # WIBC Indianapolis
+        "https://news.google.com/rss/search?q=site:wibc.com+%22Sullivan+County%22+OR+%22data+center%22+Indiana+%22Google%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    # EDGED COMPUTE — Aurora, IL (Chicago) + Atlanta, GA
+    "edged_compute": [
+        # Aurora Beacon-News + Daily Herald + Aurora Patch — local Aurora/suburban IL
+        "https://news.google.com/rss/search?q=(site:suburbantribune.com+OR+site:dailyherald.com+OR+site:patch.com%2Fillinois%2Faurora)+%22Aurora%22+OR+%22data+center%22+OR+%22CoreWeave%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+        # Chicago Construction News + Crain's Chicago Business + Illinois Times — business/trade press
+        "https://news.google.com/rss/search?q=(site:chicagoconstructionnews.com+OR+site:chicagobusiness.com+OR+site:illinoistimes.com)+%22Aurora%22+OR+%22data+center%22+OR+%22CoreWeave%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+        # WGN + CBS Chicago + Fox 32 + NPR Illinois — Chicago broadcast
+        "https://news.google.com/rss/search?q=(site:wgntv.com+OR+site:cbsnews.com+OR+site:fox32chicago.com+OR+site:nprillinois.org)+%22Aurora%22+%22data+center%22+OR+%22CoreWeave%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+        # AJC + Saporta Report + Patch Atlanta — Atlanta local
+        "https://news.google.com/rss/search?q=(site:ajc.com+OR+site:saportareport.com+OR+site:patch.com%2Fgeorgia%2Fatlanta)+%22data+center%22+OR+%22CoreWeave%22+OR+%22Alibaba%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+        # Atlanta Business Chronicle + Atlanta Civic Circle + Rough Draft Atlanta — Atlanta business/civic
+        "https://news.google.com/rss/search?q=(site:bizjournals.com+OR+site:atlantaciviccircle.org+OR+site:roughdraftatlanta.com)+%22Atlanta%22+%22data+center%22+OR+%22CoreWeave%22+OR+%22Alibaba%22+OR+%22Edged%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    # CORE SCIENTIFIC — Multiple sites: Marble NC / Dalton GA / Denton TX / Muskogee OK / Austin TX
+    "core_scientific": [
+        # Cherokee Scout + Smoky Mountain News + Mountain Xpress + WLOS — Marble/Cherokee County NC
+        "https://news.google.com/rss/search?q=(site:cherokeescout.com+OR+site:smokymountainnews.com+OR+site:mountainx.com+OR+site:wlos.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22Cherokee%22&hl=en-US&gl=US&ceid=US:en",
+        # Asheville Citizen-Times + Blue Ridge Public Radio + WFAE + WUNC + NC Newsroom — regional NC
+        "https://news.google.com/rss/search?q=(site:citizen-times.com+OR+site:bpr.org+OR+site:wfae.org+OR+site:wunc.org+OR+site:ncnewsroom.org)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+OR+%22Cherokee%22&hl=en-US&gl=US&ceid=US:en",
+        # Dalton Daily Citizen + NW Georgia News + NewsChannel 9 + Chattanooga TFP — Dalton GA
+        "https://news.google.com/rss/search?q=(site:daltoncitizen.com+OR+site:northwestgeorgianews.com+OR+site:newschannel9.com+OR+site:timesfreepress.com)+%22Dalton%22+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # Denton Record-Chronicle + Cross Timbers Gazette + Denton Patch — Denton TX local
+        "https://news.google.com/rss/search?q=(site:dentonrc.com+OR+site:crosstimbersgazette.com+OR+site:patch.com%2Ftexas%2Fdenton)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+OR+%22CORZ%22&hl=en-US&gl=US&ceid=US:en",
+        # Dallas Morning News + WFAA + NBC DFW + Fort Worth Star-Telegram — DFW regional
+        "https://news.google.com/rss/search?q=(site:dallasnews.com+OR+site:wfaa.com+OR+site:nbcdfw.com+OR+site:star-telegram.com)+%22Denton%22+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # Muskogee Phoenix + Tulsa World + News on 6 + KJRH — Muskogee OK
+        "https://news.google.com/rss/search?q=(site:muskogeephoenix.com+OR+site:tulsaworld.com+OR+site:newson6.com+OR+site:kjrh.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22Muskogee%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # Fox23 + Journal Record + OKC Fox — broader Oklahoma coverage
+        "https://news.google.com/rss/search?q=(site:fox23.com+OR+site:journalrecord.com+OR+site:okcfox.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+OR+%22Oklahoma%22&hl=en-US&gl=US&ceid=US:en",
+        # Austin Statesman + Austin Monitor + Community Impact — Austin TX local
+        "https://news.google.com/rss/search?q=(site:statesman.com+OR+site:austinmonitor.com+OR+site:communityimpact.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+OR+%22CORZ%22&hl=en-US&gl=US&ceid=US:en",
+        # KUT + KVUE + KXAN + Austin Business Journal — Austin broadcast + business
+        "https://news.google.com/rss/search?q=(site:kut.org+OR+site:kvue.com+OR+site:kxan.com+OR+site:bizjournals.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+%22Austin%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    "sbe_softbank": [
+        # Austin American-Statesman + Austin Business Journal
+        "https://news.google.com/rss/search?q=(site:statesman.com+OR+site:bizjournals.com/austin)+%22Softbank%22+OR+%22SBE%22+OR+%22data+center%22+Austin&hl=en-US&gl=US&ceid=US:en",
+        # KVUE + KXAN + Austin Monitor
+        "https://news.google.com/rss/search?q=(site:kvue.com+OR+site:kxan.com+OR+site:austinmonitor.com)+%22Softbank%22+OR+%22data+center%22+Austin&hl=en-US&gl=US&ceid=US:en",
     ],
 }
 
@@ -278,15 +418,30 @@ NEWSAPI_QUERIES = {
         '"Vantage Data Centers" Oracle "Albany" OR "Shackelford" Texas construction 2025 OR 2026',
         '"Shackelford County" Texas datacenter Oracle OR OpenAI OR Vantage OR Stargate',
     ],
-    "sbe_softbank": [
-        '"SBE" OR "Softbank" datacenter Austin Texas construction 2025 OR 2026',
-        'Softbank "Austin" Texas AI datacenter hyperscale',
-        'SBE Softbank "Travis County" OR Austin Texas datacenter',
-    ],
     "qts": [
         '"QTS" Microsoft "Fayetteville" Georgia datacenter "Project Excalibur"',
         '"QTS Realty" Microsoft "Fayette County" Georgia datacenter construction',
         '"QTS" MSFT Microsoft Georgia AI superfactory datacenter 2025 OR 2026',
+    ],
+    "meridian": [
+        '"Meridian" "Sullivan County" Indiana datacenter Google Fluidstack',
+        '"New Lebanon" Indiana datacenter construction Fluidstack "Next Frontier"',
+        'Meridian datacenter Indiana Google "Next Frontier" construction 2025 OR 2026',
+    ],
+    "edged_compute": [
+        '"Edged Compute" OR "Edged Energy" CoreWeave Alibaba Aurora Illinois datacenter',
+        '"Edged Compute" CoreWeave OR Alibaba Atlanta Georgia datacenter construction',
+        'Edged Koch datacenter Illinois OR Georgia CoreWeave OR Alibaba 2025 OR 2026',
+    ],
+    "core_scientific": [
+        '"Core Scientific" CoreWeave HPC hosting datacenter 2025 OR 2026',
+        '"CORZ" OR "Core Scientific" datacenter CoreWeave construction lease',
+        '"Core Scientific" datacenter Texas OR "North Carolina" OR Georgia OR Oklahoma CoreWeave',
+    ],
+    "sbe_softbank": [
+        '"SBE" OR "Softbank" datacenter Austin Texas construction 2025 OR 2026',
+        'Softbank "Austin" Texas AI datacenter hyperscale',
+        'SBE Softbank "Travis County" OR Austin Texas datacenter',
     ],
 }
 
@@ -305,77 +460,127 @@ DC_INDUSTRY_KEYWORDS = {
     "apld_pf2":         ["applied digital", "apld", "oracle", "harwood", "north dakota", "cass"],
     "apld":             ["applied digital", "apld", "coreweave", "ellendale", "north dakota"],
     "voltag":           ["vantage", "oracle", "shackelford", "albany", "openai", "texas"],
-    "sbe_softbank":     ["sbe", "softbank", "austin", "texas", "travis"],
     "qts":              ["qts", "microsoft", "fayetteville", "georgia", "fayette", "excalibur"],
+    "meridian":        ["meridian", "sullivan county", "new lebanon", "indiana", "fluidstack", "next frontier"],
+    "edged_compute":   ["edged compute", "edged energy", "aurora", "illinois", "coreweave", "alibaba", "koch"],
+    "core_scientific": ["core scientific", "corz", "coreweave", "denton", "marble", "muskogee", "dalton", "austin"],
+    "sbe_softbank":    ["sbe", "softbank", "austin", "texas", "travis"],
 }
 
-# ── Reddit search queries ─────────────────────────────────────────────────────
-# Two queries per bond: (1) project-specific, (2) local/regional subreddit search
-REDDIT_QUERIES = {
+# ── Reddit subreddit-targeted queries ─────────────────────────────────────────
+# Each entry is a list of (subreddit, query) tuples.
+# Searches are restricted to the named subreddit (restrict_sr=on), which gives
+# far better signal than global Reddit search.
+# Pattern per bond: local/regional sub + industry sub + finance sub (for public cos)
+REDDIT_SUBREDDIT_QUERIES: dict[str, list[tuple[str, str]]] = {
     "beignet": [
-        '"Meta datacenter" Louisiana OR "Richland Parish"',
-        'site:reddit.com/r/Louisiana "Meta" OR "data center" Richland',
+        ("Louisiana",   "Meta datacenter Richland Parish"),
+        ("datacenter",  "Meta Louisiana Richland"),
     ],
     "hut_google": [
-        '"HUT 8" OR HUT Google datacenter Louisiana "River Bend"',
-        'site:reddit.com/r/Louisiana "HUT" OR "Google" OR "data center" "River Bend"',
+        ("Louisiana",   "HUT Google datacenter River Bend"),
+        ("datacenter",  "HUT 8 Google Louisiana"),
     ],
     "related_bx": [
-        '"Oracle datacenter" Michigan OR Washtenaw OR "Ann Arbor"',
-        'site:reddit.com/r/AnnArbor OR site:reddit.com/r/Michigan "data center" Oracle',
+        ("AnnArbor",    "Oracle data center"),
+        ("Michigan",    "Oracle datacenter Washtenaw"),
+        ("datacenter",  "Oracle Michigan Ann Arbor"),
     ],
     "vantage": [
-        '"Vantage Data Centers" OR Stargate Texas Shackelford Albany datacenter',
-        'site:reddit.com/r/Texas "Vantage" OR "Stargate" OR "data center" Shackelford',
+        ("Texas",       "Vantage datacenter Shackelford Albany"),
+        ("datacenter",  "Vantage Stargate Texas Oracle Shackelford"),
     ],
     "stack_nm": [
-        '"Stack Infrastructure" OR "Oracle datacenter" "New Mexico" OR "Santa Teresa" OR "Dona Ana"',
-        'site:reddit.com/r/newmexico "data center" OR "Stack" OR Oracle',
+        ("newmexico",   "data center Stack Oracle Santa Teresa"),
+        ("LasCruces",   "data center Oracle Stack"),
+        ("datacenter",  "Stack Infrastructure New Mexico Oracle"),
     ],
     "tract": [
-        'NVIDIA OR Tract OR Fleet datacenter Nevada "Storey County" OR "Tahoe Reno"',
-        'site:reddit.com/r/Reno OR site:reddit.com/r/Nevada "data center" NVIDIA "Storey County"',
+        ("Reno",        "NVIDIA datacenter Storey County"),
+        ("Nevada",      "NVIDIA data center Storey Tahoe Reno"),
+        ("datacenter",  "NVIDIA Nevada Tahoe Reno TRIC Fleet"),
     ],
     "cifr_black_pearl": [
-        '"Cipher Mining" OR CIFR "Black Pearl" OR Wink Texas datacenter',
-        'site:reddit.com/r/Texas "Cipher Mining" OR "Black Pearl" datacenter Wink',
+        ("Bitcoin",         "Cipher Mining Black Pearl Texas"),
+        ("CryptoCurrency",  "Cipher Mining datacenter Texas"),
+        ("Texas",           "Cipher Mining Wink datacenter"),
     ],
     "wulf": [
-        '"TeraWulf" OR "Lake Mariner" OR WULF datacenter "New York" Somerset Niagara',
-        'site:reddit.com/r/upstatenewyork OR site:reddit.com/r/Buffalo "TeraWulf" OR "Lake Mariner" datacenter',
+        ("upstatenewyork",  "TeraWulf Lake Mariner Somerset"),
+        ("Bitcoin",         "TeraWulf Lake Mariner datacenter"),
+        ("datacenter",      "TeraWulf New York Lake Mariner"),
     ],
     "flashc": [
-        'Fluidstack OR FLASHC OR "Aligned" OR datacenter Abernathy OR Lubbock Texas',
-        'site:reddit.com/r/Lubbock OR site:reddit.com/r/Texas "data center" Abernathy OR Fluidstack',
+        ("Lubbock",     "datacenter Abernathy Fluidstack Aligned"),
+        ("Texas",       "Fluidstack datacenter Abernathy Hale County"),
+        ("datacenter",  "Fluidstack Google Texas Abernathy"),
     ],
     "cifr_barber_lake": [
-        '"Cipher Mining" OR CIFR "Barber Lake" OR "Colorado City" Texas datacenter',
-        'site:reddit.com/r/Texas "Cipher Mining" OR "Barber Lake" OR "Colorado City" datacenter',
+        ("Texas",           "Cipher Mining Colorado City datacenter"),
+        ("CryptoCurrency",  "Cipher Mining Barber Lake AWS"),
+        ("Bitcoin",         "Cipher Mining Texas datacenter"),
     ],
     "apld_pf2": [
-        '"Applied Digital" OR APLD Harwood "North Dakota" datacenter',
-        'site:reddit.com/r/NorthDakota OR site:reddit.com/r/fargo "Applied Digital" OR "data center" Harwood',
+        ("northdakota", "Applied Digital datacenter Harwood"),
+        ("fargo",       "data center Applied Digital APLD"),
+        ("datacenter",  "Applied Digital North Dakota Oracle Harwood"),
     ],
     "apld": [
-        '"Applied Digital" OR APLD Ellendale "North Dakota" datacenter CoreWeave',
-        'site:reddit.com/r/NorthDakota "Applied Digital" OR "Ellendale" OR APLD datacenter',
-    ],
-    "qts": [
-        'QTS OR "QTS Realty" Microsoft Fayetteville Georgia datacenter',
-        'site:reddit.com/r/Georgia OR site:reddit.com/r/Atlanta QTS OR "Fayette County" datacenter Microsoft',
+        ("northdakota", "Applied Digital Ellendale datacenter CoreWeave"),
+        ("datacenter",  "Applied Digital Ellendale CoreWeave"),
     ],
     "voltag": [
-        'Vantage OR VoltaGrid Oracle Shackelford Texas "data center" Stargate',
-        'site:reddit.com/r/Texas "Vantage" OR "Stargate" OR "Oracle" Shackelford OR Albany datacenter',
+        ("Texas",       "Vantage datacenter Shackelford Oracle"),
+        ("datacenter",  "VoltaGrid Vantage Texas Oracle Stargate"),
+    ],
+    "qts": [
+        ("Georgia",     "QTS datacenter Fayetteville Microsoft"),
+        ("Atlanta",     "QTS data center Microsoft Fayette"),
+        ("datacenter",  "QTS Microsoft Fayetteville Georgia Excalibur"),
+    ],
+    "meridian": [
+        ("Indiana",     "data center Sullivan County Fluidstack Google"),
+        ("datacenter",  "Meridian Indiana Sullivan County Google Fluidstack"),
+    ],
+    "edged_compute": [
+        ("chicago",     "data center Aurora CoreWeave Edged"),
+        ("Atlanta",     "datacenter Edged Alibaba CoreWeave"),
+        ("datacenter",  "Edged Compute CoreWeave Alibaba Illinois Georgia"),
+    ],
+    "core_scientific": [
+        ("datacenter",  "Core Scientific CoreWeave HPC hosting"),
+        ("Bitcoin",     "Core Scientific CoreWeave datacenter Texas"),
+        ("texas",       "Core Scientific datacenter Denton CoreWeave CORZ"),
     ],
     "sbe_softbank": [
-        'Softbank OR SBE Austin Texas datacenter construction',
-        'site:reddit.com/r/Austin OR site:reddit.com/r/Texas "Softbank" OR "SBE" datacenter',
+        ("Austin",      "Softbank datacenter SBE"),
+        ("texas",       "Softbank SBE datacenter Austin"),
     ],
 }
 
-# Keep Twitter queries for reference (not used — no paid API tier)
-TWITTER_QUERIES = {}
+# ── X / Twitter search queries (requires Basic plan bearer token) ─────────────
+# Used when TWITTER_BEARER_TOKEN env var is set.
+# One query per bond — focused on company/project mentions from credible accounts.
+TWITTER_QUERIES = {
+    "beignet":          '"Meta" "Richland Parish" OR "Richland data center" -is:retweet lang:en',
+    "related_bx":       '"Oracle" "Ann Arbor" OR "Washtenaw" datacenter -is:retweet lang:en',
+    "vantage":          '"Vantage Data Centers" OR "Stargate" "Shackelford" -is:retweet lang:en',
+    "stack_nm":         '"Stack Infrastructure" "New Mexico" OR "Santa Teresa" datacenter -is:retweet lang:en',
+    "tract":            '("NVIDIA" OR "Tract") "Storey County" OR "Tahoe Reno" datacenter -is:retweet lang:en',
+    "cifr_black_pearl": '($CIFR OR "Cipher Mining") "Black Pearl" OR "Wink" datacenter -is:retweet lang:en',
+    "wulf":             '($WULF OR "TeraWulf") "Lake Mariner" OR "Somerset" datacenter -is:retweet lang:en',
+    "flashc":           '("Fluidstack" OR "Aligned") "Abernathy" OR "Hale County" datacenter -is:retweet lang:en',
+    "cifr_barber_lake": '($CIFR OR "Cipher Mining") "Barber Lake" OR "Colorado City" -is:retweet lang:en',
+    "apld_pf2":         '($APLD OR "Applied Digital") "Harwood" OR "Cass County" datacenter -is:retweet lang:en',
+    "apld":             '($APLD OR "Applied Digital") "Ellendale" OR "CoreWeave" datacenter -is:retweet lang:en',
+    "voltag":           '("VoltaGrid" OR "Vantage") "Shackelford" OR "Albany" Texas datacenter -is:retweet lang:en',
+    "qts":              '("QTS" OR "Project Excalibur") "Fayetteville" OR "Fayette County" Microsoft -is:retweet lang:en',
+    "meridian":        '"Meridian" "Sullivan County" OR "New Lebanon" Indiana datacenter -is:retweet lang:en',
+    "edged_compute":   '("Edged Compute" OR "Edged Energy") CoreWeave OR Alibaba datacenter -is:retweet lang:en',
+    "core_scientific": '($CORZ OR "Core Scientific") CoreWeave datacenter HPC -is:retweet lang:en',
+    "hut_google":      '"HUT 8" OR "HUT8" Google datacenter Louisiana -is:retweet lang:en',
+    "sbe_softbank":    '"Softbank" OR "SBE" Austin Texas datacenter -is:retweet lang:en',
+}
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -453,43 +658,81 @@ async def _fetch_newsapi(query: str, limit: int = 6) -> list:
         return []
 
 
-async def _fetch_reddit(query: str, limit: int = 8) -> list:
-    """Fetch Reddit posts via public search RSS (no API key required)."""
+async def _get_reddit_token() -> str:
+    """Fetch or return cached Reddit OAuth token (client_credentials flow)."""
+    global _reddit_token
+    if time.time() < _reddit_token["expires_at"] - 60:
+        return _reddit_token["token"]
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.post(
+                "https://www.reddit.com/api/v1/access_token",
+                auth=(REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET),
+                data={"grant_type": "client_credentials"},
+                headers={"User-Agent": "DatacenterBondMonitor/1.0"},
+            )
+        if resp.status_code == 200:
+            data = resp.json()
+            _reddit_token = {
+                "token":      data["access_token"],
+                "expires_at": time.time() + data.get("expires_in", 3600),
+            }
+            return _reddit_token["token"]
+        print(f"[reddit-auth] Token request failed: HTTP {resp.status_code}")
+    except Exception as e:
+        print(f"[reddit-auth] {e}")
+    return ""
+
+
+async def _fetch_reddit_sub(subreddit: str, query: str, limit: int = 6) -> list:
+    """
+    Search a subreddit via Reddit OAuth API (free, 60 req/min).
+    Requires REDDIT_CLIENT_ID + REDDIT_CLIENT_SECRET env vars.
+    No-ops silently if credentials are not set.
+    """
+    if not REDDIT_CLIENT_ID:
+        return []
+
+    token = await _get_reddit_token()
+    if not token:
+        return []
+
     url = (
-        "https://www.reddit.com/search.rss"
-        f"?q={urllib.parse.quote(query)}&sort=new&limit={limit}&t=month"
+        f"https://oauth.reddit.com/r/{subreddit}/search.json"
+        f"?q={urllib.parse.quote(query)}&sort=new&restrict_sr=on&limit={limit}&t=year"
     )
     try:
-        async with httpx.AsyncClient(timeout=12) as client:
+        async with httpx.AsyncClient(timeout=10) as client:
             resp = await client.get(url, headers={
-                "User-Agent": "Mozilla/5.0 (compatible; DatacenterBondMonitor/1.0)"
+                "Authorization": f"bearer {token}",
+                "User-Agent":    "DatacenterBondMonitor/1.0",
             })
         if resp.status_code != 200:
+            print(f"[reddit] r/{subreddit}: HTTP {resp.status_code}")
             return []
-        feed = feedparser.parse(resp.text)
+        posts = resp.json().get("data", {}).get("children", [])
         items = []
-        for entry in feed.entries[:limit]:
-            title = entry.get("title", "").strip()
+        for post in posts[:limit]:
+            p = post.get("data", {})
+            title = p.get("title", "").strip()
             if not title:
                 continue
-            pub = ""
-            if getattr(entry, "published_parsed", None):
-                dt = datetime(*entry.published_parsed[:6], tzinfo=timezone.utc)
-                pub = dt.isoformat()
-            link = entry.get("link", "")
-            sub_match = re.search(r'/r/([^/]+)/', link)
-            subreddit = sub_match.group(1) if sub_match else "reddit"
+            created = p.get("created_utc")
+            pub = datetime.fromtimestamp(created, tz=timezone.utc).isoformat() if created else ""
+            permalink = p.get("permalink", "")
+            post_url = f"https://www.reddit.com{permalink}" if permalink else p.get("url", "")
+            selftext = (p.get("selftext") or "")[:300]
             items.append({
                 "title":     title,
-                "url":       link,
+                "url":       post_url,
                 "source":    f"r/{subreddit}",
                 "published": pub,
-                "summary":   _strip_html(entry.get("summary", ""))[:300],
+                "summary":   selftext,
                 "type":      "reddit",
             })
         return items
     except Exception as e:
-        print(f"[reddit] {query[:50]}: {e}")
+        print(f"[reddit] r/{subreddit} '{query[:40]}': {e}")
         return []
 
 
@@ -553,10 +796,11 @@ async def get_news(
     if cached and (now_ts - cached["ts"]) < _NEWS_CACHE_TTL:
         return cached["data"]
 
-    local_rss_urls = LOCAL_OUTLET_RSS.get(bond_id, [])
-    na_queries     = NEWSAPI_QUERIES.get(bond_id, news_queries[:3])
-    reddit_queries = REDDIT_QUERIES.get(bond_id, [])
-    dc_keywords    = DC_INDUSTRY_KEYWORDS.get(bond_id, [])
+    local_rss_urls  = LOCAL_OUTLET_RSS.get(bond_id, [])
+    na_queries      = NEWSAPI_QUERIES.get(bond_id, news_queries[:3])
+    sub_queries     = REDDIT_SUBREDDIT_QUERIES.get(bond_id, [])
+    dc_keywords     = DC_INDUSTRY_KEYWORDS.get(bond_id, [])
+    x_query         = TWITTER_QUERIES.get(bond_id, "")
 
     # Build task list
     tasks = [
@@ -569,8 +813,10 @@ async def get_news(
         # Industry RSS
         _fetch_industry_rss(DC_DYNAMICS_RSS,  dc_keywords, "DataCenter Dynamics", limit=4),
         _fetch_industry_rss(DC_KNOWLEDGE_RSS, dc_keywords, "DataCenter Knowledge", limit=4),
-        # Reddit (free, no API key)
-        *[_fetch_reddit(q, limit=8) for q in reddit_queries[:2]],
+        # Reddit — subreddit-specific searches (restrict_sr=on)
+        *[_fetch_reddit_sub(sub, q, limit=6) for sub, q in sub_queries],
+        # X / Twitter (only runs if TWITTER_BEARER_TOKEN is set)
+        _fetch_twitter(x_query, limit=15) if x_query else asyncio.sleep(0),
     ]
 
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -591,8 +837,10 @@ async def get_news(
     industry_items += safe(results[idx]); idx += 1
 
     reddit_items = []
-    for _ in reddit_queries[:2]:
+    for _ in sub_queries:
         reddit_items += safe(results[idx]); idx += 1
+
+    x_items = safe(results[idx]); idx += 1
 
     # Deduplicate by URL
     seen = set()
@@ -604,7 +852,7 @@ async def get_news(
             all_news.append(item)
 
     all_social = []
-    for item in reddit_items:
+    for item in reddit_items + x_items:
         url = item.get("url", "")
         if url and url not in seen and item.get("title"):
             seen.add(url)
@@ -636,5 +884,6 @@ async def get_news(
         "social":   regular_social[:15],
         "industry": industry_items[:8],
     }
+
     _news_cache[bond_id] = {"data": result, "ts": now_ts}
     return result
