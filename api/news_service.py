@@ -194,6 +194,26 @@ PINNED_ARTICLES = {
         {"title": "Softbank Group — Investor Relations", "url": "https://group.softbank/en/ir", "source": "SoftBank IR", "type": "pinned"},
         {"title": "Austin Business Journal — Softbank Datacenter in Austin", "url": "https://www.bizjournals.com/austin/", "source": "Austin Business Journal", "type": "pinned"},
     ],
+    "hut_beacon_point": [
+        {"title": "HUT 8 — Corporate IR Page", "url": "https://hut8.com/investors/", "source": "HUT 8 IR", "type": "pinned"},
+        {"title": "Corpus Christi Caller-Times — Local Coverage", "url": "https://www.caller.com/", "source": "Caller-Times", "type": "pinned"},
+        {"title": "Corpus Christi Business News", "url": "https://ccbiznews.com/", "source": "CC Biz News", "type": "pinned"},
+    ],
+    "tract_d": [
+        {"title": "TRIC — Tahoe Reno Industrial Center Data Center Info", "url": "https://tahoereno.com/data-center/", "source": "TRIC", "type": "pinned"},
+        {"title": "Storey County Business Development", "url": "https://storeycounty.org/277/Business-Development", "source": "Storey County", "type": "pinned"},
+    ],
+    "polar_dc": [
+        {"title": "Herøya Industripark — Industrial Park Site", "url": "https://www.heroya-industripark.no/", "source": "Herøya Industripark", "type": "pinned"},
+        {"title": "Drangedal Kommune — Municipality Portal", "url": "https://www.drangedal.kommune.no/", "source": "Drangedal Kommune", "type": "pinned"},
+        {"title": "Porsgrunn Kommune — Municipality Portal", "url": "https://www.porsgrunn.kommune.no/", "source": "Porsgrunn Kommune", "type": "pinned"},
+        {"title": "E24 — Norwegian Business News", "url": "https://e24.no/", "source": "E24", "type": "pinned"},
+    ],
+    "prime_dc": [
+        {"title": "Site Selection Magazine — Prime ORD Coverage", "url": "https://siteselection.com/", "source": "Site Selection", "type": "pinned"},
+        {"title": "Village of Elk Grove Village — Official Government Portal", "url": "https://www.elkgrove.org/", "source": "Village of Elk Grove", "type": "pinned"},
+        {"title": "Crain's Chicago Business — Data Center Coverage", "url": "https://www.chicagobusiness.com/", "source": "Crain's Chicago", "type": "pinned"},
+    ],
 }
 
 # ── Local outlet Google News RSS (site-targeted, reliable) ───────────────────
@@ -349,6 +369,38 @@ LOCAL_OUTLET_RSS = {
         # KVUE + KXAN + Austin Monitor
         "https://news.google.com/rss/search?q=(site:kvue.com+OR+site:kxan.com+OR+site:austinmonitor.com)+%22Softbank%22+OR+%22data+center%22+Austin&hl=en-US&gl=US&ceid=US:en",
     ],
+    "hut_beacon_point": [
+        # Caller-Times — primary Corpus Christi daily
+        "https://news.google.com/rss/search?q=site:caller.com+%22Nueces+County%22+OR+%22NVIDIA%22+OR+%22data+center%22+OR+%22Robstown%22+OR+%22Beacon+Point%22&hl=en-US&gl=US&ceid=US:en",
+        # KRIS 6 + KIII-TV + Fox 38 — Corpus Christi broadcast
+        "https://news.google.com/rss/search?q=(site:kristv.com+OR+site:kiiitv.com+OR+site:fox38corpuschristi.com)+%22data+center%22+OR+%22NVIDIA%22+OR+%22Nueces%22+OR+%22HUT%22&hl=en-US&gl=US&ceid=US:en",
+        # CC Biz News + Texas Tribune + San Antonio Express-News
+        "https://news.google.com/rss/search?q=(site:ccbiznews.com+OR+site:texastribune.org+OR+site:expressnews.com)+%22Nueces+County%22+OR+%22Corpus+Christi%22+%22data+center%22+OR+%22NVIDIA%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    "tract_d": [
+        # Comstock Chronicle — most local to Storey County
+        "https://news.google.com/rss/search?q=site:thecomstockchronicle.com&hl=en-US&gl=US&ceid=US:en",
+        # Reno Gazette-Journal + Nevada Appeal
+        "https://news.google.com/rss/search?q=(site:rgj.com+OR+site:nevadaappeal.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22Tahoe+Reno%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # KOLO TV + KTVN + KRNV
+        "https://news.google.com/rss/search?q=(site:kolotv.com+OR+site:2news.com+OR+site:mynews4.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    "polar_dc": [
+        # Drangedalsposten + Porsgrunns Dagblad + Telemarksavisa
+        "https://news.google.com/rss/search?q=(site:drangedalsposten.no+OR+site:pd.no+OR+site:ta.no)+datasenter+OR+PolarDC+OR+Herøya+OR+Drangedal&hl=no&gl=NO&ceid=NO:no",
+        # NRK Vestfold og Telemark — state broadcaster
+        "https://news.google.com/rss/search?q=site:nrk.no+datasenter+OR+%22PolarDC%22+OR+%22Drangedal%22+OR+%22Herøya%22&hl=no&gl=NO&ceid=NO:no",
+        # E24 + Dagens Næringsliv — Norwegian business press
+        "https://news.google.com/rss/search?q=(site:e24.no+OR+site:dn.no)+datasenter+OR+PolarDC+OR+Crusoe+OR+CoreWeave+OR+Drangedal&hl=no&gl=NO&ceid=NO:no",
+    ],
+    "prime_dc": [
+        # Journal & Topics + Daily Herald + Elk Grove Patch — suburban local
+        "https://news.google.com/rss/search?q=(site:journal-topics.com+OR+site:dailyherald.com+OR+site:patch.com/illinois/elkgrove)+%22data+center%22+OR+%22CoreWeave%22+OR+%22Prime+DC%22+OR+%22Elk+Grove%22&hl=en-US&gl=US&ceid=US:en",
+        # Chicago Construction News + Crain's Chicago Business
+        "https://news.google.com/rss/search?q=(site:chicagoconstructionnews.com+OR+site:chicagobusiness.com)+%22Elk+Grove%22+OR+%22data+center%22+OR+%22CoreWeave%22+OR+%22Prime+DC%22&hl=en-US&gl=US&ceid=US:en",
+        # WGN + CBS Chicago — broadcast
+        "https://news.google.com/rss/search?q=(site:wgntv.com+OR+site:cbsnews.com)+%22Elk+Grove%22+%22data+center%22+OR+%22CoreWeave%22+OR+%22Prime+DC%22&hl=en-US&gl=US&ceid=US:en",
+    ],
 }
 
 # ── NewsAPI targeted queries ─────────────────────────────────────────────────
@@ -443,6 +495,26 @@ NEWSAPI_QUERIES = {
         'Softbank "Austin" Texas AI datacenter hyperscale',
         'SBE Softbank "Travis County" OR Austin Texas datacenter',
     ],
+    "hut_beacon_point": [
+        '"HUT 8" NVIDIA datacenter "Nueces County" OR "Corpus Christi" Texas',
+        '"HUT 8" OR "Beacon Point" NVIDIA Texas datacenter construction 2025 OR 2026',
+        'HUT NVIDIA "Nueces County" OR Robstown Texas hyperscale datacenter',
+    ],
+    "tract_d": [
+        'Tract Fleet NVIDIA datacenter "Storey County" Nevada',
+        'NVIDIA datacenter Nevada "Storey County" OR "Tahoe Reno" construction',
+        'TRIC datacenter Nevada NVIDIA 2025 OR 2026',
+    ],
+    "polar_dc": [
+        '"PolarDC" OR "Polar DC" Norway Crusoe CoreWeave datacenter',
+        '"PolarDC" Norway datasenter Drangedal OR Herøya OR Porsgrunn',
+        'Crusoe CoreWeave Norway datacenter construction 2025 OR 2026',
+    ],
+    "prime_dc": [
+        '"Prime DC" OR "Prime ORD" CoreWeave "Elk Grove" Illinois datacenter',
+        '"Prime DC" CoreWeave datacenter Chicago OR "Elk Grove Village" construction',
+        'CoreWeave "Elk Grove" OR "Cook County" Illinois datacenter 2025 OR 2026',
+    ],
 }
 
 # ── Industry RSS keywords per bond ───────────────────────────────────────────
@@ -465,6 +537,10 @@ DC_INDUSTRY_KEYWORDS = {
     "edged_compute":   ["edged compute", "edged energy", "aurora", "illinois", "coreweave", "alibaba", "koch"],
     "core_scientific": ["core scientific", "corz", "coreweave", "denton", "marble", "muskogee", "dalton", "austin"],
     "sbe_softbank":    ["sbe", "softbank", "austin", "texas", "travis"],
+    "hut_beacon_point": ["hut 8", "hut8", "beacon point", "nvidia", "nueces", "corpus christi", "robstown"],
+    "tract_d":          ["tract", "nvidia", "nevada", "storey", "tric", "fleet"],
+    "polar_dc":         ["polar dc", "polardc", "norway", "crusoe", "coreweave", "drangedal", "heroya", "porsgrunn"],
+    "prime_dc":         ["prime dc", "prime ord", "elk grove", "coreweave", "illinois", "chicago"],
 }
 
 # ── Reddit subreddit-targeted queries ─────────────────────────────────────────
@@ -556,6 +632,24 @@ REDDIT_SUBREDDIT_QUERIES: dict[str, list[tuple[str, str]]] = {
         ("Austin",      "Softbank datacenter SBE"),
         ("texas",       "Softbank SBE datacenter Austin"),
     ],
+    "hut_beacon_point": [
+        ("texas",       "HUT 8 NVIDIA datacenter Nueces County Corpus Christi"),
+        ("datacenter",  "HUT 8 NVIDIA Beacon Point Texas hyperscale"),
+    ],
+    "tract_d": [
+        ("Reno",        "NVIDIA datacenter Storey County"),
+        ("Nevada",      "NVIDIA data center Storey Tahoe Reno"),
+        ("datacenter",  "NVIDIA Nevada Tahoe Reno TRIC Fleet"),
+    ],
+    "polar_dc": [
+        ("europe",      "PolarDC Norway Crusoe CoreWeave datacenter"),
+        ("datacenter",  "PolarDC Norway Drangedal Crusoe CRWV"),
+    ],
+    "prime_dc": [
+        ("chicago",     "Prime DC CoreWeave Elk Grove datacenter"),
+        ("illinois",    "Prime DC CoreWeave Elk Grove Village data center"),
+        ("datacenter",  "Prime DC CoreWeave Elk Grove Illinois"),
+    ],
 }
 
 # ── X / Twitter search queries (requires Basic plan bearer token) ─────────────
@@ -578,8 +672,12 @@ TWITTER_QUERIES = {
     "meridian":        '"Meridian" "Sullivan County" OR "New Lebanon" Indiana datacenter -is:retweet lang:en',
     "edged_compute":   '("Edged Compute" OR "Edged Energy") CoreWeave OR Alibaba datacenter -is:retweet lang:en',
     "core_scientific": '($CORZ OR "Core Scientific") CoreWeave datacenter HPC -is:retweet lang:en',
-    "hut_google":      '"HUT 8" OR "HUT8" Google datacenter Louisiana -is:retweet lang:en',
-    "sbe_softbank":    '"Softbank" OR "SBE" Austin Texas datacenter -is:retweet lang:en',
+    "hut_google":       '"HUT 8" OR "HUT8" Google datacenter Louisiana -is:retweet lang:en',
+    "sbe_softbank":     '"Softbank" OR "SBE" Austin Texas datacenter -is:retweet lang:en',
+    "hut_beacon_point": '"HUT 8" OR "HUT8" NVIDIA "Nueces" OR "Corpus Christi" OR "Beacon Point" -is:retweet lang:en',
+    "tract_d":          '("NVIDIA" OR "Tract") "Storey County" OR "Tahoe Reno" datacenter -is:retweet lang:en',
+    "polar_dc":         '"PolarDC" OR "Polar DC" Norway Crusoe OR CoreWeave datacenter -is:retweet',
+    "prime_dc":         '"Prime DC" OR "Prime ORD" CoreWeave "Elk Grove" Illinois -is:retweet lang:en',
 }
 
 
