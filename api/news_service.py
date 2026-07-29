@@ -177,6 +177,9 @@ PINNED_ARTICLES = {
         {"title": "QTS Data Centers — Fayetteville (Project Excalibur)", "url": "https://q.com/data-centers/fayetteville/", "source": "QTS", "type": "pinned"},
         {"title": "City of Fayetteville — Official Data Center Discussion Page", "url": "https://www.fayetteville-ga.gov/746/Data-Center-Discussion", "source": "City of Fayetteville", "type": "pinned"},
         {"title": "Fayette News — Construction Safety at Georgia Data Center (Suit)", "url": "https://www.fayette-news.net/news/shoddy-construction-at-georgia-data-center-killed-worker-suit-says/article_0f93529a-a41e-4458-b973-18817c8164ce.html", "source": "Fayette County News", "type": "pinned"},
+        {"title": "The Citizen — Fayetteville Hyperlocal Coverage", "url": "https://thecitizen.com/", "source": "The Citizen", "type": "pinned"},
+        {"title": "Atlanta News First — Broke the QTS Fayette Water-Use Investigation", "url": "https://www.atlantanewsfirst.com/", "source": "Atlanta News First", "type": "pinned"},
+        {"title": "Fayette County Government — Official Portal", "url": "https://fayettecountyga.gov/", "source": "Fayette County", "type": "pinned"},
     ],
     "meridian": [
         {"title": "Indiana Economic Development Corporation — Data Center Projects", "url": "https://iedc.in.gov/", "source": "IEDC", "type": "pinned"},
@@ -213,6 +216,31 @@ PINNED_ARTICLES = {
         {"title": "Site Selection Magazine — Prime ORD Coverage", "url": "https://siteselection.com/", "source": "Site Selection", "type": "pinned"},
         {"title": "Village of Elk Grove Village — Official Government Portal", "url": "https://www.elkgrove.org/", "source": "Village of Elk Grove", "type": "pinned"},
         {"title": "Crain's Chicago Business — Data Center Coverage", "url": "https://www.chicagobusiness.com/", "source": "Crain's Chicago", "type": "pinned"},
+    ],
+    "sopaipilla": [
+        {"title": "El Paso Matters — Meta / Data Center Investigative Coverage", "url": "https://elpasomatters.org/", "source": "El Paso Matters", "type": "pinned"},
+        {"title": "El Paso Inc. — Business Coverage (Meta El Paso)", "url": "https://www.elpasoinc.com/", "source": "El Paso Inc.", "type": "pinned"},
+        {"title": "El Paso Times — Local Daily Coverage", "url": "https://www.elpasotimes.com/", "source": "El Paso Times", "type": "pinned"},
+    ],
+    "glxy_helios": [
+        {"title": "The Texas Spur — Dickens County Local Paper (broke Galaxy/CoreWeave lease)", "url": "https://www.thetexasspur.com/", "source": "The Texas Spur", "type": "pinned"},
+        {"title": "EverythingLubbock — Broke Helios Phase 2 ($3.5B) Expansion Story", "url": "https://www.everythinglubbock.com/", "source": "EverythingLubbock", "type": "pinned"},
+    ],
+    "sbe_milam": [
+        {"title": "Austin Business Journal — Broke the SBE / Stargate Milam Story", "url": "https://www.bizjournals.com/austin/", "source": "Austin Business Journal", "type": "pinned"},
+        {"title": "The Cameron Herald — Milam County Seat Weekly", "url": "https://www.cameronherald.com/", "source": "The Cameron Herald", "type": "pinned"},
+        {"title": "Rockdale Reporter — Milam County Weekly", "url": "https://www.rockdalereporter.com/", "source": "Rockdale Reporter", "type": "pinned"},
+    ],
+    "qts_magnolia": [
+        {"title": "Columbus Business First — Broke QTS New Albany CRA Approval", "url": "https://www.bizjournals.com/columbus/", "source": "Columbus Business First", "type": "pinned"},
+        {"title": "Dallas Business Journal — Broke the QTS Wilmer TDLR Filings", "url": "https://www.bizjournals.com/dallas/", "source": "Dallas Business Journal", "type": "pinned"},
+        {"title": "News 5 Cleveland — New Albany Data Center Feature", "url": "https://www.news5cleveland.com/", "source": "News 5 Cleveland", "type": "pinned"},
+        {"title": "Arizona Republic (azcentral) — Phoenix / West Valley Data Center Coverage", "url": "https://www.azcentral.com/", "source": "Arizona Republic", "type": "pinned"},
+        {"title": "The Glendale Star — West Valley Hyperlocal (PHX3 campus)", "url": "https://www.glendalestar.com/", "source": "The Glendale Star", "type": "pinned"},
+        {"title": "Columbus Dispatch — New Albany Coverage", "url": "https://www.dispatch.com/", "source": "Columbus Dispatch", "type": "pinned"},
+        {"title": "Richmond BizSense — Henrico QTS / Data Center Coverage", "url": "https://richmondbizsense.com/", "source": "Richmond BizSense", "type": "pinned"},
+        {"title": "Richmond Times-Dispatch — Henrico Data Center Coverage", "url": "https://richmond.com/", "source": "Richmond Times-Dispatch", "type": "pinned"},
+        {"title": "Henrico Citizen — Hyperlocal (RIC1 / RIC3 campuses)", "url": "https://www.henricocitizen.com/", "source": "Henrico Citizen", "type": "pinned"},
     ],
 }
 
@@ -308,6 +336,8 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=site:ajc.com+%22QTS%22+OR+%22Fayetteville%22+data+center+OR+Microsoft&hl=en-US&gl=US&ceid=US:en",
         # FOX 5 Atlanta
         "https://news.google.com/rss/search?q=site:fox5atlanta.com+%22Fayette%22+OR+%22QTS%22+OR+%22data+center%22+OR+%22Microsoft%22&hl=en-US&gl=US&ceid=US:en",
+        # WSB-TV + Atlanta News First (broke the QTS water-use investigation)
+        "https://news.google.com/rss/search?q=(site:wsbtv.com+OR+site:atlantanewsfirst.com)+%22QTS%22+OR+%22Fayette%22+OR+%22data+center%22+OR+%22Microsoft%22&hl=en-US&gl=US&ceid=US:en",
     ],
     # VOLTAG — identical campus to Vantage (Shackelford Co., TX)
     "voltag": [
@@ -400,6 +430,50 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=(site:chicagoconstructionnews.com+OR+site:chicagobusiness.com)+%22Elk+Grove%22+OR+%22data+center%22+OR+%22CoreWeave%22+OR+%22Prime+DC%22&hl=en-US&gl=US&ceid=US:en",
         # WGN + CBS Chicago — broadcast
         "https://news.google.com/rss/search?q=(site:wgntv.com+OR+site:cbsnews.com)+%22Elk+Grove%22+%22data+center%22+OR+%22CoreWeave%22+OR+%22Prime+DC%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    # SOPAIPILLA — El Paso, TX (Meta)
+    "sopaipilla": [
+        # El Paso Times + El Paso Matters — primary daily + investigative nonprofit
+        "https://news.google.com/rss/search?q=(site:elpasotimes.com+OR+site:elpasomatters.org)+%22data+center%22+OR+%22Meta%22+OR+%22Sopaipilla%22&hl=en-US&gl=US&ceid=US:en",
+        # El Paso TV market — KVIA / KTSM / CBS4 / KFOX
+        "https://news.google.com/rss/search?q=(site:kvia.com+OR+site:ktsm.com+OR+site:cbs4local.com+OR+site:kfoxtv.com)+%22data+center%22+OR+%22Meta%22&hl=en-US&gl=US&ceid=US:en",
+        # El Paso Inc. + Spotlight EP — business / local
+        "https://news.google.com/rss/search?q=(site:elpasoinc.com+OR+site:spotlightepnews.com)+%22data+center%22+OR+%22Meta%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    # GALAXY HELIOS — Afton, Dickens County, TX (Galaxy / CoreWeave)
+    "glxy_helios": [
+        # The Texas Spur — the dedicated Dickens County paper (broke the lease story)
+        "https://news.google.com/rss/search?q=site:thetexasspur.com&hl=en-US&gl=US&ceid=US:en",
+        # Lubbock market — EverythingLubbock (broke Helios Phase 2) / Avalanche-Journal / KCBD
+        "https://news.google.com/rss/search?q=(site:everythinglubbock.com+OR+site:lubbockonline.com+OR+site:kcbd.com)+%22data+center%22+OR+%22Helios%22+OR+%22Galaxy%22+OR+%22Afton%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    # SBE MILAM — Milam County, TX (OpenAI / SBE)
+    "sbe_milam": [
+        # Milam County weeklies — Cameron Herald + Rockdale Reporter
+        "https://news.google.com/rss/search?q=(site:cameronherald.com+OR+site:rockdalereporter.com)+%22data+center%22+OR+%22OpenAI%22+OR+%22Stargate%22&hl=en-US&gl=US&ceid=US:en",
+        # Waco / Temple market — KWTX / KXXV / FOX 44 / Temple Telegram
+        "https://news.google.com/rss/search?q=(site:kwtx.com+OR+site:kxxv.com+OR+site:fox44news.com+OR+site:tdtnews.com)+%22Milam%22+OR+%22data+center%22+OR+%22Stargate%22&hl=en-US&gl=US&ceid=US:en",
+        # Austin Business Journal (broke SBE/Stargate) + Bryan-College Station Eagle
+        "https://news.google.com/rss/search?q=(site:bizjournals.com+OR+site:theeagle.com)+%22Milam%22+%22data+center%22+OR+%22Stargate%22+OR+%22SBE%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    # QTS MAGNOLIA — 12-asset portfolio: Richmond VA / Phoenix + Glendale AZ / New Albany (Columbus) OH / DFW TX
+    "qts_magnolia": [
+        # Columbus / New Albany, OH — Dispatch, NBC4, 10TV, ThisWeek
+        "https://news.google.com/rss/search?q=(site:dispatch.com+OR+site:nbc4i.com+OR+site:10tv.com+OR+site:thisweeknews.com)+%22QTS%22+OR+%22New+Albany%22+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Columbus business/civic — Business First (broke CRA), Columbus Underground, News 5 Cleveland
+        "https://news.google.com/rss/search?q=(site:bizjournals.com+OR+site:columbusunderground.com+OR+site:news5cleveland.com)+%22QTS%22+OR+%22New+Albany%22+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Phoenix, AZ — azcentral, 12 News, azfamily, ABC15, FOX10
+        "https://news.google.com/rss/search?q=(site:azcentral.com+OR+site:12news.com+OR+site:azfamily.com+OR+site:abc15.com+OR+site:fox10phoenix.com)+%22QTS%22+OR+%22data+center%22+Phoenix+OR+Glendale&hl=en-US&gl=US&ceid=US:en",
+        # West Valley hyperlocal (PHX3 / Glendale-Litchfield Park) — Glendale Star, West Valley View, AZ Big Media
+        "https://news.google.com/rss/search?q=(site:glendalestar.com+OR+site:westvalleyview.com+OR+site:azbigmedia.com)+%22data+center%22+OR+%22QTS%22&hl=en-US&gl=US&ceid=US:en",
+        # Dallas-Fort Worth, TX (Irving / Las Colinas / Wilmer) — DMN, Star-Telegram, WFAA, NBC DFW, FOX4
+        "https://news.google.com/rss/search?q=(site:dallasnews.com+OR+site:star-telegram.com+OR+site:wfaa.com+OR+site:nbcdfw.com+OR+site:fox4news.com)+%22QTS%22+OR+%22data+center%22+Irving+OR+Wilmer+OR+%22Las+Colinas%22&hl=en-US&gl=US&ceid=US:en",
+        # DFW business/local — Dallas Business Journal (broke Wilmer TDLR), Fort Worth Report, Irving Rambler
+        "https://news.google.com/rss/search?q=(site:bizjournals.com+OR+site:fortworthreport.org+OR+site:irvingrambler.com)+%22QTS%22+OR+%22data+center%22+Irving+OR+Wilmer&hl=en-US&gl=US&ceid=US:en",
+        # Richmond / Henrico, VA (RIC1 + RIC3 campuses, 255 MW) — Times-Dispatch, BizSense, Henrico Citizen, Virginia Business
+        "https://news.google.com/rss/search?q=(site:richmond.com+OR+site:richmondbizsense.com+OR+site:henricocitizen.com+OR+site:virginiabusiness.com)+%22QTS%22+OR+%22data+center%22+OR+%22Henrico%22&hl=en-US&gl=US&ceid=US:en",
+        # Richmond broadcast + public media — NBC12, WRIC 8News, WTVR CBS6, VPM
+        "https://news.google.com/rss/search?q=(site:nbc12.com+OR+site:wric.com+OR+site:wtvr.com+OR+site:vpm.org)+%22QTS%22+OR+%22data+center%22+OR+%22Henrico%22&hl=en-US&gl=US&ceid=US:en",
     ],
 }
 
@@ -515,6 +589,26 @@ NEWSAPI_QUERIES = {
         '"Prime DC" CoreWeave datacenter Chicago OR "Elk Grove Village" construction',
         'CoreWeave "Elk Grove" OR "Cook County" Illinois datacenter 2025 OR 2026',
     ],
+    "sopaipilla": [
+        '"Meta" "El Paso" data center OR datacenter',
+        'Meta datacenter "El Paso" Texas construction 2026',
+        '"Project Sopaipilla" OR "Meta El Paso" hyperscale',
+    ],
+    "glxy_helios": [
+        '"Helios" Galaxy OR CoreWeave data center Texas',
+        'Galaxy Digital "Dickens County" OR "Afton" data center',
+        'CoreWeave Helios Texas hyperscale 2026 construction',
+    ],
+    "sbe_milam": [
+        '"Milam County" data center OpenAI OR Stargate',
+        'SBE OR "Energy Global" Milam Texas data center',
+        'OpenAI Stargate "Milam" OR "Rosebud" Texas 2026',
+    ],
+    "qts_magnolia": [
+        '"QTS" data center "New Albany" OR Columbus Ohio',
+        '"QTS" OR "Magnolia" data center Phoenix OR Glendale Arizona',
+        '"QTS" data center Irving OR Wilmer OR "Fort Worth" Texas',
+    ],
 }
 
 # ── Industry RSS keywords per bond ───────────────────────────────────────────
@@ -541,6 +635,10 @@ DC_INDUSTRY_KEYWORDS = {
     "tract_d":          ["tract", "nvidia", "nevada", "storey", "tric", "fleet"],
     "polar_dc":         ["polar dc", "polardc", "norway", "crusoe", "coreweave", "drangedal", "heroya", "porsgrunn"],
     "prime_dc":         ["prime dc", "prime ord", "elk grove", "coreweave", "illinois", "chicago"],
+    "sopaipilla":       ["meta", "el paso", "sopaipilla", "data center", "texas", "hyperscale"],
+    "glxy_helios":      ["galaxy", "glxy", "helios", "coreweave", "afton", "dickens county", "spur", "texas"],
+    "sbe_milam":        ["openai", "stargate", "sbe", "energy global", "milam", "rosebud", "cameron", "texas"],
+    "qts_magnolia":     ["qts", "magnolia", "microsoft", "meta", "oracle", "new albany", "columbus", "phoenix", "glendale", "dallas", "fort worth", "irving", "wilmer", "richmond", "henrico", "data center"],
 }
 
 # ── Reddit subreddit-targeted queries ─────────────────────────────────────────
@@ -650,6 +748,28 @@ REDDIT_SUBREDDIT_QUERIES: dict[str, list[tuple[str, str]]] = {
         ("illinois",    "Prime DC CoreWeave Elk Grove Village data center"),
         ("datacenter",  "Prime DC CoreWeave Elk Grove Illinois"),
     ],
+    "sopaipilla": [
+        ("ElPaso",      "Meta data center"),
+        ("texas",       "El Paso Meta datacenter"),
+        ("datacenter",  "Meta El Paso Sopaipilla"),
+    ],
+    "glxy_helios": [
+        ("Lubbock",     "data center Galaxy Helios"),
+        ("texas",       "Dickens County Afton data center"),
+        ("datacenter",  "Galaxy Helios CoreWeave Texas"),
+    ],
+    "sbe_milam": [
+        ("texas",       "Milam County data center OpenAI"),
+        ("OpenAI",      "Stargate Milam Texas data center"),
+        ("datacenter",  "OpenAI SBE Milam County Texas"),
+    ],
+    "qts_magnolia": [
+        ("Columbus",    "QTS data center New Albany"),
+        ("phoenix",     "QTS data center"),
+        ("Dallas",      "QTS data center Irving Wilmer"),
+        ("rva",         "QTS data center Henrico"),
+        ("datacenter",  "QTS Magnolia Microsoft Meta Oracle"),
+    ],
 }
 
 # ── X / Twitter search queries (requires Basic plan bearer token) ─────────────
@@ -678,6 +798,10 @@ TWITTER_QUERIES = {
     "tract_d":          '("NVIDIA" OR "Tract") "Storey County" OR "Tahoe Reno" datacenter -is:retweet lang:en',
     "polar_dc":         '"PolarDC" OR "Polar DC" Norway Crusoe OR CoreWeave datacenter -is:retweet',
     "prime_dc":         '"Prime DC" OR "Prime ORD" CoreWeave "Elk Grove" Illinois -is:retweet lang:en',
+    "sopaipilla":       '"Meta" "El Paso" data center OR datacenter -is:retweet lang:en',
+    "glxy_helios":      '("Galaxy Digital" OR $GLXY OR "Helios") "CoreWeave" OR "Dickens County" datacenter -is:retweet lang:en',
+    "sbe_milam":        '("OpenAI" OR "Stargate" OR "SBE") "Milam" OR "Rosebud" datacenter -is:retweet lang:en',
+    "qts_magnolia":     '"QTS" (Magnolia OR "data center") (Columbus OR "New Albany" OR Phoenix OR Glendale OR "Fort Worth" OR Irving) -is:retweet lang:en',
 }
 
 

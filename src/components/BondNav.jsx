@@ -12,7 +12,6 @@ const RATING_COLOR = (r) => {
 
 export default function BondNav({ bonds, activeBondId, activeSubId, onSelect, onHome }) {
   const [subOpen, setSubOpen] = useState(false)
-  const relatedBx = bonds.find(b => b.id === 'related_bx')
 
   return (
     <div
@@ -34,15 +33,17 @@ export default function BondNav({ bonds, activeBondId, activeSubId, onSelect, on
         </button>
 
         {bonds.map(bond => {
-          const isRelated = bond.id === 'related_bx'
           const isActive = bond.id === activeBondId
-          const hasSubTranches = isRelated && bond.sub_tranches?.length > 0
+          const hasSubTranches = bond.sub_tranches?.length > 0
+          const mainLabel = bond.id === 'related_bx'
+            ? 'Main Tranche (7.500% 2042)'
+            : (bond.coupon ? `Main Tranche (${bond.coupon})` : 'Main Tranche')
 
           return (
             <div key={bond.id} className="relative flex-none">
               <button
                 onClick={() => {
-                  if (isRelated) setSubOpen(v => !v)
+                  if (hasSubTranches) setSubOpen(v => !v)
                   onSelect(bond.id, null)
                 }}
                 className={`flex items-center gap-1.5 px-3 py-2.5 text-xs font-medium border-b-2 transition-colors whitespace-nowrap ${
@@ -56,22 +57,22 @@ export default function BondNav({ bonds, activeBondId, activeSubId, onSelect, on
                 {hasSubTranches && <ChevronDown size={10} className={subOpen && isActive ? 'rotate-180 transition-transform' : 'transition-transform'} />}
               </button>
 
-              {/* Sub-tranche dropdown for Related/BX */}
-              {isRelated && subOpen && isActive && hasSubTranches && (
+              {/* Sub-tranche dropdown for any bond with multiple bonds under one ticker */}
+              {subOpen && isActive && hasSubTranches && (
                 <div
                   className="absolute top-full left-0 z-50 w-56 card shadow-xl py-1"
                   style={{ background: '#1c2128' }}
                 >
                   <button
-                    onClick={() => { onSelect('related_bx', null); setSubOpen(false) }}
+                    onClick={() => { onSelect(bond.id, null); setSubOpen(false) }}
                     className={`w-full text-left px-3 py-2 text-xs hover:bg-white/5 ${!activeSubId ? 'text-blue' : 'text-primary'}`}
                   >
-                    Main Tranche (7.500% 2042)
+                    {mainLabel}
                   </button>
                   {bond.sub_tranches.map(sub => (
                     <button
                       key={sub.id}
-                      onClick={() => { onSelect('related_bx', sub.id); setSubOpen(false) }}
+                      onClick={() => { onSelect(bond.id, sub.id); setSubOpen(false) }}
                       className={`w-full text-left px-3 py-2 text-xs hover:bg-white/5 ${activeSubId === sub.id ? 'text-blue' : 'text-primary'}`}
                     >
                       {sub.name.split('—')[1]?.trim() || sub.name}
