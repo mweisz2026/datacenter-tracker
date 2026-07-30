@@ -121,6 +121,15 @@ _HIGH_KW = [
     "osha citation", "safety violation", "accident at site", "injury at site", "fatality",
     # Financial / lease risk
     "lease concern", "tenant risk", "credit concern",
+    # Legal / arbitration (added 2026-07-30). "lawsuit"/"sued" already above.
+    # Bare "sue"/"delay" intentionally omitted: with the keyword hard-floor they
+    # would force false alerts on the name "Sue" and on "no delay".
+    "lawsuits", "sues", "suing", "files suit", "filed suit", "files a lawsuit",
+    "litigation", "legal battle", "files complaint", "complaint filed",
+    "subpoena", "lawyer", "lawyers", "attorney", "attorneys", "arbitration",
+    "regulatory challenge", "challenges regulation",
+    # Schedule slippage (verb/plural forms; phrases like "construction delay" above)
+    "delays", "delayed",
 ]
 
 
@@ -354,6 +363,14 @@ async def score_and_filter(
 
         if category == "IRRELEVANT" or score == 0:
             continue
+
+        # Hard floor: a HIGH/CRITICAL trigger word guarantees the item surfaces as
+        # an alert, even if the model under-scored it (IRRELEVANT handled above).
+        # This is what makes trigger words reliable rather than advisory.
+        if kw["category"] in ("CRITICAL", "HIGH") and kw["score"] > score:
+            score    = kw["score"]
+            category = kw["category"]
+            reason   = kw["reason"]
 
         enriched = {
             **item,

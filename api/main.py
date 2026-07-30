@@ -122,7 +122,7 @@ async def debug_email():
     Busts the cache, re-fetches all bonds, and reports on each alert.
     """
     import os as _os
-    from email_service import RESEND_API_KEY, ALERT_EMAIL_TO
+    from email_service import RESEND_API_KEY, ALERT_EMAIL_TO, ALERT_RECIPIENTS
 
     _alerts_cache["data"] = None
     _alerts_cache["ts"]   = 0
@@ -150,6 +150,7 @@ async def debug_email():
     return {
         "resend_configured": bool(RESEND_API_KEY),
         "email_to":          ALERT_EMAIL_TO,
+        "email_recipients":  ALERT_RECIPIENTS,
         "email_window_days": _EMAIL_MAX_AGE_DAYS,
         "total_alerts":      len(all_alert_items),
         "would_send_count":  sum(1 for r in report if r["would_send"]),

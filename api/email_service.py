@@ -14,7 +14,10 @@ import httpx
 from datetime import datetime, timezone
 
 RESEND_API_KEY   = os.getenv("RESEND_API_KEY", "")
-ALERT_EMAIL_TO   = os.getenv("ALERT_EMAIL_TO", "mweisz@diametercap.com")
+# Comma-separated list of recipients. Env var overrides the default entirely,
+# so if ALERT_EMAIL_TO is set in Vercel it must include every recipient.
+ALERT_EMAIL_TO   = os.getenv("ALERT_EMAIL_TO", "mweisz@diametercap.com,blogigian@diametercap.com")
+ALERT_RECIPIENTS = [e.strip() for e in ALERT_EMAIL_TO.split(",") if e.strip()]
 ALERT_EMAIL_FROM = os.getenv("ALERT_EMAIL_FROM", "DC Sentinel <onboarding@resend.dev>")
 DASHBOARD_URL    = "https://datacenter-tracker-kappa.vercel.app"
 
@@ -162,13 +165,13 @@ async def send_digest_email(alerts: list) -> bool:
                 },
                 json={
                     "from":    ALERT_EMAIL_FROM,
-                    "to":      [ALERT_EMAIL_TO],
+                    "to":      ALERT_RECIPIENTS,
                     "subject": subject,
                     "html":    html,
                 },
             )
         if r.status_code in (200, 201):
-            print(f"[email] Digest sent: {len(alerts)} alert(s) → {ALERT_EMAIL_TO}")
+            print(f"[email] Digest sent: {len(alerts)} alert(s) → {', '.join(ALERT_RECIPIENTS)}")
             return True
         else:
             print(f"[email] Resend {r.status_code}: {r.text[:300]}")
