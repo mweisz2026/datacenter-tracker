@@ -207,6 +207,39 @@ async def run_cron(request: Request, secret: str = ""):
     return {"ok": True, "alerts_found": n, "emailed": len(new_alerts)}
 
 
+@app.get("/api/test_email")
+async def test_email(to: str = ""):
+    """
+    Send a single clearly-labeled [TEST] digest to verify delivery/formatting.
+    Does NOT mark anything as emailed (real dedup untouched).
+    Safety: can only send to addresses already on the approved recipient list,
+    so it can't be used as an open mailer. `?to=` narrows to a subset (e.g.
+    just yourself); omit it to send to the full list.
+    """
+    from datetime import datetime, timezone
+    from email_service import send_digest_email, ALERT_RECIPIENTS, RESEND_API_KEY
+
+    if not RESEND_API_KEY:
+        return {"sent": False, "error": "RESEND_API_KEY not configured"}
+
+    requested = [e.strip() for e in to.split(",") if e.strip()]
+    # Whitelist: only allow addresses already approved as recipients
+    recips = [e for e in requested if e in ALERT_RECIPIENTS] or ALERT_RECIPIENTS
+
+    sample = [{
+        "bond_name":            "Tract",
+        "importance_category":  "HIGH",
+        "importance_score":     7,
+        "importance_reason":    "TEST alert — keyword match: sues",
+        "published":            datetime.now(timezone.utc).isoformat(),
+        "source":               "KOLO 8 (TEST)",
+        "title":                "[TEST] NV Energy sues Tract over data center regulations",
+        "url":                  "https://www.kolotv.com/2026/07/29/nv-energy-sues-tract-over-data-center-regulations/",
+    }]
+    sent = await send_digest_email(sample, recipients=recips, subject_prefix="[TEST] ")
+    return {"sent": sent, "recipients": recips}
+
+
 @app.get("/api/weather_all")
 async def all_weather():
     """Weather for all bond locations, fetched concurrently."""

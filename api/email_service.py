@@ -144,16 +144,19 @@ def _build_digest(alerts: list) -> tuple[str, str]:
     return subject, html
 
 
-async def send_digest_email(alerts: list) -> bool:
+async def send_digest_email(alerts: list, recipients: list = None, subject_prefix: str = "") -> bool:
     """
     Send one digest email covering all new HIGH/CRITICAL alerts across all bonds.
     alerts must include bond_name on each item.
+    recipients defaults to ALERT_RECIPIENTS; subject_prefix lets callers tag e.g. "[TEST] ".
     No-ops silently if RESEND_API_KEY is not set.
     """
     if not RESEND_API_KEY or not alerts:
         return False
 
+    to = recipients if recipients else ALERT_RECIPIENTS
     subject, html = _build_digest(alerts)
+    subject = f"{subject_prefix}{subject}"
 
     try:
         async with httpx.AsyncClient(timeout=10) as client:
@@ -165,13 +168,13 @@ async def send_digest_email(alerts: list) -> bool:
                 },
                 json={
                     "from":    ALERT_EMAIL_FROM,
-                    "to":      ALERT_RECIPIENTS,
+                    "to":      to,
                     "subject": subject,
                     "html":    html,
                 },
             )
         if r.status_code in (200, 201):
-            print(f"[email] Digest sent: {len(alerts)} alert(s) → {', '.join(ALERT_RECIPIENTS)}")
+            print(f"[email] Digest sent: {len(alerts)} alert(s) → {', '.join(to)}")
             return True
         else:
             print(f"[email] Resend {r.status_code}: {r.text[:300]}")
