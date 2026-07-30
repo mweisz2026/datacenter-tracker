@@ -141,6 +141,13 @@ PINNED_ARTICLES = {
         {"title": "PowerHouse Data Centers — Storey County News", "url": "https://www.powerhousedata.com/news/", "source": "PowerHouse DC", "type": "pinned"},
         {"title": "Novva Data Centers — Tahoe Reno Facility", "url": "https://www.novva.com/data-center-facilities/tahoe-reno-nevada/", "source": "Novva DC", "type": "pinned"},
         {"title": "Storey County Business Development", "url": "https://storeycounty.org/277/Business-Development", "source": "Storey County", "type": "pinned"},
+        {"title": "Comstock Chronicle — Virginia City Weekly (hyperlocal)", "url": "https://www.thecomstockchronicle.com/", "source": "Comstock Chronicle", "type": "pinned"},
+        {"title": "Northern Nevada Business Weekly — Broke Tract CEO Interview", "url": "https://www.nnbw.com/", "source": "NNBW", "type": "pinned"},
+        {"title": "This Is Reno — Nonprofit Digital News", "url": "https://thisisreno.com/", "source": "This Is Reno", "type": "pinned"},
+        {"title": "The Nevada Independent — Statewide Policy Coverage", "url": "https://thenevadaindependent.com/", "source": "Nevada Independent", "type": "pinned"},
+        {"title": "Nevada Newsmakers — CEO van Rooyen Interview", "url": "https://nevadanewsmakers.com/", "source": "Nevada Newsmakers", "type": "pinned"},
+        {"title": "Storey County Government — Meetings & News Flash", "url": "https://www.storeycounty.org/", "source": "Storey County Gov", "type": "pinned"},
+        {"title": "Ground News — Storey County Aggregator", "url": "https://ground.news/interest/storey-county", "source": "Ground News", "type": "pinned"},
     ],
     "cifr_black_pearl": [
         {"title": "DCD — Cipher Mining to Develop 300MW Black Pearl Site in West Texas", "url": "https://www.datacenterdynamics.com/en/news/cipher-mining-to-develop-300mw-cryptomining-data-center-site-in-west-texas/", "source": "DataCenter Dynamics", "type": "pinned"},
@@ -205,6 +212,13 @@ PINNED_ARTICLES = {
     "tract_d": [
         {"title": "TRIC — Tahoe Reno Industrial Center Data Center Info", "url": "https://tahoereno.com/data-center/", "source": "TRIC", "type": "pinned"},
         {"title": "Storey County Business Development", "url": "https://storeycounty.org/277/Business-Development", "source": "Storey County", "type": "pinned"},
+        {"title": "Comstock Chronicle — Virginia City Weekly (hyperlocal)", "url": "https://www.thecomstockchronicle.com/", "source": "Comstock Chronicle", "type": "pinned"},
+        {"title": "Northern Nevada Business Weekly — Broke Tract CEO Interview", "url": "https://www.nnbw.com/", "source": "NNBW", "type": "pinned"},
+        {"title": "This Is Reno — Nonprofit Digital News", "url": "https://thisisreno.com/", "source": "This Is Reno", "type": "pinned"},
+        {"title": "The Nevada Independent — Statewide Policy Coverage", "url": "https://thenevadaindependent.com/", "source": "Nevada Independent", "type": "pinned"},
+        {"title": "Nevada Newsmakers — CEO van Rooyen Interview", "url": "https://nevadanewsmakers.com/", "source": "Nevada Newsmakers", "type": "pinned"},
+        {"title": "Storey County Government — Meetings & News Flash", "url": "https://www.storeycounty.org/", "source": "Storey County Gov", "type": "pinned"},
+        {"title": "Ground News — Storey County Aggregator", "url": "https://ground.news/interest/storey-county", "source": "Ground News", "type": "pinned"},
     ],
     "polar_dc": [
         {"title": "Herøya Industripark — Industrial Park Site", "url": "https://www.heroya-industripark.no/", "source": "Herøya Industripark", "type": "pinned"},
@@ -288,6 +302,10 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=(site:rgj.com+OR+site:nevadaappeal.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22Tahoe+Reno%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
         # KOLO TV + KTVN + KRNV
         "https://news.google.com/rss/search?q=(site:kolotv.com+OR+site:2news.com+OR+site:mynews4.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # NNBW (broke CEO interview) + This Is Reno + Nevada Independent + KTVN CBS
+        "https://news.google.com/rss/search?q=(site:nnbw.com+OR+site:thisisreno.com+OR+site:thenevadaindependent.com+OR+site:ktvn.com)+%22Storey%22+OR+%22Tract%22+OR+%22NVIDIA%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Storey County Gov (permits/meetings) + Nevada Newsmakers
+        "https://news.google.com/rss/search?q=(site:storeycounty.org+OR+site:nevadanewsmakers.com)+%22Tract%22+OR+%22data+center%22+OR+%22permit%22&hl=en-US&gl=US&ceid=US:en",
     ],
     "cifr_black_pearl": [
         # Odessa American + Midland Reporter
@@ -414,6 +432,10 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=(site:rgj.com+OR+site:nevadaappeal.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22Tahoe+Reno%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
         # KOLO TV + KTVN + KRNV
         "https://news.google.com/rss/search?q=(site:kolotv.com+OR+site:2news.com+OR+site:mynews4.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # NNBW (broke CEO interview) + This Is Reno + Nevada Independent + KTVN CBS
+        "https://news.google.com/rss/search?q=(site:nnbw.com+OR+site:thisisreno.com+OR+site:thenevadaindependent.com+OR+site:ktvn.com)+%22Storey%22+OR+%22Tract%22+OR+%22NVIDIA%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Storey County Gov (permits/meetings) + Nevada Newsmakers
+        "https://news.google.com/rss/search?q=(site:storeycounty.org+OR+site:nevadanewsmakers.com)+%22Tract%22+OR+%22data+center%22+OR+%22permit%22&hl=en-US&gl=US&ceid=US:en",
     ],
     "polar_dc": [
         # Drangedalsposten + Porsgrunns Dagblad + Telemarksavisa
