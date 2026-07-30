@@ -158,27 +158,40 @@ async def send_digest_email(alerts: list, recipients: list = None, subject_prefi
     subject, html = _build_digest(alerts)
     subject = f"{subject_prefix}{subject}"
 
+    headers = {
+        "Authorization": f"Bearer {RESEND_API_KEY}",
+        "Content-Type":  "application/json",
+    }
+
+    async def _post(client, to_list):
+        return await client.post(
+            "https://api.resend.com/emails",
+            headers=headers,
+            json={"from": ALERT_EMAIL_FROM, "to": to_list, "subject": subject, "html": html},
+        )
+
     try:
         async with httpx.AsyncClient(timeout=10) as client:
-            r = await client.post(
-                "https://api.resend.com/emails",
-                headers={
-                    "Authorization": f"Bearer {RESEND_API_KEY}",
-                    "Content-Type":  "application/json",
-                },
-                json={
-                    "from":    ALERT_EMAIL_FROM,
-                    "to":      to,
-                    "subject": subject,
-                    "html":    html,
-                },
-            )
-        if r.status_code in (200, 201):
-            print(f"[email] Digest sent: {len(alerts)} alert(s) → {', '.join(to)}")
-            return True
-        else:
-            print(f"[email] Resend {r.status_code}: {r.text[:300]}")
-            return False
+            r = await _post(client, to)
+            if r.status_code in (200, 201):
+                print(f"[email] Digest sent: {len(alerts)} alert(s) → {', '.join(to)}")
+                return True
+
+            # Batch send failed. This commonly happens when one recipient is not
+            # permitted by Resend (e.g. the default onboarding@resend.dev sender
+            # can only email the account owner until a domain is verified) — and
+            # Resend rejects the WHOLE send. Fall back to per-recipient so one bad
+            # address can't blackout the others.
+            print(f"[email] Batch send failed {r.status_code}: {r.text[:200]} — retrying per-recipient")
+            ok_any = False
+            for addr in to:
+                rr = await _post(client, [addr])
+                if rr.status_code in (200, 201):
+                    ok_any = True
+                    print(f"[email] sent → {addr}")
+                else:
+                    print(f"[email] FAILED → {addr}: {rr.status_code} {rr.text[:150]}")
+            return ok_any
     except Exception as e:
         print(f"[email] Failed to send alert email: {e}")
         return False
