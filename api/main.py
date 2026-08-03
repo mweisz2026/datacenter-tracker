@@ -240,6 +240,31 @@ async def test_email(to: str = ""):
     return {"sent": sent, "recipients": recips}
 
 
+@app.get("/api/debug_channels")
+async def debug_channels():
+    """
+    Read-only diagnostic: are the Reddit/X credentials configured in this
+    environment, and do live probe calls return anything? No secrets exposed.
+    """
+    from news_service import (
+        REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, TWITTER_BEARER,
+        NEWSAPI_KEY, _fetch_reddit_sub, _fetch_twitter,
+    )
+    reddit_cfg  = bool(REDDIT_CLIENT_ID and REDDIT_CLIENT_SECRET)
+    twitter_cfg = bool(TWITTER_BEARER)
+
+    reddit_probe = await _fetch_reddit_sub("datacenter", "NVIDIA data center", limit=3) if reddit_cfg else []
+    twitter_probe = await _fetch_twitter('("NVIDIA") data center -is:retweet lang:en', limit=3) if twitter_cfg else []
+
+    return {
+        "reddit_configured":   reddit_cfg,
+        "twitter_configured":  twitter_cfg,
+        "newsapi_configured":  bool(NEWSAPI_KEY),
+        "reddit_probe_count":  len(reddit_probe),
+        "twitter_probe_count": len(twitter_probe),
+    }
+
+
 @app.get("/api/weather_all")
 async def all_weather():
     """Weather for all bond locations, fetched concurrently."""
