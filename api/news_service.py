@@ -1024,6 +1024,12 @@ def _pub_sort_key(item: dict):
         return datetime.min.replace(tzinfo=timezone.utc)
 
 
+# ── Portfolio-wide channel checks ────────────────────────────────────────────
+# Industry subreddits applied to EVERY bond (on top of its local subs), each
+# searched with the bond's own terms so coverage stays relevant per position.
+GLOBAL_REDDIT_SUBS = ["datacenter", "hardware", "nvidia", "energy"]
+
+
 # ── Main entry point ─────────────────────────────────────────────────────────
 async def get_news(
     bond_id: str,
@@ -1046,6 +1052,17 @@ async def get_news(
     dc_keywords     = DC_INDUSTRY_KEYWORDS.get(bond_id, [])
     x_query         = TWITTER_QUERIES.get(bond_id, "")
 
+    # Portfolio-wide channel checks (applied to every bond, on top of its local
+    # channels). Industry subreddits are searched with THIS bond's own terms so
+    # the extra coverage stays relevant instead of duplicating generic posts.
+    bond_terms      = " ".join(t for t in (bond_name, tenant) if t).strip() \
+                      or (news_queries[0] if news_queries else bond_id)
+    all_sub_queries = sub_queries + [(sub, bond_terms) for sub in GLOBAL_REDDIT_SUBS]
+    # Extra X query on the credit/financing angle (complements the local one).
+    x_subject = issuer or bond_name or bond_terms
+    x_query2  = (f'("{x_subject}") (bond OR notes OR financing OR lawsuit OR '
+                 f'downgrade OR default OR restructuring) -is:retweet lang:en') if x_subject else ""
+
     # Build task list
     tasks = [
         # NewsAPI (3 targeted queries)
@@ -1057,10 +1074,11 @@ async def get_news(
         # Industry RSS
         _fetch_industry_rss(DC_DYNAMICS_RSS,  dc_keywords, "DataCenter Dynamics", limit=4),
         _fetch_industry_rss(DC_KNOWLEDGE_RSS, dc_keywords, "DataCenter Knowledge", limit=4),
-        # Reddit — subreddit-specific searches (restrict_sr=on)
-        *[_fetch_reddit_sub(sub, q, limit=6) for sub, q in sub_queries],
-        # X / Twitter (only runs if TWITTER_BEARER_TOKEN is set)
+        # Reddit — per-bond local subs + portfolio-wide industry subs (restrict_sr=on)
+        *[_fetch_reddit_sub(sub, q, limit=6) for sub, q in all_sub_queries],
+        # X / Twitter (only runs if TWITTER_BEARER_TOKEN is set): local + credit-angle
         _fetch_twitter(x_query, limit=15) if x_query else asyncio.sleep(0),
+        _fetch_twitter(x_query2, limit=10) if x_query2 else asyncio.sleep(0),
     ]
 
     results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -1081,10 +1099,11 @@ async def get_news(
     industry_items += safe(results[idx]); idx += 1
 
     reddit_items = []
-    for _ in sub_queries:
+    for _ in all_sub_queries:
         reddit_items += safe(results[idx]); idx += 1
 
-    x_items = safe(results[idx]); idx += 1
+    x_items  = safe(results[idx]); idx += 1
+    x_items += safe(results[idx]); idx += 1
 
     # Deduplicate by URL
     seen = set()
