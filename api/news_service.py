@@ -256,6 +256,41 @@ PINNED_ARTICLES = {
         {"title": "Richmond Times-Dispatch — Henrico Data Center Coverage", "url": "https://richmond.com/", "source": "Richmond Times-Dispatch", "type": "pinned"},
         {"title": "Henrico Citizen — Hyperlocal (RIC1 / RIC3 campuses)", "url": "https://www.henricocitizen.com/", "source": "Henrico Citizen", "type": "pinned"},
     ],
+    "voltag": [
+        {"title": "Vantage DC — Shackelford County Campus (Official)", "url": "https://vantage-dc.com/data-center-locations/north-america/shackelford-county-tx", "source": "Vantage DC", "type": "pinned"},
+        {"title": "Albany News — Shackelford Data Center Named Official Stargate AI Campus", "url": "https://www.thealbanynews.net/news/shackelford-data-center-named-official-stargate-ai-campus", "source": "The Albany News", "type": "pinned"},
+        {"title": "Albany News — Data Center Progress: Full Steam Ahead", "url": "https://www.thealbanynews.net/news/data-center-progress-full-steam-ahead", "source": "The Albany News", "type": "pinned"},
+    ],
+    "cifr_stingray": [
+        {"title": "Cipher Mining IR — Signs Additional 56MW 10-Year AI Hosting Agreement", "url": "https://investors.ciphermining.com/news-releases/news-release-details/cipher-mining-signs-additional-56-mw-10-year-ai-hosting", "source": "Cipher Mining IR", "type": "pinned"},
+        {"title": "Permian Basin 360 — Regional Coverage", "url": "https://www.permianbasin360.com/", "source": "Permian Basin 360", "type": "pinned"},
+        {"title": "Andrews County News — Local Twice-Weekly Paper", "url": "https://www.andrewscountynews.com/", "source": "Andrews County News", "type": "pinned"},
+    ],
+    "apld_eln4": [
+        {"title": "DCD — Applied Blockchain Breaks Ground on 180MW Facility in Ellendale, ND", "url": "https://www.datacenterdynamics.com/en/news/applied-blockchain-breaks-ground-on-180mw-cryptomine-in-ellendale-north-dakota/", "source": "DataCenter Dynamics", "type": "pinned"},
+        {"title": "KFYR TV — Massive AI Footprint in Ellendale: Is It There to Stay?", "url": "https://www.kfyrtv.com/2025/05/14/massive-ai-footprint-is-ellendale-its-there-stay/", "source": "KFYR TV", "type": "pinned"},
+        {"title": "South Dakota Searchlight — Ellendale Data Center Case Study", "url": "https://southdakotasearchlight.com/", "source": "SD Searchlight", "type": "pinned"},
+        {"title": "Baxtel — Applied Digital Ellendale ND Facility Profile", "url": "https://baxtel.com/data-center/applied-digital-ellendale-nd", "source": "Baxtel", "type": "pinned"},
+    ],
+    "yondr_nova": [
+        {"title": "Piedmont Environmental Council — Data Center News Tracker", "url": "https://www.pecva.org/our-work/energy-matters/data-centers-energy-demand/data-center-news/", "source": "PEC", "type": "pinned"},
+        {"title": "Loudoun Now — Nonprofit Community News", "url": "https://www.loudounnow.com/", "source": "Loudoun Now", "type": "pinned"},
+        {"title": "Loudoun Times-Mirror — Weekly Since 1924", "url": "https://www.loudountimes.com/", "source": "Loudoun Times-Mirror", "type": "pinned"},
+    ],
+    "zenith": [
+        {"title": "Okmulgee Times — Local Weekly", "url": "https://www.yourokmulgee.com/", "source": "Okmulgee Times", "type": "pinned"},
+        {"title": "The Frontier — Tulsa Investigative Nonprofit", "url": "https://www.readfrontier.org/", "source": "The Frontier", "type": "pinned"},
+    ],
+    "digital_drive": [
+        {"title": "Chesterfield County — Official Data Center Page", "url": "https://www.chesterfield.gov/datacenters", "source": "Chesterfield County", "type": "pinned"},
+        {"title": "Richmond BizSense — Business Coverage", "url": "https://richmondbizsense.com/", "source": "Richmond BizSense", "type": "pinned"},
+        {"title": "Virginia Business Magazine", "url": "https://www.virginiabusiness.com/", "source": "Virginia Business", "type": "pinned"},
+    ],
+    "novva_lv_reno": [
+        {"title": "Novva Data Centers — Official Site", "url": "https://www.novva.com/", "source": "Novva DC", "type": "pinned"},
+        {"title": "The Nevada Independent — Statewide Policy Coverage", "url": "https://thenevadaindependent.com/", "source": "Nevada Independent", "type": "pinned"},
+        {"title": "Las Vegas Review-Journal", "url": "https://www.reviewjournal.com/", "source": "LV Review-Journal", "type": "pinned"},
+    ],
 }
 
 # ── Local outlet Google News RSS (site-targeted, reliable) ───────────────────
@@ -497,6 +532,64 @@ LOCAL_OUTLET_RSS = {
         # Richmond broadcast + public media — NBC12, WRIC 8News, WTVR CBS6, VPM
         "https://news.google.com/rss/search?q=(site:nbc12.com+OR+site:wric.com+OR+site:wtvr.com+OR+site:vpm.org)+%22QTS%22+OR+%22data+center%22+OR+%22Henrico%22&hl=en-US&gl=US&ceid=US:en",
     ],
+    "cifr_stingray": [
+        # Andrews County News — primary local twice-weekly paper
+        "https://news.google.com/rss/search?q=site:andrewscountynews.com&hl=en-US&gl=US&ceid=US:en",
+        # Odessa American + Midland Reporter-Telegram
+        "https://news.google.com/rss/search?q=(site:oaoa.com+OR+site:mrt.com)+%22Andrews%22+OR+%22Cipher%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # KMID/KPEJ (YourBasin) + KOSA/First Alert 7 + Permian Basin 360
+        "https://news.google.com/rss/search?q=(site:yourbasin.com+OR+site:cbs7.com+OR+site:permianbasin360.com)+%22Andrews%22+OR+%22Cipher+Mining%22+OR+%22Stingray%22&hl=en-US&gl=US&ceid=US:en",
+        # Texas Tribune
+        "https://news.google.com/rss/search?q=site:texastribune.org+%22Andrews+County%22+OR+%22data+center%22+Texas&hl=en-US&gl=US&ceid=US:en",
+    ],
+    "apld_eln4": [
+        # InForum + Jamestown Sun — same pattern as APLD (shared Ellendale campus)
+        "https://news.google.com/rss/search?q=(site:jamestownsun.com+OR+site:inforum.com)+%22Ellendale%22+OR+%22Applied+Digital%22+OR+%22ELN4%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # KFYR-TV + Valley News Live + WDAY + Bismarck Tribune
+        "https://news.google.com/rss/search?q=(site:kfyrtv.com+OR+site:valleynewslive.com+OR+site:wday.com+OR+site:bismarcktribune.com)+%22Ellendale%22+OR+%22Applied+Digital%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # ND Monitor + South Dakota Searchlight + Aberdeen American News + Prairie Business
+        "https://news.google.com/rss/search?q=(site:northdakotamonitor.com+OR+site:southdakotasearchlight.com+OR+site:aberdeennews.com+OR+site:prairiebizmag.com)+%22Ellendale%22+OR+%22Applied+Digital%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    "yondr_nova": [
+        # Loudoun Times-Mirror + Loudoun Now — primary local weeklies
+        "https://news.google.com/rss/search?q=(site:loudountimes.com+OR+site:loudounnow.com)+%22Yondr%22+OR+%22Aldie%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # The Burn + Blue Ridge Leader + InsideNoVa + Patch (Ashburn/Leesburg)
+        "https://news.google.com/rss/search?q=(site:theburn.com+OR+site:blueridgeleader.com+OR+site:insidenova.com)+%22Loudoun%22+OR+%22Aldie%22+OR+%22Yondr%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # DC broadcast — WTOP, NBC4, FOX5 DC, WJLA, DC News Now
+        "https://news.google.com/rss/search?q=(site:wtop.com+OR+site:nbcwashington.com+OR+site:fox5dc.com+OR+site:wjla.com+OR+site:dcnewsnow.com)+%22Loudoun+County%22+%22data+center%22+OR+%22Yondr%22&hl=en-US&gl=US&ceid=US:en",
+        # Washington Business Journal
+        "https://news.google.com/rss/search?q=site:bizjournals.com+%22Yondr%22+OR+%22Loudoun%22+data+center+Virginia&hl=en-US&gl=US&ceid=US:en",
+    ],
+    "zenith": [
+        # Okmulgee Times — primary local weekly
+        "https://news.google.com/rss/search?q=site:yourokmulgee.com&hl=en-US&gl=US&ceid=US:en",
+        # Tulsa broadcast — KTUL, KJRH, News on 6, Fox23
+        "https://news.google.com/rss/search?q=(site:ktul.com+OR+site:kjrh.com+OR+site:newson6.com+OR+site:fox23.com)+%22Okmulgee%22+%22data+center%22+OR+%22Zenith%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
+        # Tulsa World + The Frontier + Journal Record
+        "https://news.google.com/rss/search?q=(site:tulsaworld.com+OR+site:readfrontier.org+OR+site:journalrecord.com)+%22Okmulgee%22+OR+%22Zenith%22+OR+%22Jane+Street%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    "digital_drive": [
+        # Richmond Times-Dispatch + BizSense
+        "https://news.google.com/rss/search?q=(site:richmond.com+OR+site:richmondbizsense.com)+%22Chesterfield%22+%22data+center%22+OR+%22CoreWeave%22+OR+%22Digital+Drive%22&hl=en-US&gl=US&ceid=US:en",
+        # WTVR CBS6 + WRIC 8News + NBC12
+        "https://news.google.com/rss/search?q=(site:wtvr.com+OR+site:wric.com+OR+site:nbc12.com)+%22Chesterfield%22+%22data+center%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # Virginia Business + VPM + Cardinal News
+        "https://news.google.com/rss/search?q=(site:virginiabusiness.com+OR+site:vpm.org+OR+site:cardinalnews.org)+%22Chesterfield%22+%22data+center%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # Greater Richmond Partnership
+        "https://news.google.com/rss/search?q=site:grpva.com+%22data+center%22+OR+%22CoreWeave%22+OR+%22Chesterfield%22&hl=en-US&gl=US&ceid=US:en",
+    ],
+    "novva_lv_reno": [
+        # Las Vegas Review-Journal + LV Sun
+        "https://news.google.com/rss/search?q=(site:reviewjournal.com+OR+site:lasvegassun.com)+%22Novva%22+OR+%22North+Las+Vegas%22+%22data+center%22+OR+%22CoreWeave%22+OR+%22eBay%22&hl=en-US&gl=US&ceid=US:en",
+        # LV broadcast — 8NewsNow, KTNV, Fox5 Vegas, News3LV
+        "https://news.google.com/rss/search?q=(site:8newsnow.com+OR+site:ktnv.com+OR+site:fox5vegas.com+OR+site:news3lv.com)+%22Novva%22+OR+%22data+center%22+%22North+Las+Vegas%22&hl=en-US&gl=US&ceid=US:en",
+        # Reno Gazette-Journal + This Is Reno + NNBW
+        "https://news.google.com/rss/search?q=(site:rgj.com+OR+site:thisisreno.com+OR+site:nnbw.com)+%22Novva%22+OR+%22Reno%22+%22data+center%22+OR+%22CoreWeave%22&hl=en-US&gl=US&ceid=US:en",
+        # Reno broadcast — KOLO, KRNV/MyNews4, KTVN + Nevada Appeal
+        "https://news.google.com/rss/search?q=(site:kolotv.com+OR+site:mynews4.com+OR+site:ktvn.com+OR+site:nevadaappeal.com)+%22Novva%22+OR+%22Reno%22+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Nevada Independent
+        "https://news.google.com/rss/search?q=site:thenevadaindependent.com+%22Novva%22+OR+%22data+center%22+Nevada+CoreWeave&hl=en-US&gl=US&ceid=US:en",
+    ],
 }
 
 # ── NewsAPI targeted queries ─────────────────────────────────────────────────
@@ -631,6 +724,36 @@ NEWSAPI_QUERIES = {
         '"QTS" OR "Magnolia" data center Phoenix OR Glendale Arizona',
         '"QTS" data center Irving OR Wilmer OR "Fort Worth" Texas',
     ],
+    "cifr_stingray": [
+        '"Cipher Mining" "Stingray" Amazon datacenter "Andrews County" Texas',
+        '"Cipher Mining" Amazon AWS datacenter "Andrews County" Texas construction 2025 OR 2026',
+        'CIFR Stingray Amazon "Permian Basin" Texas datacenter',
+    ],
+    "apld_eln4": [
+        '"Applied Digital" CoreWeave "Ellendale" "ELN4" "North Dakota" datacenter',
+        '"Applied Digital" OR "APLD" CoreWeave Meta "Dickey County" "North Dakota" construction',
+        'APLD ELN4 CoreWeave "North Dakota" datacenter 2025 OR 2026',
+    ],
+    "yondr_nova": [
+        '"Yondr" "NoVa North" OR "Aldie" Oracle Virginia datacenter',
+        'Yondr data center "Loudoun County" Virginia Oracle construction 2025 OR 2026',
+        '"Yondr" Virginia hyperscale datacenter Aldie Loudoun',
+    ],
+    "zenith": [
+        '"Zenith" Fluidstack "Jane Street" Oklahoma datacenter',
+        'Fluidstack Oklahoma "Okmulgee" data center construction 2025 OR 2026',
+        '"Jane Street" Oklahoma datacenter Zenith Fluidstack',
+    ],
+    "digital_drive": [
+        '"Digital Drive" CoreWeave "Chesterfield County" Virginia datacenter',
+        'CoreWeave Virginia "Chesterfield" data center construction 2025 OR 2026',
+        '"Chesterfield County" Virginia data center CoreWeave "Blue Owl"',
+    ],
+    "novva_lv_reno": [
+        '"Novva" CoreWeave eBay "North Las Vegas" OR Reno Nevada datacenter',
+        'Novva Data Centers Nevada CoreWeave construction 2025 OR 2026',
+        '"Novva" CIM Reno OR "North Las Vegas" data center eBay',
+    ],
 }
 
 # ── Industry RSS keywords per bond ───────────────────────────────────────────
@@ -661,6 +784,12 @@ DC_INDUSTRY_KEYWORDS = {
     "glxy_helios":      ["galaxy", "glxy", "helios", "coreweave", "afton", "dickens county", "spur", "texas"],
     "sbe_milam":        ["openai", "stargate", "sbe", "energy global", "milam", "rosebud", "cameron", "texas"],
     "qts_magnolia":     ["qts", "magnolia", "microsoft", "meta", "oracle", "new albany", "columbus", "phoenix", "glendale", "dallas", "fort worth", "irving", "wilmer", "richmond", "henrico", "data center"],
+    "cifr_stingray":    ["cipher", "cifr", "stingray", "andrews", "amazon", "texas", "permian basin"],
+    "apld_eln4":        ["applied digital", "apld", "eln4", "coreweave", "ellendale", "north dakota", "dickey county"],
+    "yondr_nova":       ["yondr", "nova north", "aldie", "loudoun", "oracle", "virginia", "data center"],
+    "zenith":           ["zenith", "fluidstack", "jane street", "okmulgee", "oklahoma", "data center"],
+    "digital_drive":    ["digital drive", "coreweave", "chesterfield", "virginia", "blue owl", "data center"],
+    "novva_lv_reno":    ["novva", "coreweave", "ebay", "cim", "north las vegas", "reno", "nevada", "data center"],
 }
 
 # ── Reddit subreddit-targeted queries ─────────────────────────────────────────
@@ -792,6 +921,36 @@ REDDIT_SUBREDDIT_QUERIES: dict[str, list[tuple[str, str]]] = {
         ("rva",         "QTS data center Henrico"),
         ("datacenter",  "QTS Magnolia Microsoft Meta Oracle"),
     ],
+    "cifr_stingray": [
+        ("Bitcoin",     "Cipher Mining Stingray Andrews Texas"),
+        ("texas",       "Cipher Mining Andrews datacenter Amazon"),
+        ("datacenter",  "Cipher Mining Stingray Amazon Andrews"),
+    ],
+    "apld_eln4": [
+        ("northdakota", "Applied Digital ELN4 Ellendale CoreWeave"),
+        ("datacenter",  "Applied Digital ELN4 CoreWeave Ellendale"),
+    ],
+    "yondr_nova": [
+        ("NOVA",        "Yondr Aldie data center Loudoun"),
+        ("virginia",    "Yondr data center Aldie Loudoun"),
+        ("datacenter",  "Yondr NoVa North Aldie Loudoun Oracle"),
+    ],
+    "zenith": [
+        ("oklahoma",    "Zenith Fluidstack Okmulgee data center"),
+        ("tulsa",       "data center Okmulgee Fluidstack"),
+        ("datacenter",  "Zenith Fluidstack Jane Street Oklahoma"),
+    ],
+    "digital_drive": [
+        ("rva",         "Digital Drive CoreWeave Chesterfield data center"),
+        ("virginia",    "CoreWeave Chesterfield data center"),
+        ("datacenter",  "Digital Drive CoreWeave Chesterfield Virginia"),
+    ],
+    "novva_lv_reno": [
+        ("vegas",       "Novva data center North Las Vegas CoreWeave"),
+        ("reno",        "Novva data center CoreWeave eBay"),
+        ("nevada",      "Novva data center CoreWeave"),
+        ("datacenter",  "Novva CoreWeave eBay Las Vegas Reno"),
+    ],
 }
 
 # ── X / Twitter search queries (requires Basic plan bearer token) ─────────────
@@ -824,6 +983,12 @@ TWITTER_QUERIES = {
     "glxy_helios":      '("Galaxy Digital" OR $GLXY OR "Helios") "CoreWeave" OR "Dickens County" datacenter -is:retweet lang:en',
     "sbe_milam":        '("OpenAI" OR "Stargate" OR "SBE") "Milam" OR "Rosebud" datacenter -is:retweet lang:en',
     "qts_magnolia":     '"QTS" (Magnolia OR "data center") (Columbus OR "New Albany" OR Phoenix OR Glendale OR "Fort Worth" OR Irving) -is:retweet lang:en',
+    "cifr_stingray":    '($CIFR OR "Cipher Mining") "Stingray" OR "Andrews" Texas datacenter -is:retweet lang:en',
+    "apld_eln4":        '($APLD OR "Applied Digital") "ELN4" OR "Ellendale" CoreWeave datacenter -is:retweet lang:en',
+    "yondr_nova":       '"Yondr" "Aldie" OR "Loudoun" Virginia data center -is:retweet lang:en',
+    "zenith":           '("Zenith" OR "Fluidstack") "Okmulgee" OR "Jane Street" Oklahoma data center -is:retweet lang:en',
+    "digital_drive":    '"CoreWeave" "Chesterfield" OR "Digital Drive" Virginia data center -is:retweet lang:en',
+    "novva_lv_reno":    '"Novva" ("North Las Vegas" OR "Reno") CoreWeave OR eBay data center -is:retweet lang:en',
 }
 
 
