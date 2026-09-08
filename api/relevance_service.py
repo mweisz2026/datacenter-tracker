@@ -145,14 +145,16 @@ def _keyword_score(title: str, summary: str) -> dict:
     # IRRELEVANT first -- crime/accidents must never escalate to CRITICAL
     for kw in _IRRELEVANT_KW:
         if _kw_match(kw, text):
-            return {"score": 0, "reason": f"Irrelevant: {kw}", "category": "IRRELEVANT"}
+            return {"score": 0, "reason": f"Irrelevant: {kw}", "category": "IRRELEVANT", "blurb": ""}
     for kw in _CRITICAL_KW:
         if _kw_match(kw, text):
-            return {"score": 9, "reason": f"Keyword match: {kw}", "category": "CRITICAL"}
+            return {"score": 9, "reason": f"Keyword match: {kw}", "category": "CRITICAL",
+                     "blurb": f"Automated keyword match on \"{kw}\" (no AI summary available -- ANTHROPIC_API_KEY not set)."}
     for kw in _HIGH_KW:
         if _kw_match(kw, text):
-            return {"score": 7, "reason": f"Keyword match: {kw}", "category": "HIGH"}
-    return {"score": 4, "reason": "General relevance", "category": "MEDIUM"}
+            return {"score": 7, "reason": f"Keyword match: {kw}", "category": "HIGH",
+                     "blurb": f"Automated keyword match on \"{kw}\" (no AI summary available -- ANTHROPIC_API_KEY not set)."}
+    return {"score": 4, "reason": "General relevance", "category": "MEDIUM", "blurb": ""}
 
 
 def _parse_pub_date(pub: str):
@@ -245,11 +247,17 @@ car crash, injury, boil water notice, etc.)? -> score 0 always, no exceptions.
 - Financial distress of {issuer} OR {tenant} = score 9 minimum
 - When in doubt, score lower
 
+For every headline, also write a "blurb": 1-2 plain-English sentences summarizing what the \
+article actually says and why it matters (or doesn't) for {bond_name}'s credit risk specifically. \
+Reference {bond_name}, {tenant}, {issuer}, or {location} by name where relevant. Be concrete -- \
+state the specific fact (who did what), not a generic restatement of the category. If the article \
+is low/irrelevant, say briefly why it doesn't affect this bond (e.g. "different project, same state").
+
 Headlines to evaluate:
 {headlines}
 
 Return ONLY a valid JSON array. No markdown, no explanation outside the array:
-[{{"index":1,"score":N,"reason":"concise reason under 10 words","category":"CRITICAL|HIGH|MEDIUM|LOW|IRRELEVANT"}}]"""
+[{{"index":1,"score":N,"reason":"concise reason under 10 words","category":"CRITICAL|HIGH|MEDIUM|LOW|IRRELEVANT","blurb":"1-2 sentence summary of the article and its relevance to this bond"}}]"""
 
 
 async def _claude_score(items: list, bond_name: str, location: str, tenant: str, issuer: str) -> dict:
@@ -277,7 +285,7 @@ async def _claude_score(items: list, bond_name: str, location: str, tenant: str,
         def _call():
             return client.messages.create(
                 model="claude-haiku-4-5-20251001",
-                max_tokens=2000,
+                max_tokens=4000,
                 messages=[{"role": "user", "content": prompt}],
             )
 
@@ -355,6 +363,7 @@ async def score_and_filter(
         score    = meta.get("score", 3)
         category = meta.get("category", "MEDIUM")
         reason   = meta.get("reason", "")
+        blurb    = meta.get("blurb", "")
 
         # Hard override on read: keyword IRRELEVANT always wins over any cached score
         kw = _keyword_score(item.get("title", ""), item.get("summary", ""))
@@ -371,11 +380,13 @@ async def score_and_filter(
             score    = kw["score"]
             category = kw["category"]
             reason   = kw["reason"]
+            blurb    = kw.get("blurb", "")
 
         enriched = {
             **item,
             "importance_score":    score,
             "importance_reason":   reason,
+            "importance_blurb":    blurb,
             "importance_category": category,
             "is_highlighted":      score >= HIGHLIGHT_THRESHOLD,
         }

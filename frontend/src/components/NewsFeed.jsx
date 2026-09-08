@@ -38,7 +38,7 @@ function NewsItem({ item }) {
           <div className="text-xs text-primary leading-snug line-clamp-2 font-medium">
             {item.title}
           </div>
-          {item.summary && !isTweet && (
+          {item.summary && !isReddit && (
             <div className="text-xs text-muted mt-0.5 line-clamp-2 leading-snug">
               {item.summary}
             </div>
@@ -89,13 +89,20 @@ function AlertItem({ item }) {
           <div className={`text-xs font-semibold leading-snug line-clamp-2 ${style.text}`}>
             {item.title}
           </div>
-          {item.importance_reason && (
-            <div className="text-xs text-muted mt-0.5 italic">{item.importance_reason}</div>
+          {(item.importance_blurb || item.importance_reason) && (
+            <div className="text-xs text-muted mt-0.5 italic line-clamp-3">
+              {item.importance_blurb || item.importance_reason}
+            </div>
           )}
           <div className="flex items-center gap-2 mt-1">
             <span className={`text-xs px-1.5 py-0.5 rounded font-mono font-bold ${style.badge}`}>
               {cat}
             </span>
+            {typeof item.importance_score === 'number' && (
+              <span className="text-xs px-1.5 py-0.5 rounded font-mono font-bold bg-white/10 text-primary" title="Relevance score (0-10)">
+                {item.importance_score}/10
+              </span>
+            )}
             <span className="text-xs text-muted truncate">{item.source}</span>
             <span className="text-xs text-muted ml-auto flex-shrink-0">{formatDate(item.published)}</span>
             <ExternalLink size={9} className="text-muted flex-shrink-0" />
