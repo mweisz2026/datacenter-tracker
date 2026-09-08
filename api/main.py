@@ -161,8 +161,8 @@ async def debug_email():
 @app.get("/api/cron")
 async def run_cron(request: Request, secret: str = ""):
     """
-    Hourly cron endpoint — forces a fresh news fetch for every bond
-    and sends emails for any new HIGH/CRITICAL alerts found.
+    Cron endpoint (runs every 30 min) — forces a fresh news fetch for every
+    bond and sends emails for any new HIGH/CRITICAL alerts found.
     Vercel cron sends Authorization: Bearer <CRON_SECRET>.
     Manual trigger: pass ?secret=xxx or omit if CRON_SECRET is not set.
     """
