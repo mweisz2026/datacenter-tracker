@@ -118,14 +118,21 @@ PINNED_ARTICLES = {
         {"title": "Meta Richland Parish Data Center — Official Project Page", "url": "https://datacenters.atmeta.com/richland-parish-data-center/", "source": "Meta", "type": "pinned"},
         {"title": "Opportunity Louisiana — Meta Data Center Economic Development Page", "url": "https://www.opportunitylouisiana.gov/metadatacenter", "source": "Louisiana Econ Dev", "type": "pinned"},
         {"title": "Louisiana Illuminator — Meta DC Coverage (Richland Parish)", "url": "https://lailluminator.com/place/richland-parish/", "source": "Louisiana Illuminator", "type": "pinned"},
+        {"title": "Louisiana.gov — Richland Parish Official Page", "url": "https://www.louisiana.gov/local-louisiana/richland-parish", "source": "Louisiana.gov", "type": "pinned"},
     ],
     "hut_google": [
         {"title": "HUT 8 — Corporate IR Page", "url": "https://hut8.com/investors/", "source": "HUT 8 IR", "type": "pinned"},
         {"title": "DCD — HUT 8 and Google Partner on Louisiana Datacenter", "url": "https://www.datacenterdynamics.com/en/news/", "source": "DataCenter Dynamics", "type": "pinned"},
+        {"title": "The Advocate — West Feliciana Community Section", "url": "https://www.theadvocate.com/baton_rouge/news/communities/west_feliciana/", "source": "The Advocate", "type": "pinned"},
+        {"title": "St. Francisville Democrat — Weekly News (via The Advocate)", "url": "https://www.theadvocate.com/newsletters/st_francisville_democrat_weekly_news/", "source": "St. Francisville Democrat", "type": "pinned"},
+        {"title": "West Feliciana Parish — Official Government Site", "url": "https://westfelicianaparish.com/", "source": "West Feliciana Parish", "type": "pinned"},
     ],
     "related_bx": [
         {"title": "Washtenaw County Government — Official Portal", "url": "https://www.washtenaw.org/", "source": "Washtenaw County", "type": "pinned"},
         {"title": "Ann Arbor SPARK — Economic Development Portal", "url": "https://jobs.annarborusa.org/jobs", "source": "Ann Arbor SPARK", "type": "pinned"},
+        {"title": "Ann Arbor SPARK — News", "url": "https://www.annarborusa.org/news", "source": "Ann Arbor SPARK", "type": "pinned"},
+        {"title": "Saline Township — Official Government Site", "url": "https://www.salinetownship.org/", "source": "Saline Township", "type": "pinned"},
+        {"title": "DTE Energy — Official Site", "url": "https://www.dteenergy.com/", "source": "DTE Energy", "type": "pinned"},
     ],
     "vantage": [
         {"title": "Vantage DC — Shackelford County Campus (Official)", "url": "https://vantage-dc.com/data-center-locations/north-america/shackelford-county-tx", "source": "Vantage DC", "type": "pinned"},
@@ -135,6 +142,7 @@ PINNED_ARTICLES = {
     "stack_nm": [
         {"title": "MVEDA — Mesilla Valley Economic Development Alliance", "url": "https://www.mveda.com/", "source": "MVEDA", "type": "pinned"},
         {"title": "Dona Ana County Government — Official Portal", "url": "https://www.donaanacounty.org/", "source": "Dona Ana County", "type": "pinned"},
+        {"title": "New Mexico Public Regulation Commission", "url": "https://www.nmprc.state.nm.us/", "source": "NM PRC", "type": "pinned"},
     ],
     "tract": [
         {"title": "TRIC — Tahoe Reno Industrial Center Data Center Info", "url": "https://tahoereno.com/data-center/", "source": "TRIC", "type": "pinned"},
@@ -148,6 +156,7 @@ PINNED_ARTICLES = {
         {"title": "Nevada Newsmakers — CEO van Rooyen Interview", "url": "https://nevadanewsmakers.com/", "source": "Nevada Newsmakers", "type": "pinned"},
         {"title": "Storey County Government — Meetings & News Flash", "url": "https://www.storeycounty.org/", "source": "Storey County Gov", "type": "pinned"},
         {"title": "Ground News — Storey County Aggregator", "url": "https://ground.news/interest/storey-county", "source": "Ground News", "type": "pinned"},
+        {"title": "Storey County — Notify Me (Road/Permit/Construction Alerts)", "url": "https://storeycounty.org/list.aspx", "source": "Storey County Gov", "type": "pinned"},
     ],
     "cifr_black_pearl": [
         {"title": "DCD — Cipher Mining to Develop 300MW Black Pearl Site in West Texas", "url": "https://www.datacenterdynamics.com/en/news/cipher-mining-to-develop-300mw-cryptomining-data-center-site-in-west-texas/", "source": "DataCenter Dynamics", "type": "pinned"},
@@ -159,6 +168,9 @@ PINNED_ARTICLES = {
         {"title": "Niagara Gazette — Somerset AI Data Center Gets County Planner Support", "url": "https://www.niagara-gazette.com/news/local_news/somerset-ai-data-center-proposal-gets-county-planners-support/article_04e3f6f2-9228-11ef-896b-a7548a88c91b.html", "source": "Niagara Gazette", "type": "pinned"},
         {"title": "DCD — TeraWulf Gets Approval for More Data Centers at Lake Mariner Campus", "url": "https://www.datacenterdynamics.com/en/news/terawulf-gets-approval-for-more-data-centers-at-lake-mariner-campus-in-new-york/", "source": "DataCenter Dynamics", "type": "pinned"},
         {"title": "TeraWulf WULF Compute — Services Info", "url": "https://www.terawulf.com/wulf-compute", "source": "TeraWulf", "type": "pinned"},
+        {"title": "Town of Somerset, NY — Official Government Site", "url": "https://www.somersetny.org/", "source": "Town of Somerset", "type": "pinned"},
+        {"title": "Niagara County Center for Economic Development (NCIDA)", "url": "https://www.niagaracountybusiness.com/", "source": "NCCED/NCIDA", "type": "pinned"},
+        {"title": "NYPA — New York Power Authority", "url": "https://www.nypa.gov/", "source": "NYPA", "type": "pinned"},
     ],
     "flashc": [
         {"title": "EverythingLubbock — New AI Data Center Breaks Ground Near Abernathy (April 2026)", "url": "https://www.everythinglubbock.com/news/latest/new-ai-data-center-breaks-ground-near-abernathy/", "source": "EverythingLubbock", "type": "pinned"},
@@ -171,6 +183,7 @@ PINNED_ARTICLES = {
     "apld_pf2": [
         {"title": "ND Monitor — Data Center Proposed for Harwood Prompts Community Questions ($3B)", "url": "https://northdakotamonitor.com/2025/08/25/data-center-proposed-for-harwood-prompts-anger-questions-from-community-members/", "source": "ND Monitor", "type": "pinned"},
         {"title": "InForum — Controversial Giant AI Data Center Community Meeting in Harwood", "url": "https://www.inforum.com/news/fargo/controversial-giant-ai-data-center-holds-headed-meeting-in-small-town-harwood", "source": "InForum", "type": "pinned"},
+        {"title": "Cass County, ND — Official Government Site", "url": "https://www.casscountynd.gov/", "source": "Cass County", "type": "pinned"},
     ],
     "apld": [
         {"title": "DCD — Applied Blockchain Breaks Ground on 180MW Facility in Ellendale, ND", "url": "https://www.datacenterdynamics.com/en/news/applied-blockchain-breaks-ground-on-180mw-cryptomine-in-ellendale-north-dakota/", "source": "DataCenter Dynamics", "type": "pinned"},
@@ -181,24 +194,45 @@ PINNED_ARTICLES = {
     "qts": [
         {"title": "AJC — Microsoft's Newest AI Superfactory Opens at Fayetteville Campus", "url": "https://www.ajc.com/business/2025/11/microsofts-newest-ai-superfactory-opens-at-sprawling-fayetteville-campus/", "source": "Atlanta Journal-Constitution", "type": "pinned"},
         {"title": "AJC — Gigantic Data Center Campus Planned for 615-Acre Site South of Atlanta", "url": "https://www.ajc.com/news/gigantic-data-center-campus-planned-for-615-acre-site-south-of-atlanta/XKF77UM4FFBOZDPHFWMTOQ4EGE/", "source": "Atlanta Journal-Constitution", "type": "pinned"},
-        {"title": "QTS Data Centers — Fayetteville (Project Excalibur)", "url": "https://q.com/data-centers/fayetteville/", "source": "QTS", "type": "pinned"},
+        {"title": "QTS Data Centers — Fayetteville (Project Excalibur)", "url": "https://qtsdatacenters.com/fayetteville-community/", "source": "QTS", "type": "pinned"},
         {"title": "City of Fayetteville — Official Data Center Discussion Page", "url": "https://www.fayetteville-ga.gov/746/Data-Center-Discussion", "source": "City of Fayetteville", "type": "pinned"},
         {"title": "Fayette News — Construction Safety at Georgia Data Center (Suit)", "url": "https://www.fayette-news.net/news/shoddy-construction-at-georgia-data-center-killed-worker-suit-says/article_0f93529a-a41e-4458-b973-18817c8164ce.html", "source": "Fayette County News", "type": "pinned"},
         {"title": "The Citizen — Fayetteville Hyperlocal Coverage", "url": "https://thecitizen.com/", "source": "The Citizen", "type": "pinned"},
         {"title": "Atlanta News First — Broke the QTS Fayette Water-Use Investigation", "url": "https://www.atlantanewsfirst.com/", "source": "Atlanta News First", "type": "pinned"},
         {"title": "Fayette County Government — Official Portal", "url": "https://fayettecountyga.gov/", "source": "Fayette County", "type": "pinned"},
+        {"title": "Fayette County Development Authority", "url": "https://www.fayettega.org/", "source": "Fayette County Dev. Authority", "type": "pinned"},
     ],
     "meridian": [
         {"title": "Indiana Economic Development Corporation — Data Center Projects", "url": "https://iedc.in.gov/", "source": "IEDC", "type": "pinned"},
         {"title": "Sullivan County Government — Official Portal", "url": "https://www.sullivancounty.in.gov/", "source": "Sullivan County", "type": "pinned"},
+        {"title": "Potentia — Sullivan County Industrial Park (Developer Project Page)", "url": "https://potentia.inc/sullivan-county-industrial-park", "source": "Potentia", "type": "pinned"},
+        {"title": "Indiana Utility Regulatory Commission (large-load affordability review)", "url": "https://www.in.gov/iurc/", "source": "IURC", "type": "pinned"},
     ],
     "edged_compute": [
         {"title": "Edged Energy — Official Company Site", "url": "https://www.edgedenergy.com/", "source": "Edged Energy", "type": "pinned"},
         {"title": "Koch Industries — Infrastructure Investment Portfolio", "url": "https://www.kochind.com/businesses/infrastructure", "source": "Koch Industries", "type": "pinned"},
+        {"title": "City of Aurora, IL — News Articles", "url": "https://www.aurora.il.us/News-articles", "source": "City of Aurora", "type": "pinned"},
+        {"title": "Kane County, IL — Official Government Site", "url": "https://www.kanecountyil.gov/", "source": "Kane County", "type": "pinned"},
+        {"title": "Aurora Regional Chamber of Commerce", "url": "https://aurorachamber.com/", "source": "Aurora Chamber", "type": "pinned"},
+        {"title": "Illinois Clean Jobs Coalition — IL POWER Act Tracker", "url": "https://ilcleanjobs.org/", "source": "IL Clean Jobs Coalition", "type": "pinned"},
+        {"title": "Develop Fulton — Fulton County, GA Economic Development", "url": "https://developfulton.com/", "source": "Develop Fulton", "type": "pinned"},
+        {"title": "City of Atlanta — Department of City Planning", "url": "https://www.atlantaga.gov/government/departments/city-planning", "source": "City of Atlanta", "type": "pinned"},
+        {"title": "Technology Association of Georgia (TAG)", "url": "https://www.tagonline.org/", "source": "TAG", "type": "pinned"},
     ],
     "core_scientific": [
         {"title": "Core Scientific Investor Relations — Press Releases", "url": "https://investors.corescientific.com/news-releases", "source": "Core Scientific IR", "type": "pinned"},
         {"title": "Core Scientific — HPC Hosting Services", "url": "https://www.corescientific.com/hpc-hosting", "source": "Core Scientific", "type": "pinned"},
+        {"title": "CoStar — Denton $6.1B Conversion Coverage", "url": "https://www.costar.com/", "source": "CoStar", "type": "pinned"},
+        {"title": "Denton Municipal Electric (City of Denton, TX)", "url": "https://www.cityofdenton.com/331/Denton-Municipal-Electric-DME", "source": "City of Denton", "type": "pinned"},
+        {"title": "City of Dalton, GA — Official Government Site", "url": "https://www.daltonga.gov/", "source": "City of Dalton", "type": "pinned"},
+        {"title": "Dalton Utilities", "url": "https://www.daltonutilities.com/", "source": "Dalton Utilities", "type": "pinned"},
+        {"title": "Whitfield County, GA — Official Government Site", "url": "https://www.whitfieldcountyga.com/", "source": "Whitfield County", "type": "pinned"},
+        {"title": "Cherokee County, NC — Official Government Site", "url": "https://www.cherokeecounty-nc.gov/", "source": "Cherokee County NC", "type": "pinned"},
+        {"title": "Town of Andrews, NC — Official Government Site", "url": "https://www.townofandrews.com/", "source": "Town of Andrews", "type": "pinned"},
+        {"title": "Port of Muskogee", "url": "https://www.portmuskogee.com/", "source": "Port of Muskogee", "type": "pinned"},
+        {"title": "City of Muskogee, OK — Official Government Site", "url": "https://www.cityofmuskogee.com/", "source": "City of Muskogee", "type": "pinned"},
+        {"title": "Northwest Georgia Regional Commission", "url": "https://www.nwgrc.org/", "source": "NWGRC", "type": "pinned"},
+        {"title": "SEC EDGAR — Core Scientific (CORZ) Filings", "url": "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&company=Core+Scientific&type=10-K&dateb=&owner=include&count=40", "source": "SEC EDGAR", "type": "pinned"},
     ],
     "sbe_softbank": [
         {"title": "Softbank Group — Investor Relations", "url": "https://group.softbank/en/ir", "source": "SoftBank IR", "type": "pinned"},
@@ -219,26 +253,37 @@ PINNED_ARTICLES = {
         {"title": "Nevada Newsmakers — CEO van Rooyen Interview", "url": "https://nevadanewsmakers.com/", "source": "Nevada Newsmakers", "type": "pinned"},
         {"title": "Storey County Government — Meetings & News Flash", "url": "https://www.storeycounty.org/", "source": "Storey County Gov", "type": "pinned"},
         {"title": "Ground News — Storey County Aggregator", "url": "https://ground.news/interest/storey-county", "source": "Ground News", "type": "pinned"},
+        {"title": "Storey County — Notify Me (Road/Permit/Construction Alerts)", "url": "https://storeycounty.org/list.aspx", "source": "Storey County Gov", "type": "pinned"},
     ],
     "polar_dc": [
         {"title": "Herøya Industripark — Industrial Park Site", "url": "https://www.heroya-industripark.no/", "source": "Herøya Industripark", "type": "pinned"},
         {"title": "Drangedal Kommune — Municipality Portal", "url": "https://www.drangedal.kommune.no/", "source": "Drangedal Kommune", "type": "pinned"},
         {"title": "Porsgrunn Kommune — Municipality Portal", "url": "https://www.porsgrunn.kommune.no/", "source": "Porsgrunn Kommune", "type": "pinned"},
         {"title": "E24 — Norwegian Business News", "url": "https://e24.no/", "source": "E24", "type": "pinned"},
+        {"title": "NVE — Norwegian Water Resources and Energy Directorate", "url": "https://www.nve.no/", "source": "NVE", "type": "pinned"},
+        {"title": "Statnett — Norwegian Grid Operator", "url": "https://www.statnett.no/", "source": "Statnett", "type": "pinned"},
     ],
     "prime_dc": [
         {"title": "Site Selection Magazine — Prime ORD Coverage", "url": "https://siteselection.com/", "source": "Site Selection", "type": "pinned"},
         {"title": "Village of Elk Grove Village — Official Government Portal", "url": "https://www.elkgrove.org/", "source": "Village of Elk Grove", "type": "pinned"},
         {"title": "Crain's Chicago Business — Data Center Coverage", "url": "https://www.chicagobusiness.com/", "source": "Crain's Chicago", "type": "pinned"},
+        {"title": "Elk Grove Village — Agendas & Public Meetings", "url": "https://www.elkgrove.org/government/agendas-public-meetings", "source": "Village of Elk Grove", "type": "pinned"},
+        {"title": "Cook County Government", "url": "https://www.cookcountyil.gov/", "source": "Cook County", "type": "pinned"},
+        {"title": "CoreWeave — Newsroom", "url": "https://www.coreweave.com/news", "source": "CoreWeave", "type": "pinned"},
     ],
     "sopaipilla": [
         {"title": "El Paso Matters — Meta / Data Center Investigative Coverage", "url": "https://elpasomatters.org/", "source": "El Paso Matters", "type": "pinned"},
         {"title": "El Paso Inc. — Business Coverage (Meta El Paso)", "url": "https://www.elpasoinc.com/", "source": "El Paso Inc.", "type": "pinned"},
         {"title": "El Paso Times — Local Daily Coverage", "url": "https://www.elpasotimes.com/", "source": "El Paso Times", "type": "pinned"},
+        {"title": "Diario.mx — El Paso (Spanish-Language Coverage)", "url": "https://diario.mx/elpaso/", "source": "Diario.mx", "type": "pinned"},
+        {"title": "El Paso Electric — Official Site", "url": "https://www.epelectric.com/", "source": "El Paso Electric", "type": "pinned"},
+        {"title": "City of El Paso — Official Government Site", "url": "https://www.elpasotexas.gov/", "source": "City of El Paso", "type": "pinned"},
     ],
     "glxy_helios": [
         {"title": "The Texas Spur — Dickens County Local Paper (broke Galaxy/CoreWeave lease)", "url": "https://www.thetexasspur.com/", "source": "The Texas Spur", "type": "pinned"},
         {"title": "EverythingLubbock — Broke Helios Phase 2 ($3.5B) Expansion Story", "url": "https://www.everythinglubbock.com/", "source": "EverythingLubbock", "type": "pinned"},
+        {"title": "Galaxy Digital — Investor Relations", "url": "https://investor.galaxydigital.io/", "source": "Galaxy Digital IR", "type": "pinned"},
+        {"title": "Dickens County, TX — Official Government Site", "url": "https://www.co.dickens.tx.us/", "source": "Dickens County", "type": "pinned"},
     ],
     "sbe_milam": [
         {"title": "Austin Business Journal — Broke the SBE / Stargate Milam Story", "url": "https://www.bizjournals.com/austin/", "source": "Austin Business Journal", "type": "pinned"},
@@ -255,11 +300,42 @@ PINNED_ARTICLES = {
         {"title": "Richmond BizSense — Henrico QTS / Data Center Coverage", "url": "https://richmondbizsense.com/", "source": "Richmond BizSense", "type": "pinned"},
         {"title": "Richmond Times-Dispatch — Henrico Data Center Coverage", "url": "https://richmond.com/", "source": "Richmond Times-Dispatch", "type": "pinned"},
         {"title": "Henrico Citizen — Hyperlocal (RIC1 / RIC3 campuses)", "url": "https://www.henricocitizen.com/", "source": "Henrico Citizen", "type": "pinned"},
+        {"title": "New Albany, OH — Official Government Site", "url": "https://www.newalbanyohio.org/", "source": "New Albany, OH", "type": "pinned"},
+        {"title": "City of Columbus, OH — Official Government Site", "url": "https://www.columbus.gov/", "source": "City of Columbus", "type": "pinned"},
+        {"title": "City of Glendale, AZ — Official Government Site", "url": "https://www.glendaleaz.com/", "source": "City of Glendale", "type": "pinned"},
+        {"title": "Town of Litchfield Park, AZ — Official Government Site", "url": "https://www.litchfieldpark.gov/", "source": "Litchfield Park", "type": "pinned"},
+        {"title": "City of Denton, TX — Official Government Site", "url": "https://www.cityofdenton.com/", "source": "City of Denton", "type": "pinned"},
+        {"title": "City of Irving, TX — Official Government Site", "url": "https://www.irvingtx.gov/", "source": "City of Irving", "type": "pinned"},
+        {"title": "City of Fort Worth, TX — Official Government Site", "url": "https://www.fortworthtexas.gov/", "source": "City of Fort Worth", "type": "pinned"},
+        {"title": "Henrico County, VA — Official Government Site", "url": "https://henrico.gov/", "source": "Henrico County", "type": "pinned"},
+        {"title": "Chesterfield County, VA — Official Government Site", "url": "https://www.chesterfield.gov/", "source": "Chesterfield County", "type": "pinned"},
+        {"title": "CBS News Texas", "url": "https://www.cbsnews.com/texas/", "source": "CBS News Texas", "type": "pinned"},
+        {"title": "CultureMap Dallas", "url": "https://culturemap.com/dallas/", "source": "CultureMap Dallas", "type": "pinned"},
+        {"title": "Columbus Alive", "url": "https://www.columbusalive.com/", "source": "Columbus Alive", "type": "pinned"},
+        {"title": "Phoenix New Times", "url": "https://www.phoenixnewtimes.com/", "source": "Phoenix New Times", "type": "pinned"},
+        {"title": "Richmond Free Press", "url": "https://richmondfreepress.com/", "source": "Richmond Free Press", "type": "pinned"},
+        {"title": "Cardinal News", "url": "https://cardinalnews.org/", "source": "Cardinal News", "type": "pinned"},
     ],
     "voltag": [
         {"title": "Vantage DC — Shackelford County Campus (Official)", "url": "https://vantage-dc.com/data-center-locations/north-america/shackelford-county-tx", "source": "Vantage DC", "type": "pinned"},
         {"title": "Albany News — Shackelford Data Center Named Official Stargate AI Campus", "url": "https://www.thealbanynews.net/news/shackelford-data-center-named-official-stargate-ai-campus", "source": "The Albany News", "type": "pinned"},
         {"title": "Albany News — Data Center Progress: Full Steam Ahead", "url": "https://www.thealbanynews.net/news/data-center-progress-full-steam-ahead", "source": "The Albany News", "type": "pinned"},
+        {"title": "VoltaGrid — Official Company Site", "url": "https://voltagrid.com/", "source": "VoltaGrid", "type": "pinned"},
+        {"title": "VoltaGrid — Collaborates with Oracle to Power Next-Gen AI Data Centers", "url": "https://voltagrid.com/voltagrid-collaborates-with-oracle-to-power-next-gen-ai-data-centers", "source": "VoltaGrid", "type": "pinned"},
+        {"title": "GlobeNewswire — VoltaGrid Closes $5.0B Financing ($2.0B Second Lien Notes + $3.0B ABL)", "url": "https://www.globenewswire.com/news-release/2025/11/10/3184496/0/en/VoltaGrid-Closes-5-0-Billion-Comprehensive-Financing-Package-Consisting-of-2-0-Billion-of-Senior-Secured-Second-Lien-Notes-and-3-0-Billion-Asset-Based-Loan-Facility.html", "source": "GlobeNewswire", "type": "pinned"},
+        {"title": "DCD — VoltaGrid to Supply Oracle with 2.3GW of Natural Gas Power for AI Data Centers", "url": "https://www.datacenterdynamics.com/en/news/voltagrid-to-supply-oracle-with-23gw-of-natural-gas-power-for-ai-data-centers/", "source": "DataCenter Dynamics", "type": "pinned"},
+        {"title": "POWER Magazine — Oracle Taps VoltaGrid for 2.3-GW Modular Gas Fleet in Texas", "url": "https://www.powermag.com/oracle-taps-voltagrid-for-2-3-gw-modular-gas-fleet-to-power-ai-data-centers-across-texas/", "source": "POWER Magazine", "type": "pinned"},
+        {"title": "GlobeNewswire — VoltaGrid $1B Equity Investment from Blackstone & Halliburton (Propell Acquisition)", "url": "https://www.globenewswire.com/news-release/2026/05/11/3291825/0/en/voltagrid-announces-1-billion-strategic-equity-investment-from-blackstone-and-halliburton-to-fund-growth-and-acquisition-of-propell.html", "source": "GlobeNewswire", "type": "pinned"},
+        {"title": "Albany News — Local Weekly (Shackelford County Seat)", "url": "https://www.thealbanynews.net/", "source": "The Albany News", "type": "pinned"},
+        {"title": "BigCountryHomepage — KTAB/KRBC Abilene (broke the Vantage jobs story)", "url": "https://www.bigcountryhomepage.com/", "source": "BigCountryHomepage", "type": "pinned"},
+        {"title": "KTXS ABC Abilene — Shackelford County Topic Page", "url": "https://ktxs.com/topic/Shackelford%20County,Texas,United%20States", "source": "KTXS", "type": "pinned"},
+        {"title": "KTXS — Big Country News Section", "url": "https://ktxs.com/news/big-country", "source": "KTXS", "type": "pinned"},
+        {"title": "Abilene Reporter-News — Gannett Daily", "url": "https://www.reporternews.com/", "source": "Abilene Reporter-News", "type": "pinned"},
+        {"title": "Texas Tribune", "url": "https://www.texastribune.org/", "source": "Texas Tribune", "type": "pinned"},
+        {"title": "Telborg DC Intel — Vantage \"Frontier\" Shackelford Briefing (TDLR filings)", "url": "https://telborg.com/dc-intel/briefings/vantage-frontier-shackelford", "source": "Telborg DC Intel", "type": "pinned"},
+        {"title": "Avanza Energy Substack — Shackelford County Carbon/Permitting Analysis", "url": "https://avanzaenergy.substack.com/", "source": "Avanza Energy", "type": "pinned"},
+        {"title": "TCEQ — Air Permits (VoltaGrid Generators)", "url": "https://www.tceq.texas.gov/", "source": "TCEQ", "type": "pinned"},
+        {"title": "TX TDLR — Building Filings (TABS)", "url": "https://www.tdlr.texas.gov/TABS/", "source": "TX TDLR", "type": "pinned"},
     ],
     "cifr_stingray": [
         {"title": "Cipher Mining IR — Signs Additional 56MW 10-Year AI Hosting Agreement", "url": "https://investors.ciphermining.com/news-releases/news-release-details/cipher-mining-signs-additional-56-mw-10-year-ai-hosting", "source": "Cipher Mining IR", "type": "pinned"},
@@ -285,6 +361,8 @@ PINNED_ARTICLES = {
         {"title": "Chesterfield County — Official Data Center Page", "url": "https://www.chesterfield.gov/datacenters", "source": "Chesterfield County", "type": "pinned"},
         {"title": "Richmond BizSense — Business Coverage", "url": "https://richmondbizsense.com/", "source": "Richmond BizSense", "type": "pinned"},
         {"title": "Virginia Business Magazine", "url": "https://www.virginiabusiness.com/", "source": "Virginia Business", "type": "pinned"},
+        {"title": "Chesterfield County — Happening In Chesterfield Newsletter", "url": "https://www.chesterfield.gov/1653/Happening-In-Chesterfield-and-County-New", "source": "Chesterfield County", "type": "pinned"},
+        {"title": "PowerHouse Data Centers — News", "url": "https://www.powerhousedata.com/news/", "source": "PowerHouse DC", "type": "pinned"},
     ],
     "novva_lv_reno": [
         {"title": "Novva Data Centers — Official Site", "url": "https://www.novva.com/", "source": "Novva DC", "type": "pinned"},
@@ -301,22 +379,44 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=site:lailluminator.com+%22Richland+Parish%22+OR+%22Meta%22&hl=en-US&gl=US&ceid=US:en",
         # KNOE TV + Monroe News-Star
         "https://news.google.com/rss/search?q=(site:knoe.com+OR+site:thenewsstar.com)+%22Richland+Parish%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
-        # Richland Beacon-News
-        "https://news.google.com/rss/search?q=site:richlandtoday.com&hl=en-US&gl=US&ceid=US:en",
+        # Richland Beacon-News (both domains)
+        "https://news.google.com/rss/search?q=(site:richlandtoday.com+OR+site:therichlandbeaconnews.com)&hl=en-US&gl=US&ceid=US:en",
+        # KTVE/KARD Monroe (closest TV market) + KTAL/KMSS Shreveport (ran the Holly Ridge feature)
+        "https://news.google.com/rss/search?q=(site:myarklamiss.com+OR+site:ktalnews.com)+%22Richland+Parish%22+OR+%22Meta%22+OR+%22Holly+Ridge%22&hl=en-US&gl=US&ceid=US:en",
+        # American Press + The Advocate / NOLA.com — statewide
+        "https://news.google.com/rss/search?q=(site:americanpress.com+OR+site:theadvocate.com+OR+site:nola.com)+%22Richland+Parish%22+OR+%22Meta%22+datacenter&hl=en-US&gl=US&ceid=US:en",
+        # Baton Rouge Business Report + GovTech — business/industry trade press
+        "https://news.google.com/rss/search?q=(site:businessreport.com+OR+site:govtech.com)+%22Richland+Parish%22+OR+%22Meta%22+datacenter&hl=en-US&gl=US&ceid=US:en",
     ],
     "hut_google": [
         # The Advocate / Times-Picayune
         "https://news.google.com/rss/search?q=(site:theadvocate.com+OR+site:nola.com)+%22HUT%22+OR+%22Google%22+OR+%22River+Bend%22+OR+%22data+center%22+Louisiana&hl=en-US&gl=US&ceid=US:en",
         # Louisiana Illuminator
         "https://news.google.com/rss/search?q=site:lailluminator.com+%22HUT%22+OR+%22Google%22+OR+%22River+Bend%22+OR+%22datacenter%22&hl=en-US&gl=US&ceid=US:en",
+        # WBRZ + WAFB + BRProud — Baton Rouge broadcast
+        "https://news.google.com/rss/search?q=(site:wbrz.com+OR+site:wafb.com+OR+site:brproud.com)+%22West+Feliciana%22+OR+%22HUT%22+OR+%22Google%22+data+center&hl=en-US&gl=US&ceid=US:en",
+        # Baton Rouge Business Report
+        "https://news.google.com/rss/search?q=site:businessreport.com+%22West+Feliciana%22+OR+%22HUT%22+OR+%22Google%22+data+center&hl=en-US&gl=US&ceid=US:en",
+        # Technical.ly + Area Development — industry trade press
+        "https://news.google.com/rss/search?q=(site:technical.ly+OR+site:areadevelopment.com)+%22West+Feliciana%22+OR+%22River+Bend%22+data+center&hl=en-US&gl=US&ceid=US:en",
+        # West Feliciana Parish Government
+        "https://news.google.com/rss/search?q=site:westfelicianaparish.com&hl=en-US&gl=US&ceid=US:en",
     ],
     "related_bx": [
-        # MLive / Ann Arbor News
-        "https://news.google.com/rss/search?q=(site:annarbor.com+OR+site:mlive.com)+%22data+center%22+OR+%22Oracle%22+OR+%22Washtenaw%22&hl=en-US&gl=US&ceid=US:en",
+        # Saline Post + Saline Sun Times — hyperlocal to Saline Township
+        "https://news.google.com/rss/search?q=(site:thesalinepost.com+OR+site:thesuntimesnews.com)+%22Saline%22+OR+%22data+center%22+OR+%22Oracle%22&hl=en-US&gl=US&ceid=US:en",
+        # MLive
+        "https://news.google.com/rss/search?q=site:mlive.com+%22Saline%22+OR+%22data+center%22+OR+%22Oracle%22+OR+%22Washtenaw%22&hl=en-US&gl=US&ceid=US:en",
         # Patch Ann Arbor + Ypsilanti
-        "https://news.google.com/rss/search?q=(site:patch.com/michigan/ann-arbor-mi+OR+site:patch.com/michigan/ypsilanti-mi)+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
-        # Michigan Daily
-        "https://news.google.com/rss/search?q=site:michigandaily.com+%22data+center%22+OR+%22Oracle%22+OR+%22Washtenaw%22&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=(site:patch.com/michigan/ann-arbor-mi+OR+site:patch.com/michigan/ypsilanti-mi)+%22Saline%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Crain's Detroit Business
+        "https://news.google.com/rss/search?q=site:crainsdetroit.com+%22Saline%22+OR+%22Oracle%22+data+center+Michigan&hl=en-US&gl=US&ceid=US:en",
+        # WEMU (Ypsilanti NPR)
+        "https://news.google.com/rss/search?q=site:wemu.org+%22Saline%22+OR+%22data+center%22+OR+%22Oracle%22&hl=en-US&gl=US&ceid=US:en",
+        # Concentrate (Second Wave Media) + Ann Arbor Observer
+        "https://news.google.com/rss/search?q=(site:secondwavemedia.com+OR+site:annarborobserver.com)+%22Saline%22+OR+%22data+center%22+OR+%22Oracle%22&hl=en-US&gl=US&ceid=US:en",
+        # ENR — construction trade press
+        "https://news.google.com/rss/search?q=site:enr.com+%22Saline%22+OR+%22Ann+Arbor%22+Oracle+data+center&hl=en-US&gl=US&ceid=US:en",
     ],
     "vantage": [
         # The Albany News — primary local source, covers Stargate/Vantage extensively
@@ -329,24 +429,32 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=site:lcsun-news.com+%22data+center%22+OR+%22Stack%22+OR+%22Santa+Teresa%22+OR+%22Oracle%22&hl=en-US&gl=US&ceid=US:en",
         # Las Cruces Bulletin + Organ Mountain News + KRWG
         "https://news.google.com/rss/search?q=(site:lascrucesbulletin.com+OR+site:organmountainnews.com+OR+site:krwg.org)+%22data+center%22+OR+%22Dona+Ana%22&hl=en-US&gl=US&ceid=US:en",
+        # El Paso TV market — bleeds heavily into Las Cruces
+        "https://news.google.com/rss/search?q=(site:kvia.com+OR+site:ktsm.com+OR+site:kfoxtv.com)+%22Santa+Teresa%22+OR+%22Dona+Ana%22+OR+%22Stack%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # El Paso Matters
+        "https://news.google.com/rss/search?q=site:elpasomatters.org+%22Santa+Teresa%22+OR+%22Dona+Ana%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Source NM + NM Political Report + Albuquerque Journal — statewide NM
+        "https://news.google.com/rss/search?q=(site:sourcenm.com+OR+site:nmpoliticalreport.com+OR+site:abqjournal.com)+%22Santa+Teresa%22+OR+%22Dona+Ana%22+OR+%22Stack%22+data+center&hl=en-US&gl=US&ceid=US:en",
     ],
     "tract": [
         # Comstock Chronicle — most local to Storey County
         "https://news.google.com/rss/search?q=site:thecomstockchronicle.com&hl=en-US&gl=US&ceid=US:en",
         # Reno Gazette-Journal + Nevada Appeal
         "https://news.google.com/rss/search?q=(site:rgj.com+OR+site:nevadaappeal.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22Tahoe+Reno%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
-        # KOLO TV + KTVN + KRNV
-        "https://news.google.com/rss/search?q=(site:kolotv.com+OR+site:2news.com+OR+site:mynews4.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
-        # NNBW (broke CEO interview) + This Is Reno + Nevada Independent + KTVN CBS
-        "https://news.google.com/rss/search?q=(site:nnbw.com+OR+site:thisisreno.com+OR+site:thenevadaindependent.com+OR+site:ktvn.com)+%22Storey%22+OR+%22Tract%22+OR+%22NVIDIA%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # KOLO TV + KRNV (MyNews4) — 2news.com deduped (same station as KTVN, listed below)
+        "https://news.google.com/rss/search?q=(site:kolotv.com+OR+site:mynews4.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # NNBW (broke CEO interview) + This Is Reno + Nevada Independent + Nevada Current + KTVN CBS
+        "https://news.google.com/rss/search?q=(site:nnbw.com+OR+site:thisisreno.com+OR+site:thenevadaindependent.com+OR+site:nevadacurrent.com+OR+site:ktvn.com)+%22Storey%22+OR+%22Tract%22+OR+%22NVIDIA%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
         # Storey County Gov (permits/meetings) + Nevada Newsmakers
         "https://news.google.com/rss/search?q=(site:storeycounty.org+OR+site:nevadanewsmakers.com)+%22Tract%22+OR+%22data+center%22+OR+%22permit%22&hl=en-US&gl=US&ceid=US:en",
     ],
     "cifr_black_pearl": [
-        # Odessa American + Midland Reporter
-        "https://news.google.com/rss/search?q=(site:oaoa.com+OR+site:midland-reporter.com)+%22Wink%22+OR+%22Cipher%22+OR+%22data+center%22+OR+%22Winkler%22&hl=en-US&gl=US&ceid=US:en",
-        # CBS7 / FirstAlert7 + YourBasin
-        "https://news.google.com/rss/search?q=(site:firstalert7.com+OR+site:yourbasin.com)+%22Wink%22+OR+%22Cipher+Mining%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Odessa American + Midland Reporter-Telegram
+        "https://news.google.com/rss/search?q=(site:oaoa.com+OR+site:mrt.com)+%22Wink%22+OR+%22Cipher%22+OR+%22data+center%22+OR+%22Winkler%22&hl=en-US&gl=US&ceid=US:en",
+        # CBS7 + YourBasin + Permian Basin 360
+        "https://news.google.com/rss/search?q=(site:cbs7.com+OR+site:yourbasin.com+OR+site:permianbasin360.com)+%22Wink%22+OR+%22Cipher+Mining%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Texas Tribune + Winkler County Government
+        "https://news.google.com/rss/search?q=(site:texastribune.org+OR+site:co.winkler.tx.us)+%22Winkler+County%22+OR+%22Wink%22+data+center+Texas&hl=en-US&gl=US&ceid=US:en",
     ],
     "wulf": [
         # Niagara Gazette — primary local source for Lake Mariner
@@ -355,18 +463,26 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=(site:buffalonews.com+OR+site:lockportjournal.com)+%22TeraWulf%22+OR+%22Lake+Mariner%22+OR+%22Somerset%22+data+center&hl=en-US&gl=US&ceid=US:en",
         # WGRZ + WIVB + WKBW
         "https://news.google.com/rss/search?q=(site:wgrz.com+OR+site:wivb.com+OR+site:wkbw.com)+%22TeraWulf%22+OR+%22Lake+Mariner%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Investigative Post + Orleans Hub + Spectrum Local News Buffalo
+        "https://news.google.com/rss/search?q=(site:investigativepost.org+OR+site:orleanshub.com+OR+site:spectrumlocalnews.com%2Fnys%2Fbuffalo)+%22TeraWulf%22+OR+%22Lake+Mariner%22+OR+%22Somerset%22+OR+%22fire%22&hl=en-US&gl=US&ceid=US:en",
+        # WBEN + Western NY Papers
+        "https://news.google.com/rss/search?q=(site:wben.com+OR+site:wnypapers.com)+%22TeraWulf%22+OR+%22Lake+Mariner%22+OR+%22Somerset%22&hl=en-US&gl=US&ceid=US:en",
     ],
     "flashc": [
         # Lubbock Avalanche-Journal
         "https://news.google.com/rss/search?q=site:lubbockonline.com+%22Abernathy%22+OR+%22data+center%22+OR+%22Fluidstack%22+OR+%22Hale+County%22&hl=en-US&gl=US&ceid=US:en",
         # KCBD + EverythingLubbock + Fox34
         "https://news.google.com/rss/search?q=(site:kcbd.com+OR+site:everythinglubbock.com+OR+site:fox34lubbock.com)+%22Abernathy%22+OR+%22data+center%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
+        # Plainview Daily Herald (Hale County seat) + MyFOXLubbock + KAMC
+        "https://news.google.com/rss/search?q=(site:plainviewdailyherald.com+OR+site:myfoxlubbock.com+OR+site:kamc.com)+%22Abernathy%22+OR+%22Hale+County%22+OR+%22data+center%22+OR+%22Fluidstack%22&hl=en-US&gl=US&ceid=US:en",
     ],
     "cifr_barber_lake": [
         # Colorado City Record — primary local paper
         "https://news.google.com/rss/search?q=site:coloradocityrecord.com&hl=en-US&gl=US&ceid=US:en",
         # KTAB/KRBC + KTXS
         "https://news.google.com/rss/search?q=(site:bigcountryhomepage.com+OR+site:ktxs.com)+%22Colorado+City%22+OR+%22Mitchell+County%22+OR+%22Cipher%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Abilene Reporter-News + Odessa American + Midland Reporter-Telegram — regional bleed
+        "https://news.google.com/rss/search?q=(site:reporternews.com+OR+site:oaoa.com+OR+site:mrt.com)+%22Colorado+City%22+OR+%22Mitchell+County%22+OR+%22Cipher%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
     ],
     "apld_pf2": [
         # InForum (Fargo Forum) — primary regional source
@@ -375,6 +491,10 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=(site:valleynewslive.com+OR+site:kvrr.com)+%22Harwood%22+OR+%22Applied+Digital%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
         # ND Monitor
         "https://news.google.com/rss/search?q=site:northdakotamonitor.com+%22Harwood%22+OR+%22Applied+Digital%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # KFYR-TV + WDAY + KX News
+        "https://news.google.com/rss/search?q=(site:kfyrtv.com+OR+site:wday.com+OR+site:kxnet.com)+%22Harwood%22+OR+%22Applied+Digital%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # AgWeek + Prairie Business — regional trade press
+        "https://news.google.com/rss/search?q=(site:agweek.com+OR+site:prairiebizmag.com)+%22Harwood%22+OR+%22Applied+Digital%22+OR+%22Cass+County%22+data+center&hl=en-US&gl=US&ceid=US:en",
     ],
     "apld": [
         # Dickey County Leader — primary local source
@@ -391,6 +511,8 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=site:fox5atlanta.com+%22Fayette%22+OR+%22QTS%22+OR+%22data+center%22+OR+%22Microsoft%22&hl=en-US&gl=US&ceid=US:en",
         # WSB-TV + Atlanta News First (broke the QTS water-use investigation)
         "https://news.google.com/rss/search?q=(site:wsbtv.com+OR+site:atlantanewsfirst.com)+%22QTS%22+OR+%22Fayette%22+OR+%22data+center%22+OR+%22Microsoft%22&hl=en-US&gl=US&ceid=US:en",
+        # Patch Fayetteville + NewsBreak Fayetteville
+        "https://news.google.com/rss/search?q=(site:patch.com%2Fgeorgia%2Ffayetteville+OR+site:newsbreak.com%2Ffayetteville-ga)+%22QTS%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
     ],
     # VOLTAG — identical campus to Vantage (Shackelford Co., TX)
     "voltag": [
@@ -398,8 +520,12 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=site:thealbanynews.net&hl=en-US&gl=US&ceid=US:en",
         # KTAB/KRBC Big Country
         "https://news.google.com/rss/search?q=site:bigcountryhomepage.com+%22Shackelford%22+OR+%22Albany%22+OR+%22Vantage%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
-        # Broader regional search — Shackelford + Vantage/Oracle/OpenAI/Stargate
-        "https://news.google.com/rss/search?q=%22Shackelford+County%22+Texas+%22Vantage%22+OR+%22Oracle%22+OR+%22OpenAI%22+OR+%22Stargate%22+data+center&hl=en-US&gl=US&ceid=US:en",
+        # KTXS ABC Abilene
+        "https://news.google.com/rss/search?q=site:ktxs.com+%22Shackelford%22+OR+%22Albany%22+OR+%22Vantage%22+OR+%22VoltaGrid%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Abilene Reporter-News (Gannett)
+        "https://news.google.com/rss/search?q=site:reporternews.com+%22Shackelford%22+OR+%22Albany%22+OR+%22Vantage%22+OR+%22VoltaGrid%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # Broader regional search — Shackelford + Vantage/Oracle/OpenAI/Stargate/VoltaGrid
+        "https://news.google.com/rss/search?q=%22Shackelford+County%22+Texas+%22Vantage%22+OR+%22Oracle%22+OR+%22OpenAI%22+OR+%22Stargate%22+OR+%22VoltaGrid%22+data+center&hl=en-US&gl=US&ceid=US:en",
     ],
     # MERIDIAN — New Lebanon, Sullivan County, IN
     "meridian": [
@@ -445,6 +571,8 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=(site:statesman.com+OR+site:austinmonitor.com+OR+site:communityimpact.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+OR+%22CORZ%22&hl=en-US&gl=US&ceid=US:en",
         # KUT + KVUE + KXAN + Austin Business Journal — Austin broadcast + business
         "https://news.google.com/rss/search?q=(site:kut.org+OR+site:kvue.com+OR+site:kxan.com+OR+site:bizjournals.com)+%22data+center%22+OR+%22Core+Scientific%22+OR+%22CoreWeave%22+%22Austin%22&hl=en-US&gl=US&ceid=US:en",
+        # CoStar — broke the $6.1B Denton conversion story
+        "https://news.google.com/rss/search?q=site:costar.com+%22Core+Scientific%22+OR+%22Denton%22+data+center&hl=en-US&gl=US&ceid=US:en",
     ],
     "sbe_softbank": [
         # Austin American-Statesman + Austin Business Journal
@@ -465,20 +593,22 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=site:thecomstockchronicle.com&hl=en-US&gl=US&ceid=US:en",
         # Reno Gazette-Journal + Nevada Appeal
         "https://news.google.com/rss/search?q=(site:rgj.com+OR+site:nevadaappeal.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22Tahoe+Reno%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
-        # KOLO TV + KTVN + KRNV
-        "https://news.google.com/rss/search?q=(site:kolotv.com+OR+site:2news.com+OR+site:mynews4.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
-        # NNBW (broke CEO interview) + This Is Reno + Nevada Independent + KTVN CBS
-        "https://news.google.com/rss/search?q=(site:nnbw.com+OR+site:thisisreno.com+OR+site:thenevadaindependent.com+OR+site:ktvn.com)+%22Storey%22+OR+%22Tract%22+OR+%22NVIDIA%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # KOLO TV + KRNV (MyNews4) — 2news.com deduped (same station as KTVN, listed below)
+        "https://news.google.com/rss/search?q=(site:kolotv.com+OR+site:mynews4.com)+%22Storey+County%22+OR+%22TRIC%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
+        # NNBW (broke CEO interview) + This Is Reno + Nevada Independent + Nevada Current + KTVN CBS
+        "https://news.google.com/rss/search?q=(site:nnbw.com+OR+site:thisisreno.com+OR+site:thenevadaindependent.com+OR+site:nevadacurrent.com+OR+site:ktvn.com)+%22Storey%22+OR+%22Tract%22+OR+%22NVIDIA%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
         # Storey County Gov (permits/meetings) + Nevada Newsmakers
         "https://news.google.com/rss/search?q=(site:storeycounty.org+OR+site:nevadanewsmakers.com)+%22Tract%22+OR+%22data+center%22+OR+%22permit%22&hl=en-US&gl=US&ceid=US:en",
     ],
     "polar_dc": [
-        # Drangedalsposten + Porsgrunns Dagblad + Telemarksavisa
-        "https://news.google.com/rss/search?q=(site:drangedalsposten.no+OR+site:pd.no+OR+site:ta.no)+datasenter+OR+PolarDC+OR+Herøya+OR+Drangedal&hl=no&gl=NO&ceid=NO:no",
-        # NRK Vestfold og Telemark — state broadcaster
-        "https://news.google.com/rss/search?q=site:nrk.no+datasenter+OR+%22PolarDC%22+OR+%22Drangedal%22+OR+%22Herøya%22&hl=no&gl=NO&ceid=NO:no",
+        # Drangedalsposten + Porsgrunns Dagblad + Telemarksavisa + Kragerø Blad Vestmar
+        "https://news.google.com/rss/search?q=(site:drangedalsposten.no+OR+site:pd.no+OR+site:ta.no+OR+site:kv.no)+datasenter+OR+PolarDC+OR+Herøya+OR+Drangedal&hl=no&gl=NO&ceid=NO:no",
+        # NRK Vestfold og Telemark (regional bureau) — state broadcaster
+        "https://news.google.com/rss/search?q=site:nrk.no/vestfoldogtelemark+datasenter+OR+%22PolarDC%22+OR+%22Drangedal%22+OR+%22Herøya%22&hl=no&gl=NO&ceid=NO:no",
         # E24 + Dagens Næringsliv — Norwegian business press
         "https://news.google.com/rss/search?q=(site:e24.no+OR+site:dn.no)+datasenter+OR+PolarDC+OR+Crusoe+OR+CoreWeave+OR+Drangedal&hl=no&gl=NO&ceid=NO:no",
+        # Varden + enerWE + Teknisk Ukeblad — regional + energy trade press
+        "https://news.google.com/rss/search?q=(site:varden.no+OR+site:enerwe.no+OR+site:tu.no)+datasenter+OR+PolarDC+OR+Crusoe+OR+Drangedal+OR+Herøya&hl=no&gl=NO&ceid=NO:no",
     ],
     "prime_dc": [
         # Journal & Topics + Daily Herald + Elk Grove Patch — suburban local
@@ -496,22 +626,28 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=(site:kvia.com+OR+site:ktsm.com+OR+site:cbs4local.com+OR+site:kfoxtv.com)+%22data+center%22+OR+%22Meta%22&hl=en-US&gl=US&ceid=US:en",
         # El Paso Inc. + Spotlight EP — business / local
         "https://news.google.com/rss/search?q=(site:elpasoinc.com+OR+site:spotlightepnews.com)+%22data+center%22+OR+%22Meta%22&hl=en-US&gl=US&ceid=US:en",
+        # Diario.mx (Spanish-language) + NewsBreak El Paso
+        "https://news.google.com/rss/search?q=(site:diario.mx%2Felpaso+OR+site:newsbreak.com%2Fel-paso-tx)+%22data+center%22+OR+%22Meta%22&hl=en-US&gl=US&ceid=US:en",
     ],
     # GALAXY HELIOS — Afton, Dickens County, TX (Galaxy / CoreWeave)
     "glxy_helios": [
         # The Texas Spur — the dedicated Dickens County paper (broke the lease story)
         "https://news.google.com/rss/search?q=site:thetexasspur.com&hl=en-US&gl=US&ceid=US:en",
-        # Lubbock market — EverythingLubbock (broke Helios Phase 2) / Avalanche-Journal / KCBD
-        "https://news.google.com/rss/search?q=(site:everythinglubbock.com+OR+site:lubbockonline.com+OR+site:kcbd.com)+%22data+center%22+OR+%22Helios%22+OR+%22Galaxy%22+OR+%22Afton%22&hl=en-US&gl=US&ceid=US:en",
+        # Lubbock market — EverythingLubbock (broke Helios Phase 2) / Avalanche-Journal / KCBD / Fox34
+        "https://news.google.com/rss/search?q=(site:everythinglubbock.com+OR+site:lubbockonline.com+OR+site:kcbd.com+OR+site:fox34lubbock.com)+%22data+center%22+OR+%22Helios%22+OR+%22Galaxy%22+OR+%22Afton%22&hl=en-US&gl=US&ceid=US:en",
+        # NewsBreak — Spur, TX local aggregator
+        "https://news.google.com/rss/search?q=site:newsbreak.com%2Fspur-tx&hl=en-US&gl=US&ceid=US:en",
     ],
     # SBE MILAM — Milam County, TX (OpenAI / SBE)
     "sbe_milam": [
         # Milam County weeklies — Cameron Herald + Rockdale Reporter
         "https://news.google.com/rss/search?q=(site:cameronherald.com+OR+site:rockdalereporter.com)+%22data+center%22+OR+%22OpenAI%22+OR+%22Stargate%22&hl=en-US&gl=US&ceid=US:en",
-        # Waco / Temple market — KWTX / KXXV / FOX 44 / Temple Telegram
-        "https://news.google.com/rss/search?q=(site:kwtx.com+OR+site:kxxv.com+OR+site:fox44news.com+OR+site:tdtnews.com)+%22Milam%22+OR+%22data+center%22+OR+%22Stargate%22&hl=en-US&gl=US&ceid=US:en",
+        # Waco / Temple / Bryan-College Station market — KWTX / KXXV / FOX 44 (Milam-scoped) / Temple Telegram / KBTX
+        "https://news.google.com/rss/search?q=(site:kwtx.com+OR+site:kxxv.com+OR+site:fox44news.com%2Fnews%2Flocal-news%2Fmilam-county+OR+site:tdtnews.com+OR+site:kbtx.com)+%22Milam%22+OR+%22data+center%22+OR+%22Stargate%22&hl=en-US&gl=US&ceid=US:en",
         # Austin Business Journal (broke SBE/Stargate) + Bryan-College Station Eagle
         "https://news.google.com/rss/search?q=(site:bizjournals.com+OR+site:theeagle.com)+%22Milam%22+%22data+center%22+OR+%22Stargate%22+OR+%22SBE%22&hl=en-US&gl=US&ceid=US:en",
+        # NewsBreak — Cameron, TX local aggregator
+        "https://news.google.com/rss/search?q=site:newsbreak.com%2Fcameron-tx&hl=en-US&gl=US&ceid=US:en",
     ],
     # QTS MAGNOLIA — 12-asset portfolio: Richmond VA / Phoenix + Glendale AZ / New Albany (Columbus) OH / DFW TX
     "qts_magnolia": [
@@ -531,6 +667,8 @@ LOCAL_OUTLET_RSS = {
         "https://news.google.com/rss/search?q=(site:richmond.com+OR+site:richmondbizsense.com+OR+site:henricocitizen.com+OR+site:virginiabusiness.com)+%22QTS%22+OR+%22data+center%22+OR+%22Henrico%22&hl=en-US&gl=US&ceid=US:en",
         # Richmond broadcast + public media — NBC12, WRIC 8News, WTVR CBS6, VPM
         "https://news.google.com/rss/search?q=(site:nbc12.com+OR+site:wric.com+OR+site:wtvr.com+OR+site:vpm.org)+%22QTS%22+OR+%22data+center%22+OR+%22Henrico%22&hl=en-US&gl=US&ceid=US:en",
+        # CBS News Texas + CultureMap Dallas + Columbus Alive + Phoenix New Times + Richmond Free Press + Cardinal News
+        "https://news.google.com/rss/search?q=(site:cbsnews.com%2Ftexas+OR+site:culturemap.com%2Fdallas+OR+site:columbusalive.com+OR+site:phoenixnewtimes.com+OR+site:richmondfreepress.com+OR+site:cardinalnews.org)+%22QTS%22+OR+%22data+center%22&hl=en-US&gl=US&ceid=US:en",
     ],
     "cifr_stingray": [
         # Andrews County News — primary local twice-weekly paper
@@ -657,7 +795,7 @@ NEWSAPI_QUERIES = {
     "voltag": [
         'Vantage Oracle "Shackelford County" Texas datacenter OpenAI Stargate',
         '"Vantage Data Centers" Oracle "Albany" OR "Shackelford" Texas construction 2025 OR 2026',
-        '"Shackelford County" Texas datacenter Oracle OR OpenAI OR Vantage OR Stargate',
+        '"VoltaGrid" Oracle natural gas power datacenter Texas',
     ],
     "qts": [
         '"QTS" Microsoft "Fayetteville" Georgia datacenter "Project Excalibur"',
@@ -758,19 +896,19 @@ NEWSAPI_QUERIES = {
 
 # ── Industry RSS keywords per bond ───────────────────────────────────────────
 DC_INDUSTRY_KEYWORDS = {
-    "beignet":          ["meta", "louisiana", "richland", "beignet"],
+    "beignet":          ["meta", "louisiana", "richland", "beignet", "holly ridge"],
     "hut_google":       ["hut", "hut 8", "google", "louisiana", "river bend", "fluidstack"],
     "related_bx":       ["related", "oracle", "michigan", "washtenaw", "ann arbor"],
     "vantage":          ["vantage", "oracle", "shackelford", "texas", "stargate"],
     "stack_nm":         ["stack", "oracle", "new mexico", "santa teresa"],
     "tract":            ["tract", "nvidia", "nevada", "storey", "tric", "fleet"],
     "cifr_black_pearl": ["cipher", "cifr", "amazon", "wink", "texas", "black pearl"],
-    "wulf":             ["terawulf", "wulf", "lake mariner", "fluidstack", "google", "new york"],
+    "wulf":             ["terawulf", "wulf", "lake mariner", "fluidstack", "google", "new york", "somerset", "barker", "fire"],
     "flashc":           ["fluidstack", "abernathy", "hypertec", "google", "hale county"],
     "cifr_barber_lake": ["cipher", "cifr", "barber lake", "colorado city", "google", "mitchell"],
     "apld_pf2":         ["applied digital", "apld", "oracle", "harwood", "north dakota", "cass"],
     "apld":             ["applied digital", "apld", "coreweave", "ellendale", "north dakota"],
-    "voltag":           ["vantage", "oracle", "shackelford", "albany", "openai", "texas"],
+    "voltag":           ["vantage", "oracle", "shackelford", "albany", "openai", "texas", "voltagrid"],
     "qts":              ["qts", "microsoft", "fayetteville", "georgia", "fayette", "excalibur"],
     "meridian":        ["meridian", "sullivan county", "new lebanon", "indiana", "fluidstack", "next frontier"],
     "edged_compute":   ["edged compute", "edged energy", "aurora", "illinois", "coreweave", "alibaba", "koch"],
@@ -829,6 +967,7 @@ REDDIT_SUBREDDIT_QUERIES: dict[str, list[tuple[str, str]]] = {
         ("Bitcoin",         "Cipher Mining Black Pearl Texas"),
         ("CryptoCurrency",  "Cipher Mining datacenter Texas"),
         ("Texas",           "Cipher Mining Wink datacenter"),
+        ("datacenter",      "Cipher Mining Black Pearl Wink Texas"),
     ],
     "wulf": [
         ("upstatenewyork",  "TeraWulf Lake Mariner Somerset"),
@@ -844,6 +983,7 @@ REDDIT_SUBREDDIT_QUERIES: dict[str, list[tuple[str, str]]] = {
         ("Texas",           "Cipher Mining Colorado City datacenter"),
         ("CryptoCurrency",  "Cipher Mining Barber Lake AWS"),
         ("Bitcoin",         "Cipher Mining Texas datacenter"),
+        ("datacenter",      "Cipher Mining Barber Lake Colorado City Texas"),
     ],
     "apld_pf2": [
         ("northdakota", "Applied Digital datacenter Harwood"),
